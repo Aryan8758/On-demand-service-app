@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ForYou</string>
+    <string name="login">Login</string>
+    <array name="user">
+        <item>Customer</item>
+        <item>Provider</item>
+    </array>
+</resources>
