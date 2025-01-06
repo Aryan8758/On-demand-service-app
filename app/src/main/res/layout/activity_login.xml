@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="#fabef5"
+    android:background="#D0E3FF"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
@@ -24,7 +24,7 @@
         android:id="@+id/userTypeSpinner"
         android:layout_width="300dp"
         android:layout_height="50dp"
-        android:background="@color/white"
+        android:background="@drawable/bg"
         android:entries="@array/user"
         android:spinnerMode="dropdown"
         android:layout_below="@id/loginani"
@@ -44,7 +44,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/usernameEditText"
             android:padding="10dp"
-            android:background="@color/white"
+            android:background="@drawable/bg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="10dp"
@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="10dp"
-            android:background="@color/white"
+            android:background="@drawable/bg"
             android:drawableStart="@drawable/baseline_lock_24"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -80,7 +80,7 @@
         android:layout_marginStart="45dp"
         android:layout_marginTop="34dp"
         android:layout_marginEnd="60dp"
-        android:backgroundTint="#C307B6"
+        android:backgroundTint="#081F5C"
         android:gravity="center"
         android:text="@string/login" />
 

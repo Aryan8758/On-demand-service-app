@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -35,17 +36,25 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    packaging {
+        resources {
+            excludes += setOf("META-INF/NOTICE.md", "META-INF/NOTICE", "META-INF/LICENSE", "META-INF/LICENSE.md")
+        }
+    }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
-    implementation (libs.lottie)
-    implementation (libs.lottie.v600)
+    implementation(libs.lottie)
+    implementation("com.sun.mail:android-mail:1.6.7") // Updated mail dependency for Android
+    implementation("com.sun.mail:android-activation:1.6.7")
+    implementation(libs.lottie.v600)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
