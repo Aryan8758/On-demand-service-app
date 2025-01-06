@@ -69,8 +69,17 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:hint="Please enter the 4 digit code"
+        android:hint="Please enter the 5 digit code"
         tools:ignore="TouchTargetSizeCheck" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resend Otp!"
+        android:layout_below="@id/otpEditText"
+        android:id="@+id/ResendOtp"
+        android:textColor="#0A86E4"
+        android:layout_marginEnd="20dp"
+        android:layout_alignParentRight="true"/>
 
     <Button
         android:id="@+id/otpsendbtn"
@@ -78,9 +87,10 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#C307B6"
         android:gravity="center"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_below="@id/otpEditText"
+        android:layout_below="@id/ResendOtp"
         android:text="Send Otp  "
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="22dp"
@@ -90,9 +100,9 @@
         android:id="@+id/Signinbtn"
         android:layout_width="373dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/otpEditText"
+        android:layout_below="@id/ResendOtp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:backgroundTint="#C307B6"
         android:gravity="center"

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "835328312253",
+    "project_id": "foryou-fa1d3",
+    "storage_bucket": "foryou-fa1d3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835328312253:android:4977769c35a5980b9388d4",
+        "android_client_info": {
+          "package_name": "com.example.foryou"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1giXTgh2_iike7ig_7_xiSfQMhyoe24s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

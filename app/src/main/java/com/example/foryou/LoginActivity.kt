@@ -23,6 +23,10 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this,EmailVerify::class.java))
             finish()
         }
+        binding.loginbtn.setOnClickListener {
+            startActivity(Intent(this,SignUp::class.java))
+            finish()
+        }
         binding.frgpass.setOnClickListener {
 
         }
