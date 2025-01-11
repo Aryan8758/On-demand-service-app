@@ -25,7 +25,6 @@
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:background="@drawable/bg"
-        android:entries="@array/user"
         android:spinnerMode="dropdown"
         android:layout_below="@id/loginani"
         android:layout_marginStart="45dp"
@@ -42,7 +41,7 @@
         tools:ignore="HardcodedText">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/usernameEditText"
+            android:id="@+id/emailEditText"
             android:padding="10dp"
             android:background="@drawable/bg"
             android:layout_width="match_parent"
@@ -83,6 +82,15 @@
         android:backgroundTint="#081F5C"
         android:gravity="center"
         android:text="@string/login" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/loginbtn"
+        android:elevation="4dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/frgpass"

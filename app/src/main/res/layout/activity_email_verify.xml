@@ -6,6 +6,7 @@
     android:background="#D0E3FF"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:ignore="HardcodedText"
     tools:context=".EmailVerify">
 
     <com.airbnb.lottie.LottieAnimationView
@@ -28,7 +29,7 @@
         android:layout_marginEnd="33dp"
         android:gravity="center"
         android:text="Verification code on your email"
-        android:textColor="#081F5C"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints"
@@ -44,7 +45,7 @@
         android:layout_marginEnd="76dp"
         android:gravity="center"
         android:text="We will send verification code on your email id"
-        android:textColor="#081F5C"
+        android:textColor="#F84E3C3C"
         android:textSize="13sp"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="77dp"
@@ -52,32 +53,33 @@
 
     <EditText
         android:id="@+id/emailEditText"
-        android:background="@drawable/bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg"
         android:layout_below="@id/t2"
         android:layout_marginStart="20dp"
         android:layout_marginTop="42dp"
         android:layout_marginEnd="20dp"
-        android:hint="What email id do you want to use ?"
-        tools:ignore="TouchTargetSizeCheck" />
+        android:hint="Enter your email address"
+        android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/otpEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg"
         android:layout_below="@id/emailEditText"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
-        android:inputType="number"
+        android:background="@drawable/bg"
         android:layout_marginEnd="20dp"
-        android:hint="Please enter the 5 digit code"
-        tools:ignore="TouchTargetSizeCheck" />
+        android:hint="Enter 5-digit OTP"
+        android:inputType="number" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Resend Otp!"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/otpEditText"
         android:id="@+id/ResendOtp"
         android:textColor="#081F5C"
@@ -88,14 +90,14 @@
         android:id="@+id/otpsendbtn"
         android:layout_width="373dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/ResendOtp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
         android:backgroundTint="#081F5C"
         android:gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_below="@id/ResendOtp"
         android:text="Send Otp  "
-        tools:ignore="MissingConstraints"
+        tools:ignore="MissingConstraints,DuplicateClickableBoundsCheck"
         tools:layout_editor_absoluteX="22dp"
         tools:layout_editor_absoluteY="657dp" />
 
