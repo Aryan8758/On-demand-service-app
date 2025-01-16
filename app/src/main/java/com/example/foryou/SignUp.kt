@@ -113,10 +113,17 @@ class SignUp : AppCompatActivity() {
                 }
             }
 
+            //navigate to login page
+            binding.alreadyAccountText.setOnClickListener{
+                startActivity(Intent(this,LoginActivity::class.java))
+                finish()
+            }
+
             // Show progress bar
             binding.progressBar.visibility = View.VISIBLE
 
             // Create user in Firebase Authentication
+
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
