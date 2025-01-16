@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/baseline_home_24"
+        android:title="HOME"
+        tools:ignore="HardcodedText" />
+    <item
+        android:id="@+id/nav_cat"
+        android:icon="@drawable/baseline_category_24"
+        android:title="Category"
+        tools:ignore="HardcodedText" />
+    <item
+        android:id="@+id/nav_his"
+        android:icon="@drawable/baseline_history_24"
+        android:title="History"
+        tools:ignore="HardcodedText" />
+    <item
+        android:id="@+id/nav_per"
+        android:icon="@drawable/baseline_person_24"
+        android:title="Profile"
+        tools:ignore="HardcodedText" />
+
+</menu>
