@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import com.example.foryou.SharedPref
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,9 +17,13 @@ class LoginActivity : AppCompatActivity() {
     private val binding: ActivityLoginBinding by lazy {
         ActivityLoginBinding.inflate(layoutInflater)
     }
+    private lateinit var  sharedPreferences :SharedPref
 
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
+
+
+  //  private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +34,7 @@ class LoginActivity : AppCompatActivity() {
         val userTypes = listOf("Select User Type", "customers", "providers")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, userTypes)
         binding.userTypeSpinner.adapter = adapter
+        sharedPreferences = SharedPref(applicationContext)
 
         // Login button click listener
         binding.loginbtn.setOnClickListener {
@@ -68,12 +74,15 @@ class LoginActivity : AppCompatActivity() {
                                             "Customer" -> {
                                                 // Hide progress bar after task completion
                                                 binding.progressBar.visibility = View.GONE
+                                                sharedPreferences.saveLoginState(true)
                                                 startActivity(Intent(this, MainActivity::class.java))
                                                 finish()
+
                                             }
                                             "Provider" -> {
                                                 // Hide progress bar after task completion
                                                 binding.progressBar.visibility = View.GONE
+                                                sharedPreferences.saveLoginState(true)
                                                 startActivity(Intent(this, SignUp::class.java))
                                                 finish()
                                             }

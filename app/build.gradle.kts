@@ -46,6 +46,7 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.lottie)
+    implementation ("com.google.android.material:material:1.9.0")
     implementation("com.sun.mail:android-mail:1.6.7") // Updated mail dependency for Android
     implementation("com.sun.mail:android-activation:1.6.7")
     implementation(libs.lottie.v600)
