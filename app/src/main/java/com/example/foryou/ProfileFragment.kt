@@ -89,12 +89,20 @@ class ProfileFragment : Fragment() {
         }
 
     }
-    private fun encodeImageToBase64(bitmap:Bitmap):String{
-        val byteArryOutputStream=ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArryOutputStream)
-        val byteArray=byteArryOutputStream.toByteArray()
-        return Base64.encodeToString(byteArray,Base64.DEFAULT)
+    private fun encodeImageToBase64(bitmap: Bitmap): String {
+        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, true) // Resize image
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream) // Compress to 50%
+        val byteArray = byteArrayOutputStream.toByteArray()
+        return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
+
+    //    private fun encodeImageToBase64(bitmap:Bitmap):String{
+//        val byteArryOutputStream=ByteArrayOutputStream()
+//        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArryOutputStream)
+//        val byteArray=byteArryOutputStream.toByteArray()
+//        return Base64.encodeToString(byteArray,Base64.DEFAULT)
+//    }
     private fun decodeBase64ToBitmap(base64String: String): Bitmap {
         val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
@@ -179,9 +187,10 @@ class ProfileFragment : Fragment() {
             "number" to updatedPhone
         )
         selectBitmap?.let {
-            val base64Image = encodeImageToBase64(it)
+            val base64Image = encodeImageToBase64(it) // **Compressed Base64 Image**
             user["profileImage"] = base64Image
         }
+
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {

@@ -49,6 +49,7 @@ dependencies {
     implementation ("com.google.android.material:material:1.9.0")
     implementation("com.sun.mail:android-mail:1.6.7") // Updated mail dependency for Android
     implementation("com.sun.mail:android-activation:1.6.7")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")//location fetching dependencies
     implementation(libs.lottie.v600)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
