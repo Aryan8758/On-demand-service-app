@@ -159,13 +159,25 @@ class SignUp : AppCompatActivity() {
                                 startActivity(Intent(this, LoginActivity::class.java))
                                 finish()
                             }
-                            .addOnFailureListener { e ->
-                                // Hide progress bar
-                                binding.progressBar.visibility = View.GONE
-                                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                    } else {
+                        // 🔴 FIRESTORE WRITE FAILED → DELETE USER FROM AUTH
+                                    auth.currentUser?.delete()?.addOnCompleteListener { deleteTask ->
+                                        if (deleteTask.isSuccessful) {
+                                            Toast.makeText(
+                                                this,
+                                                "Registration failed: ${task.exception?.message}, Try Again!",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        } else {
+                                            Toast.makeText(
+                                                this,
+                                                "Registration failed and cleanup unsuccessful: ${deleteTask.exception?.message}",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
+                                    binding.progressBar.visibility = View.GONE
+                                }
+                     else {
                         // Hide progress bar
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(
@@ -178,3 +190,5 @@ class SignUp : AppCompatActivity() {
         }
     }
 }
+//.addOnFailureListener { e ->
+//////

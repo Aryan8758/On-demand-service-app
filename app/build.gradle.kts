@@ -49,9 +49,12 @@ dependencies {
     implementation ("com.google.android.material:material:1.9.0")
     implementation("com.sun.mail:android-mail:1.6.7") // Updated mail dependency for Android
     implementation("com.sun.mail:android-activation:1.6.7")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("com.google.android.gms:play-services-location:21.0.1")//location fetching dependencies
     implementation(libs.lottie.v600)
     implementation(libs.androidx.appcompat)
+    implementation ("com.google.firebase:firebase-firestore-ktx:24.4.2")
+
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
@@ -59,6 +62,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

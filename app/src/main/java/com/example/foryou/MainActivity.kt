@@ -1,7 +1,8 @@
-@file:Suppress("DEPRECATION")
+
 
 package com.example.foryou
 
+import HomeFragment
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment

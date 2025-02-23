@@ -6,19 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:id="@+id/liner"
-        android:background="#CADEED"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="true"/>
+
     <FrameLayout
         android:id="@+id/fview"
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
-        android:layout_below="@+id/liner"
+        android:layout_below="@+id/main"
         android:layout_marginBottom="?attr/actionBarSize"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        tools:ignore="NotSibling" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
