@@ -39,7 +39,7 @@
             android:layout_height="28dp"
             android:layout_alignParentEnd="true"
             android:src="@drawable/baseline_keyboard_arrow_right_24"
-            android:tint="@color/black"/>
+            app:tint="@color/black"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
 

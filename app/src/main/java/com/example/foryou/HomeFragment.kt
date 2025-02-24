@@ -57,16 +57,16 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 //categories adapter set manually
         val categoryList= listOf(
-            CategoriesItem(R.drawable.ak,"Babysitter service","#FFA500"),
-            CategoriesItem(R.drawable.ak,"Plumber service","#00BFFF"),
-            CategoriesItem(R.drawable.ak,"Teacher service","#FF6347"),
-            CategoriesItem(R.drawable.ak,"Driver service","#32CD32"),
-            CategoriesItem(R.drawable.ak,"Electrician service","#8A2BE2"),
-            CategoriesItem(R.drawable.ak,"Mechanic service","#FFA500"),
-            CategoriesItem(R.drawable.ak,"Gardener service","#FFA500"),
-            CategoriesItem(R.drawable.ak,"Painter service","#FFA500"),
-            CategoriesItem(R.drawable.ak,"Chef service","#FFA500"),
-            CategoriesItem(R.drawable.ak,"Maid service","#FFA500")
+            CategoriesItem(R.drawable.ak,"Babysitter ","#f4c8a2"),
+            CategoriesItem(R.drawable.ak,"Plumber ","#00BFFF"),
+            CategoriesItem(R.drawable.ak,"Teacher ","#FF6347"),
+            CategoriesItem(R.drawable.ak,"Driver ","#32CD32"),
+            CategoriesItem(R.drawable.ak,"Electrician ","#8A2BE2"),
+            CategoriesItem(R.drawable.ak,"Mechanic ","#FFA500"),
+            CategoriesItem(R.drawable.ak,"Gardener ","#FFA500"),
+            CategoriesItem(R.drawable.ak,"Painter ","#FFA500"),
+            CategoriesItem(R.drawable.ak,"Chef ","#FFA500"),
+            CategoriesItem(R.drawable.ak,"Maid ","#FFA500")
         )
      //   val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false)
         val layoutManager = GridLayoutManager(requireContext(), 1, GridLayoutManager.HORIZONTAL, false)
@@ -101,13 +101,15 @@ class HomeFragment : Fragment() {
             for (doc in documents) {
                 val name = doc.getString("name") ?: "Unknown"
                 val service = doc.getString("service") ?: "Other"
+                val image =doc.getString("profileImage")
+
 
 
                 // Add provider to respective category list
                 if (!providersMap.containsKey(service)) {
                     providersMap[service] = mutableListOf()
                 }
-                providersMap[service]?.add(ProviderModelClass(name, service))
+                providersMap[service]?.add(ProviderModelClass(name, service,image))
             }
 
 

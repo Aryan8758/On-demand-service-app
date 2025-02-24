@@ -51,6 +51,7 @@ dependencies {
     implementation("com.sun.mail:android-activation:1.6.7")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("com.google.android.gms:play-services-location:21.0.1")//location fetching dependencies
+    implementation("androidx.cardview:cardview:1.0.0") //cardview
     implementation(libs.lottie.v600)
     implementation(libs.androidx.appcompat)
     implementation ("com.google.firebase:firebase-firestore-ktx:24.4.2")

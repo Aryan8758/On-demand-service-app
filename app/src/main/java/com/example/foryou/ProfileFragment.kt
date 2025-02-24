@@ -113,8 +113,8 @@ class ProfileFragment : Fragment() {
 
         // Fetch from cache first, then from server
         lifecycleScope.launch(Dispatchers.IO) {
-            try { val userType = sharedPreferences.getUserType()
-                val collection = if (userType == "providers") "providers" else "customers"
+            try { val collection = sharedPreferences.getUserType()
+//                val collection = if (userType == "providers") "providers" else "customers"
 
                 val cacheDoc = db.collection(collection).document(userId).get(Source.CACHE).await()
                 withContext(Dispatchers.Main) {
@@ -185,8 +185,8 @@ class ProfileFragment : Fragment() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val userType = sharedPreferences.getUserType()
-                val collection = if (userType == "provider") "providers" else "customers"
+                val collection = sharedPreferences.getUserType()
+                //val collection = if (userType == "provider") "providers" else "customers"
 
 
                 db.collection(collection).document(auth.currentUser?.uid!!).update(user).await()

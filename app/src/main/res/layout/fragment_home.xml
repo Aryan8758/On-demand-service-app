@@ -1,32 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profileLayout"
+        android:layout_marginStart="10dp"
+        android:orientation="horizontal">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:elevation="4dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/person"
+            app:shapeAppearanceOverlay="@style/CircleImageView"
+            />
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/profileLayout"
-            android:layout_marginStart="10dp"
-            android:orientation="horizontal">
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="5dp"
-                android:elevation="4dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/person"
-                app:shapeAppearanceOverlay="@style/CircleImageView"
-                />
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:orientation="vertical"
-                android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/txt_user"
@@ -50,24 +47,25 @@
                 android:text="Location"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-            </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/editimage"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginLeft="187dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="18dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Edit Profile Picture"
-                android:scaleType="fitXY"
-                android:src="@drawable/baseline_my_location_24"
-                android:visibility="visible"
-                tools:ignore="TouchTargetSizeCheck" />
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/editimage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="187dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="18dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Edit Profile Picture"
+            android:scaleType="fitXY"
+            android:src="@drawable/baseline_my_location_24"
+            android:visibility="visible"
+            tools:ignore="TouchTargetSizeCheck" />
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_below="@+id/profileLayout"
@@ -80,14 +78,38 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <!-- Categories RecyclerView -->
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Categories Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Categories"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/categoryText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categories"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/viewAllButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View All"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="#f4c8a2"
+                    android:textColor="@color/black"
+                    android:padding="10dp"/>
+
+
+            </LinearLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewCategories"
@@ -96,6 +118,7 @@
                 android:padding="8dp"
                 android:clipToPadding="false"
                 android:overScrollMode="never"/>
+
             <LinearLayout
                 android:id="@+id/categoryContainer"
                 android:layout_width="match_parent"
@@ -105,6 +128,5 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 
 </RelativeLayout>
