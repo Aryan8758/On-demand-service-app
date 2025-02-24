@@ -49,146 +49,126 @@ class SignUp : AppCompatActivity() {
 
         // Show/Hide additional fields based on role selection
         binding.roleGroup.setOnCheckedChangeListener { _, checkedId ->
-            if (checkedId == R.id.providerRadio) {
-                binding.serviceCategorySpinner.visibility = View.VISIBLE
-                binding.experienceEditText.visibility = View.VISIBLE
-                binding.cityAutoComplete.visibility = View.VISIBLE
-            } else {
-                binding.serviceCategorySpinner.visibility = View.GONE
-                binding.experienceEditText.visibility = View.GONE
-                binding.cityAutoComplete.visibility = View.GONE
-            }
+            val isProvider = checkedId == R.id.providerRadio
+            binding.serviceCategorySpinner.visibility = if (isProvider) View.VISIBLE else View.GONE
+            binding.experienceEditText.visibility = if (isProvider) View.VISIBLE else View.GONE
+            binding.cityAutoComplete.visibility = if (isProvider) View.VISIBLE else View.GONE
+        }
+
+        binding.alreadyAccountText.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
 
         binding.SubmitBtn.setOnClickListener {
-            val name = binding.username.text.toString().trim()
-            val email = binding.emailEditText.text.toString().trim()
-            val password = binding.password.text.toString().trim()
-            val number = binding.mobileEdittext.text.toString().trim()
-            val experience = binding.experienceEditText.text.toString().trim()
-            val city = binding.cityAutoComplete.text.toString().trim()
-            val selectedRole = when (binding.roleGroup.checkedRadioButtonId) {
-                R.id.customerRadio -> "Customer"
-                R.id.providerRadio -> "Provider"
-                else -> null
-            }
-
-            // Validation checks
-            if (name.isEmpty()) {
-                binding.username.error = "Please enter your name!"
-                return@setOnClickListener
-            }
-            if (password.isEmpty()) {
-                binding.password.error = "Please enter a password!"
-                return@setOnClickListener
-            }
-            if (number.isEmpty()) {
-                binding.mobileEdittext.error = "Please enter a Mobile number!"
-                return@setOnClickListener
-            }
-            if (number.length != 10) {
-                binding.mobileEdittext.error = "Please enter a 10-digit Mobile number!"
-                return@setOnClickListener
-            }
-            if (selectedRole == null) {
-                Toast.makeText(this, "Please select a user type!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            var selectedService: String? = null
-            if (selectedRole == "Provider") {
-                selectedService = binding.serviceCategorySpinner.selectedItem.toString()
-                if (selectedService == "Select Service") {
-                    Toast.makeText(this, "Please select a valid service!", Toast.LENGTH_SHORT)
-                        .show()
-                    return@setOnClickListener
-                }
-                if (experience.isEmpty()) {
-                    binding.experienceEditText.error = "Experience is required for providers!"
-                    return@setOnClickListener
-                }
-                if (city.isEmpty()) {
-                    binding.cityAutoComplete.error = "City is required for providers!"
-                    return@setOnClickListener
-                }
-            }
-
-            //navigate to login page
-            binding.alreadyAccountText.setOnClickListener{
-                startActivity(Intent(this,LoginActivity::class.java))
-                finish()
-            }
-
-            // Show progress bar
-            binding.progressBar.visibility = View.VISIBLE
-
-            // Create user in Firebase Authentication
-
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        // Prepare user data for Firestore
-                        val user = hashMapOf(
-                            "name" to name,
-                            "email" to email,
-                            "number" to number,
-                            "role" to selectedRole
-                        )
-
-                        // Add provider-specific data
-                        if (selectedRole == "Provider") {
-                            selectedService?.let { user["service"] = it }
-                            experience.takeIf { it.isNotEmpty() }?.let { user["experience"] = it }
-                            city.takeIf { it.isNotEmpty() }?.let { user["city"] = it }
-                        }
-
-                        // Save data based on role
-                        val userCollection = if (selectedRole == "Provider") {
-                            "providers"
-                        } else {
-                            "customers"
-                        }
-
-                        db.collection(userCollection).document(auth.currentUser?.uid ?: "")
-                            .set(user)
-                            .addOnSuccessListener {
-                                // Hide progress bar
-                                binding.progressBar.visibility = View.GONE
-                                Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT)
-                                    .show()
-                                startActivity(Intent(this, LoginActivity::class.java))
-                                finish()
-                            }
-                        // 🔴 FIRESTORE WRITE FAILED → DELETE USER FROM AUTH
-                                    auth.currentUser?.delete()?.addOnCompleteListener { deleteTask ->
-                                        if (deleteTask.isSuccessful) {
-                                            Toast.makeText(
-                                                this,
-                                                "Registration failed: ${task.exception?.message}, Try Again!",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        } else {
-                                            Toast.makeText(
-                                                this,
-                                                "Registration failed and cleanup unsuccessful: ${deleteTask.exception?.message}",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        }
-                                    }
-                                    binding.progressBar.visibility = View.GONE
-                                }
-                     else {
-                        // Hide progress bar
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(
-                            this,
-                            "Authentication failed: ${task.exception?.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
+            registerUser()
         }
     }
+
+    private fun registerUser() {
+        val name = binding.username.text.toString().trim()
+        val email = binding.emailEditText.text.toString().trim()
+        val password = binding.password.text.toString().trim()
+        val number = binding.mobileEdittext.text.toString().trim()
+        val experience = binding.experienceEditText.text.toString().trim()
+        val city = binding.cityAutoComplete.text.toString().trim()
+        val selectedRole = when (binding.roleGroup.checkedRadioButtonId) {
+            R.id.customerRadio -> "Customer"
+            R.id.providerRadio -> "Provider"
+            else -> null
+        }
+
+        // Validation checks
+        if (name.isEmpty()) {
+            binding.username.error = "Please enter your name!"
+            return
+        }
+        if (password.isEmpty()) {
+            binding.password.error = "Please enter a password!"
+            return
+        }
+        if (number.isEmpty() || number.length != 10) {
+            binding.mobileEdittext.error = "Please enter a valid 10-digit mobile number!"
+            return
+        }
+        if (selectedRole == null) {
+            Toast.makeText(this, "Please select a user type!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        var selectedService: String? = null
+        if (selectedRole == "Provider") {
+            selectedService = binding.serviceCategorySpinner.selectedItem.toString()
+            if (selectedService == "Select Service") {
+                Toast.makeText(this, "Please select a valid service!", Toast.LENGTH_SHORT).show()
+                return
+            }
+            if (experience.isEmpty()) {
+                binding.experienceEditText.error = "Experience is required for providers!"
+                return
+            }
+            if (city.isEmpty()) {
+                binding.cityAutoComplete.error = "City is required for providers!"
+                return
+            }
+        }
+
+        // Show progress bar
+        binding.progressBar.visibility = View.VISIBLE
+
+        // Create user in Firebase Authentication
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = hashMapOf(
+                        "name" to name,
+                        "email" to email,
+                        "number" to number,
+                        "role" to selectedRole
+                    )
+
+                    if (selectedRole == "Provider") {
+                        selectedService?.let { user["service"] = it }
+                        user["experience"] = experience
+                        user["city"] = city
+                    }
+
+                    val userCollection = if (selectedRole == "Provider") "providers" else "customers"
+
+                    db.collection(userCollection).document(auth.currentUser?.uid ?: "")
+                        .set(user)
+                        .addOnSuccessListener {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this, LoginActivity::class.java))
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            auth.currentUser?.delete()?.addOnCompleteListener { deleteTask ->
+                                if (deleteTask.isSuccessful) {
+                                    Toast.makeText(
+                                        this,
+                                        "Registration failed: ${e.message}, Try Again!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                } else {
+                                    Toast.makeText(
+                                        this,
+                                        "Registration failed and cleanup unsuccessful: ${deleteTask.exception?.message}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                            binding.progressBar.visibility = View.GONE
+                        }
+                } else {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        this,
+                        "Authentication failed: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+    }
 }
-//.addOnFailureListener { e ->
-//////

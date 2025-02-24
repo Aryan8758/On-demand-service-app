@@ -101,6 +101,7 @@ class LoginActivity : AppCompatActivity() {
 
                 if (document.exists()) {
                     sharedPreferences.saveLoginState(true)
+                    sharedPreferences.saveUserType("customers")
                     Log.d("LoginActivity", "✅ Customer login successful.")
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
@@ -116,67 +117,25 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    // 🔹 Handle provider login (searching in all categories)
     private fun handleProviderLogin(userId: String) {
-      //  val db = FirebaseFirestore.getInstance()
+        db.collection("providers").document(userId).get()
+            .addOnSuccessListener { document ->
+                binding.progressBar.visibility = View.GONE
 
-        db.collection("Providers")
-            .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    for (document in documents) {
-                        Log.d("Firestore", "Category: ${document.id}")  // Logs categories like Babysitter, Maid
-                    }
+                if (document.exists()) {
+                    sharedPreferences.saveLoginState(true)
+                    sharedPreferences.saveUserType("providers")
+                    startActivity(Intent(this, ServiceMainActivity::class.java))
+                    finish()
                 } else {
-                    Log.e("Firestore", "❌ No provider categories found.")
+                    Toast.makeText(this, "❌ Provider data not found.", Toast.LENGTH_SHORT).show()
                 }
             }
-            .addOnFailureListener { e ->
-                Log.e("Firestore", "❌ Error fetching provider categories: ${e.message}")
+            .addOnFailureListener { exception ->
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(this, "Error loading user data. Please check your network.", Toast.LENGTH_LONG).show()
             }
-
-//        db.collection("Providers") // Start from "Providers" collection
-//            .get()
-//            .addOnSuccessListener { categories ->
-//                if (categories.isEmpty) {
-//                    Log.e("LoginActivity", "❌ No provider categories found.")
-//                    Toast.makeText(this, "No provider data found.", Toast.LENGTH_SHORT).show()
-//                    return@addOnSuccessListener
-//                }
-//
-//                var providerFound = false // Flag to check if provider exists
-//
-//                for (category in categories) {
-//                    val categoryName = category.id // "Babysitter", "Maid", etc.
-//                    db.collection("Providers").document(categoryName).collection("Users")
-//                        .document(userId)
-//                        .get()
-//                        .addOnSuccessListener { document ->
-//                            if (document.exists()) {
-//                                providerFound = true
-//                                sharedPreferences.saveLoginState(true)
-//                                Log.d("LoginActivity", "✅ Provider login successful in category: $categoryName")
-//
-//                                startActivity(Intent(this, MainActivity::class.java))
-//                                finish()
-//                                return@addOnSuccessListener // Exit loop after successful login
-//                            }
-//                        }
-//                        .addOnFailureListener { exception ->
-//                            Log.e("LoginActivity", "❌ Error checking provider data in $categoryName: ${exception.message}")
-//                        }
-//                }
-//
-//                // If no provider is found, show error
-//                if (!providerFound) {
-//                    Toast.makeText(this, "❌ Provider data not found.", Toast.LENGTH_SHORT).show()
-//                    Log.e("LoginActivity", "❌ No provider document found for userId: $userId")
-//                }
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.e("LoginActivity", "❌ Error loading provider categories: ${exception.message}")
-//                Toast.makeText(this, "Error loading provider data. Please check your network.", Toast.LENGTH_LONG).show()
-//            }
     }
+
 
 }

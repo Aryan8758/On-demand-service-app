@@ -67,11 +67,6 @@ class ProfileFragment : Fragment() {
 
         loadUser()
         binding.editProfileBtn.setOnClickListener {
-//            binding.userName.isEnabled=true
-//            binding.userPhone.isEnabled=true
-//            binding.editProfileBtn.visibility=View.GONE
-//            binding.logoutBtn.visibility=View.GONE
-//            binding.saveBtn.visibility=View.VISIBLE
             enableEditing(true)
         }
         binding.logoutBtn.setOnClickListener {
@@ -97,12 +92,6 @@ class ProfileFragment : Fragment() {
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
 
-    //    private fun encodeImageToBase64(bitmap:Bitmap):String{
-//        val byteArryOutputStream=ByteArrayOutputStream()
-//        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArryOutputStream)
-//        val byteArray=byteArryOutputStream.toByteArray()
-//        return Base64.encodeToString(byteArray,Base64.DEFAULT)
-//    }
     private fun decodeBase64ToBitmap(base64String: String): Bitmap {
         val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
@@ -124,13 +113,15 @@ class ProfileFragment : Fragment() {
 
         // Fetch from cache first, then from server
         lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val cacheDoc = db.collection("customers").document(userId).get(Source.CACHE).await()
+            try { val userType = sharedPreferences.getUserType()
+                val collection = if (userType == "providers") "providers" else "customers"
+
+                val cacheDoc = db.collection(collection).document(userId).get(Source.CACHE).await()
                 withContext(Dispatchers.Main) {
                     if (cacheDoc.exists()) updateUI(cacheDoc)
                 }
 
-                val serverDoc = db.collection("customers").document(userId).get(Source.SERVER).await()
+                val serverDoc = db.collection(collection).document(userId).get(Source.SERVER).await()
                 withContext(Dispatchers.Main) {
                     updateUI(serverDoc)
                 }
@@ -194,8 +185,11 @@ class ProfileFragment : Fragment() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
+                val userType = sharedPreferences.getUserType()
+                val collection = if (userType == "provider") "providers" else "customers"
 
-                db.collection("customers").document(auth.currentUser?.uid!!).update(user).await()
+
+                db.collection(collection).document(auth.currentUser?.uid!!).update(user).await()
                 withContext(Dispatchers.Main) {
                     Toast.makeText(requireContext(), "Profile Updated!", Toast.LENGTH_SHORT).show()
                     enableEditing(false)

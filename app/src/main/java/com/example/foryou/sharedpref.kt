@@ -25,8 +25,10 @@ class SharedPref(private val context: Context) {
 
     // Logout user (clear login state)
     fun logoutUser() {
-        sharedPref.edit().remove(LOGIN_KEY).apply()
+        sharedPref.edit().remove(LOGIN_KEY).remove(LOCATION_KEY).apply()
+        Log.d("SharedPref", "✅ User logged out & location removed")
     }
+
 
 
     fun saveLocation(location: String) {
@@ -39,4 +41,12 @@ class SharedPref(private val context: Context) {
     fun getLocation(): String? {
         return sharedPref.getString(LOCATION_KEY, null)
     }
+    fun saveUserType(type: String) {
+        sharedPref.edit().putString("userType", type).apply()
+    }
+
+    fun getUserType(): String {
+        return sharedPref.getString("userType", "customer") ?: "customer"
+    }
+
 }

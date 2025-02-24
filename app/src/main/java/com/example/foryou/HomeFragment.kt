@@ -3,15 +3,26 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Typeface
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.widget.GridLayout
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.foryou.CategoriesAdapter
+import com.example.foryou.CategoriesItem
+import com.example.foryou.ProviderAdapter
+import com.example.foryou.ProviderModelClass
 import com.example.foryou.R
 import com.example.foryou.SharedPref
 import com.example.foryou.databinding.FragmentHomeBinding
@@ -34,6 +45,8 @@ class HomeFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
+    private val providersMap = mutableMapOf<String, MutableList<ProviderModelClass>>() // Categorized providers
+
 
     override fun onCreateView(inflater: android.view.LayoutInflater, container: android.view.ViewGroup?, savedInstanceState: Bundle?): android.view.View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -42,6 +55,25 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: android.view.View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//categories adapter set manually
+        val categoryList= listOf(
+            CategoriesItem(R.drawable.ak,"Babysitter service","#FFA500"),
+            CategoriesItem(R.drawable.ak,"Plumber service","#00BFFF"),
+            CategoriesItem(R.drawable.ak,"Teacher service","#FF6347"),
+            CategoriesItem(R.drawable.ak,"Driver service","#32CD32"),
+            CategoriesItem(R.drawable.ak,"Electrician service","#8A2BE2"),
+            CategoriesItem(R.drawable.ak,"Mechanic service","#FFA500"),
+            CategoriesItem(R.drawable.ak,"Gardener service","#FFA500"),
+            CategoriesItem(R.drawable.ak,"Painter service","#FFA500"),
+            CategoriesItem(R.drawable.ak,"Chef service","#FFA500"),
+            CategoriesItem(R.drawable.ak,"Maid service","#FFA500")
+        )
+     //   val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false)
+        val layoutManager = GridLayoutManager(requireContext(), 1, GridLayoutManager.HORIZONTAL, false)
+        binding.recyclerViewCategories.layoutManager = layoutManager
+        binding.recyclerViewCategories.adapter = CategoriesAdapter(categoryList)
+
+
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
@@ -60,8 +92,52 @@ class HomeFragment : Fragment() {
         binding.editimage.setOnClickListener {
             fetchLocation()
         }
+        fetchProviders()
+    }
+    // Step 1: Fetch Providers & Categorize Them
+    private fun fetchProviders() {
+        db.collection("providers").get().addOnSuccessListener { documents ->
+
+            for (doc in documents) {
+                val name = doc.getString("name") ?: "Unknown"
+                val service = doc.getString("service") ?: "Other"
+
+
+                // Add provider to respective category list
+                if (!providersMap.containsKey(service)) {
+                    providersMap[service] = mutableListOf()
+                }
+                providersMap[service]?.add(ProviderModelClass(name, service))
+            }
+
+
+            displayProvidersByCategory() // Generate dynamic RecyclerViews
+        }
     }
 
+
+    // Step 2: Dynamically Generate RecyclerViews for Each Category
+    private fun displayProvidersByCategory() {
+        binding.categoryContainer.removeAllViews() // Clear previous views
+
+        for ((category, providerList) in providersMap) {
+            val categoryTitle = TextView(requireContext()).apply {
+                text = category
+                textSize = 18f
+                setTypeface(null, Typeface.BOLD)
+                setPadding(8, 16, 8, 8)
+            }
+
+            val recyclerView = RecyclerView(requireContext()).apply {
+                layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                adapter = ProviderAdapter(providerList)
+            }
+
+            binding.categoryContainer.addView(categoryTitle)
+            binding.categoryContainer.addView(recyclerView)
+        }
+    }
     @SuppressLint("SetTextI18n")
     private fun loadSavedLocation() {
         val savedLocation = sharedPreferences.getLocation()

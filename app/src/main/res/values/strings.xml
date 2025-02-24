@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ForYou</string>
     <string name="login">Login</string>
+
     <style name="CircleImageView" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
