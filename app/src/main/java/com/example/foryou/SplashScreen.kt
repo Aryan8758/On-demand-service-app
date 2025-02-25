@@ -21,13 +21,21 @@ class SplashScreen : AppCompatActivity() {
         // Check login status using SharedPreferences
         Handler(Looper.getMainLooper()).postDelayed({
             if (sharedPreferences.isLoggedIn()) {
-                // If the user is already logged in, navigate to the main activity or dashboard
-                startActivity(Intent(this, MainActivity::class.java)) // Replace MainActivity with the actual main screen activity
+                when (sharedPreferences.getUserType()) {
+                    "customers" -> {
+                        startActivity(Intent(this, MainActivity::class.java)) // Redirect to Customer screen
+                    }
+                    "providers" -> {
+                        startActivity(Intent(this, ServiceMainActivity::class.java)) // Redirect to Provider screen
+                    }
+                    else -> {
+                        startActivity(Intent(this, LoginActivity::class.java)) // If userType is null, go to login
+                    }
+                }
             } else {
-                // If the user is not logged in, navigate to the login screen
-                startActivity(Intent(this, LoginActivity::class.java))
+                startActivity(Intent(this, LoginActivity::class.java)) // Redirect to login if not logged in
             }
-            finish() // Close the splash screen activity
+            finish() // Close splash screen
         }, 2050)
     }
 }

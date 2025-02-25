@@ -1,3 +1,6 @@
+package com.example.foryou
+
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -96,31 +99,37 @@ class HomeFragment : Fragment() {
     }
     // Step 1: Fetch Providers & Categorize Them
     private fun fetchProviders() {
-        db.collection("providers").get().addOnSuccessListener { documents ->
+        if (!isAdded || view == null) return // Prevents crash if fragment is not attached
 
-            for (doc in documents) {
-                val name = doc.getString("name") ?: "Unknown"
-                val service = doc.getString("service") ?: "Other"
-                val image =doc.getString("profileImage")
+        db.collection("providers").get()
+            .addOnSuccessListener { documents ->
+                if (!isAdded || view == null) return@addOnSuccessListener // Ensures fragment is still active
 
+                providersMap.clear() // Clear previous data to avoid duplication
 
+                for (doc in documents) {
+                    val name = doc.getString("name") ?: "Unknown"
+                    val service = doc.getString("service") ?: "Other"
+                    val image = doc.getString("profileImage")
 
-                // Add provider to respective category list
-                if (!providersMap.containsKey(service)) {
-                    providersMap[service] = mutableListOf()
+                    // Add provider to respective category list
+                    if (!providersMap.containsKey(service)) {
+                        providersMap[service] = mutableListOf()
+                    }
+                    providersMap[service]?.add(ProviderModelClass(name, service, image))
                 }
-                providersMap[service]?.add(ProviderModelClass(name, service,image))
+
+                displayProvidersByCategory() // Generate dynamic RecyclerViews safely
             }
-
-
-            displayProvidersByCategory() // Generate dynamic RecyclerViews
-        }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Error getting providers", exception)
+            }
     }
 
-
-    // Step 2: Dynamically Generate RecyclerViews for Each Category
     private fun displayProvidersByCategory() {
-        binding.categoryContainer.removeAllViews() // Clear previous views
+        if (!isAdded || view == null) return // Prevents crash if fragment is not attached
+
+        binding?.categoryContainer?.removeAllViews() // Null-check to prevent crashes
 
         for ((category, providerList) in providersMap) {
             val categoryTitle = TextView(requireContext()).apply {
@@ -131,15 +140,15 @@ class HomeFragment : Fragment() {
             }
 
             val recyclerView = RecyclerView(requireContext()).apply {
-                layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                 adapter = ProviderAdapter(providerList)
             }
 
-            binding.categoryContainer.addView(categoryTitle)
-            binding.categoryContainer.addView(recyclerView)
+            binding?.categoryContainer?.addView(categoryTitle)
+            binding?.categoryContainer?.addView(recyclerView)
         }
     }
+
     @SuppressLint("SetTextI18n")
     private fun loadSavedLocation() {
         val savedLocation = sharedPreferences.getLocation()
@@ -167,13 +176,13 @@ class HomeFragment : Fragment() {
 
         // Fetch from cache first, then from server
         lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val cacheDoc = db.collection("customers").document(userId).get(Source.CACHE).await()
+            try { val collection =sharedPreferences.getUserType()
+                val cacheDoc = db.collection(collection).document(userId).get(Source.CACHE).await()
                 withContext(Dispatchers.Main) {
                     if (cacheDoc.exists()) updateUI(cacheDoc)
                 }
 
-                val serverDoc = db.collection("customers").document(userId).get(Source.SERVER).await()
+                val serverDoc = db.collection(collection).document(userId).get(Source.SERVER).await()
                 withContext(Dispatchers.Main) {
                     updateUI(serverDoc)
                 }
