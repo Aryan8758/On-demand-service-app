@@ -31,6 +31,6 @@ class CategoriesAdapter(private val itemList:List<CategoriesItem>):RecyclerView.
         val item=itemList[position]
         holder.ServiceName.text = item.title
         holder.ServiceImage.setImageResource(item.imageResId)
-        holder.cardView.setCardBackgroundColor(Color.parseColor(item.bgColor))
+        holder.cardView.setBackgroundResource(item.bgColor)
     }
 }

@@ -59,19 +59,20 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: android.view.View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //categories adapter set manually
-        val categoryList= listOf(
-            CategoriesItem(R.drawable.ak,"Babysitter ","#f4c8a2"),
-            CategoriesItem(R.drawable.ak,"Plumber ","#00BFFF"),
-            CategoriesItem(R.drawable.ak,"Teacher ","#FF6347"),
-            CategoriesItem(R.drawable.ak,"Driver ","#32CD32"),
-            CategoriesItem(R.drawable.ak,"Electrician ","#8A2BE2"),
-            CategoriesItem(R.drawable.ak,"Mechanic ","#FFA500"),
-            CategoriesItem(R.drawable.ak,"Gardener ","#FFA500"),
-            CategoriesItem(R.drawable.ak,"Painter ","#FFA500"),
-            CategoriesItem(R.drawable.ak,"Chef ","#FFA500"),
-            CategoriesItem(R.drawable.ak,"Maid ","#FFA500")
+        val categoryList = listOf(
+            CategoriesItem(R.drawable.ak, "Plumbing Services", R.drawable.category_background),
+            CategoriesItem(R.drawable.ak, "Electrician Services", R.drawable.blue_bg),
+            CategoriesItem(R.drawable.ak, "Laundry Service", R.drawable.red_bg),
+            CategoriesItem(R.drawable.ak, "Chef Services", R.drawable.green_bg),
+            CategoriesItem(R.drawable.ak, "Washing & Cleaning", R.drawable.purple_bg),
+            CategoriesItem(R.drawable.ak, "Maid Services", R.drawable.yellow_bg),
+            CategoriesItem(R.drawable.ak, "Carpenter Services", R.drawable.blue_bg),  // Duplicate color
+            CategoriesItem(R.drawable.ak, "Mechanic Services", R.drawable.red_bg),    // Duplicate color
+            CategoriesItem(R.drawable.ak, "Gardening Services", R.drawable.green_bg), // Duplicate color
+            CategoriesItem(R.drawable.ak, "Painting Services", R.drawable.purple_bg)  // Duplicate color
         )
-     //   val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false)
+
+        //   val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false)
         val layoutManager = GridLayoutManager(requireContext(), 1, GridLayoutManager.HORIZONTAL, false)
         binding.recyclerViewCategories.layoutManager = layoutManager
         binding.recyclerViewCategories.adapter = CategoriesAdapter(categoryList)
