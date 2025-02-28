@@ -100,10 +100,9 @@
                     android:id="@+id/viewAllButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="View All"
-                    android:textSize="16sp"
+                    android:text="View all"
+                    android:textSize="12sp"
                     android:layout_marginEnd="10dp"
-                    android:backgroundTint="#f4c8a2"
                     android:textColor="@color/black"
                     android:padding="10dp"/>
 

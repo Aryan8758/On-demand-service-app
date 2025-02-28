@@ -1,45 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="5dp">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#C1E8FF">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:background="@drawable/category_background">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <!-- Category Icon -->
+        <!-- Service Image & Details -->
         <ImageView
-            android:id="@+id/categoryIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"/>
+            android:id="@+id/serviceImage"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="150dp"
+            android:layout_width="200dp"
+            android:layout_height="150dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/man" />
 
-        <!-- Category Title -->
         <TextView
-            android:id="@+id/categoryTitle"
+            android:id="@+id/serviceTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Car Services"
-            android:textSize="20sp"
-            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:text="Repairing"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/servicePrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$24/h"
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
+
+        <!-- Apartment Size Slider -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apartment Size"
             android:textStyle="bold"
-            android:layout_toEndOf="@id/categoryIcon"
-            android:layout_marginStart="10dp"/>
+            android:layout_marginTop="16dp"/>
 
-        <!-- Expand/Collapse Arrow -->
-        <ImageView
-            android:id="@+id/expandButton"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/baseline_keyboard_arrow_right_24"
-            android:tint="@color/black"/>
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+        <SeekBar
+            android:id="@+id/sizeSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="1400"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:justifyContent="space-between">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 Sq. Ft" />
+
+            <TextView
+                android:id="@+id/selectedSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="700 Sq. Ft" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1400 Sq. Ft" />
+        </LinearLayout>
+
+        <!-- Date Picker -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date & Time"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <CalendarView
+            android:id="@+id/datePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Time Picker -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:layout_marginEnd="8dp"/>
+
+            <EditText
+                android:id="@+id/timeEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Select Time"
+                android:focusable="false" />
+
+            <Button
+                android:id="@+id/amPmButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AM"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+        <!-- Contact Number -->
+        <EditText
+            android:id="@+id/contactNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Contact Number"
+            android:inputType="phone"
+            android:layout_marginTop="8dp" />
+
+        <!-- Confirm Button -->
+        <Button
+            android:id="@+id/confirmButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirm"
+            android:textColor="@color/white"
+            android:layout_marginTop="16dp"/>
+
+    </LinearLayout>
+</ScrollView>

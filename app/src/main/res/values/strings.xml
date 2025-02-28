@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">ForYou</string>
     <string name="login">Login</string>
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
-        <!-- Other theme settings -->
+
+    <!-- Correct Theme -->
+    <style name="Theme.ForYou" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/white</item>//white kar do  aha
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <style name="CircleImageView" parent="ShapeAppearance.MaterialComponents.SmallComponent">

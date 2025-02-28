@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -20,17 +21,16 @@ class CategoryFragment : Fragment() {
         categoryRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         val categoryList = listOf(
-            CategoriesItem2("Car Services"),
-            CategoriesItem2("Medical Services"),
+            CategoriesItem2("Plumbing Services",),
+            CategoriesItem2("Electrician Services"),
             CategoriesItem2("Laundry Service"),
-            CategoriesItem2("Beauty & Hair Cuts"),
+            CategoriesItem2("Chef Services"),
             CategoriesItem2("Washing & Cleaning"),
-            CategoriesItem2("Media & Photography")
+            CategoriesItem2("Maid Services")
         )
 
         val adapter = cateroryAdpater2(categoryList)
         categoryRecyclerView.adapter = adapter
-
         return view
     }
 }
