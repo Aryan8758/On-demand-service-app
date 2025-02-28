@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/backButtonTitle"
         android:padding="8dp"
-        android:clipToPadding="true"
+        android:clipToPadding="false"
         android:overScrollMode="never"/>
 
 </RelativeLayout>

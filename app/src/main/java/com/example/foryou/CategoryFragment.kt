@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -18,6 +20,11 @@ class CategoryFragment : Fragment() {
 
         val categoryRecyclerView: RecyclerView = view.findViewById(R.id.recyclerViewCategories)
         categoryRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val backButton:ImageView =view.findViewById( R.id.backButton)
+        backButton.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
 
 
         val categoryList = listOf(

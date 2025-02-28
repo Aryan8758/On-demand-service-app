@@ -13,6 +13,8 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -137,25 +139,37 @@ class HomeFragment : Fragment() {
     }
 
     private fun displayProvidersByCategory() {
-        if (!isAdded || view == null) return // Prevents crash if fragment is not attached
+        if (!isAdded || view == null) return // Prevent crash if fragment is not attached
 
-        binding?.categoryContainer?.removeAllViews() // Null-check to prevent crashes
+        binding?.categoryContainer?.removeAllViews() // Clear previous views
 
         for ((category, providerList) in providersMap) {
-            val categoryTitle = TextView(requireContext()).apply {
-                text = category
-                textSize = 18f
-                setTypeface(null, Typeface.BOLD)
-                setPadding(8, 16, 8, 8)
+            // Inflate category_item.xml dynamically
+            val categoryView = LayoutInflater.from(requireContext()).inflate(R.layout.category_item, binding?.categoryContainer, false)
+
+            // Find views inside the inflated layout
+            val categoryTitle = categoryView.findViewById<TextView>(R.id.categoryTitle)
+            val viewAllButton = categoryView.findViewById<Button>(R.id.viewAllButton)
+            val recyclerView = categoryView.findViewById<RecyclerView>(R.id.providerRecyclerView)
+
+            // Set category title
+            categoryTitle.text = category
+
+            // Setup RecyclerView inside category item
+            recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            recyclerView.adapter = ProviderAdapter(providerList)
+
+            // Handle "View All" button click
+            viewAllButton.setOnClickListener {
+                val intent =Intent(requireContext(),ProviderList::class.java)
+                intent.putExtra("categoryname",category)
+                startActivity(intent)
+                Toast.makeText(requireContext(), "View All clicked for $category", Toast.LENGTH_SHORT).show()
+                // Navigate to a new screen or show full list of providers
             }
 
-            val recyclerView = RecyclerView(requireContext()).apply {
-                layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                adapter = ProviderAdapter(providerList)
-            }
-
-            binding?.categoryContainer?.addView(categoryTitle)
-            binding?.categoryContainer?.addView(recyclerView)
+            // Add the whole categoryView (Title + Button + RecyclerView) to the main container
+            binding?.categoryContainer?.addView(categoryView)
         }
     }
 
