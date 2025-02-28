@@ -7,6 +7,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.foryou.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
@@ -83,4 +84,9 @@ class MainActivity : AppCompatActivity() {
             showFragment(homeFragment)
         }
     }
+    fun updateBottomNavSelection(menuItemId: Int) {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNav.selectedItemId = menuItemId
+    }
+
 }

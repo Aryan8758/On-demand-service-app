@@ -4,7 +4,7 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/baseline_home_24"
-        android:title="HOME"
+        android:title="Home"
         tools:ignore="HardcodedText" />
     <item
         android:id="@+id/nav_cat"

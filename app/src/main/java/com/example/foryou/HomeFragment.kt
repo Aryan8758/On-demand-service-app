@@ -3,6 +3,7 @@ package com.example.foryou
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -71,6 +72,14 @@ class HomeFragment : Fragment() {
             CategoriesItem(R.drawable.ak, "Gardening Services", R.drawable.green_bg), // Duplicate color
             CategoriesItem(R.drawable.ak, "Painting Services", R.drawable.purple_bg)  // Duplicate color
         )
+        binding.profileLayout.setOnClickListener {
+            (requireActivity() as MainActivity).updateBottomNavSelection(R.id.nav_per)
+        }
+        binding.viewAllButton.setOnClickListener {
+
+            // ✅ Bottom Navigation ka selected item update karo (MainActivity se access karna padega)
+            (requireActivity() as MainActivity).updateBottomNavSelection(R.id.nav_cat)
+        }
 
         //   val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false)
         val layoutManager = GridLayoutManager(requireContext(), 1, GridLayoutManager.HORIZONTAL, false)
