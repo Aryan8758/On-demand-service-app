@@ -28,17 +28,18 @@ class CategoryFragment : Fragment() {
 
 
         val categoryList = listOf(
-            CategoriesItem(R.drawable.ak, "Plumbing Services", R.drawable.category_background),
-            CategoriesItem(R.drawable.ak, "Electrician Services", R.drawable.blue_bg),
-            CategoriesItem(R.drawable.laundary, "Laundry Service", R.drawable.red_bg),
-            CategoriesItem(R.drawable.ak, "Chef Services", R.drawable.green_bg),
-            CategoriesItem(R.drawable.wash, "Washing & Cleaning", R.drawable.purple_bg),
-            CategoriesItem(R.drawable.ak, "Maid Services", R.drawable.yellow_bg),
-            CategoriesItem(R.drawable.hair, "Carpenter Services", R.drawable.blue_bg),  // Duplicate color
-            CategoriesItem(R.drawable.car, "Mechanic Services", R.drawable.red_bg),    // Duplicate color
-            CategoriesItem(R.drawable.ak, "Gardening Services", R.drawable.green_bg), // Duplicate color
-            CategoriesItem(R.drawable.ak, "Painting Services", R.drawable.purple_bg)  // Duplicate color
+            CategoriesItem(R.drawable.ak, "Plumber", R.drawable.blue_bg),
+            CategoriesItem(R.drawable.ak, "Teacher", R.drawable.red_bg),
+            CategoriesItem(R.drawable.ak, "Driver", R.drawable.green_bg),
+            CategoriesItem(R.drawable.ak, "Electrician", R.drawable.purple_bg),
+            CategoriesItem(R.drawable.ak, "Mechanic", R.drawable.yellow_bg),
+            CategoriesItem(R.drawable.ak, "Gardener", R.drawable.blue_bg),
+            CategoriesItem(R.drawable.ak, "Painter", R.drawable.red_bg),
+            CategoriesItem(R.drawable.ak, "Chef", R.drawable.green_bg),
+            CategoriesItem(R.drawable.ak, "Maid", R.drawable.purple_bg),
+            CategoriesItem(R.drawable.ak, "Babysitter", R.drawable.yellow_bg)
         )
+
         val adapter = CateroryAdpater2(categoryList)
         categoryRecyclerView.adapter = adapter
         return view

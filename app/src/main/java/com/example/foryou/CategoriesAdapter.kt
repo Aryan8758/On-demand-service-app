@@ -1,11 +1,14 @@
 package com.example.foryou
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -29,8 +32,16 @@ class CategoriesAdapter(private val itemList:List<CategoriesItem>):RecyclerView.
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item=itemList[position]
+        val context=holder.itemView.context
         holder.ServiceName.text = item.title
         holder.ServiceImage.setImageResource(item.imageResId)
         holder.cardView.setBackgroundResource(item.bgColor)
+        holder.itemView.setOnClickListener {
+            Toast.makeText(context, "Clicked: ${item.title}", Toast.LENGTH_SHORT).show()
+            val intent = Intent(holder.itemView.context,ProviderList::class.java)
+            intent.putExtra("categoryname",item.title)
+           context.startActivity(intent)
+            // Navigate to a new screen or show full list of providers
+             }
     }
 }

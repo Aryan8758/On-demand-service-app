@@ -61,8 +61,9 @@ class ProviderList : AppCompatActivity() {
                     val name = document.getString("name") ?: "" // Null-safe getString
                     val service = document.getString("service") ?: ""
                     val image = document.getString("profileImage")
+                    val bg = R.drawable.blue_bg
 
-                    val provider = ProviderModelClass(name, service, image)
+                    val provider = ProviderModelClass(name, service, image,bg)
                     providerList.add(provider)
                 }
                 adapter.notifyDataSetChanged() // Refresh RecyclerView

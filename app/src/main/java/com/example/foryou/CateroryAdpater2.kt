@@ -1,10 +1,12 @@
 package com.example.foryou
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -24,6 +26,7 @@ class CateroryAdpater2(private val categories: List<CategoriesItem>) : RecyclerV
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
+        val context=holder.itemView.context
         val category = categories[position]
         holder.title.text = category.title
         holder.image.setImageResource(category.imageResId)
@@ -31,6 +34,13 @@ class CateroryAdpater2(private val categories: List<CategoriesItem>) : RecyclerV
         holder.expandButton.setOnClickListener {
             // Toggle expand/collapse logic
         }
+        holder.itemView.setOnClickListener {
+            Toast.makeText(context, "Clicked: ${category.title}", Toast.LENGTH_SHORT).show()
+            val intent = Intent(holder.itemView.context,ProviderList::class.java)
+            intent.putExtra("categoryname",category.title)
+            context.startActivity(intent)
+        }
+
     holder.card.setBackgroundResource(category.bgColor)
 }
 

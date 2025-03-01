@@ -63,17 +63,18 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 //categories adapter set manually
         val categoryList = listOf(
-            CategoriesItem(R.drawable.ak, "Plumbing Services", R.drawable.category_background),
-            CategoriesItem(R.drawable.ak, "Electrician Services", R.drawable.blue_bg),
-            CategoriesItem(R.drawable.ak, "Laundry Service", R.drawable.red_bg),
-            CategoriesItem(R.drawable.ak, "Chef Services", R.drawable.green_bg),
-            CategoriesItem(R.drawable.ak, "Washing & Cleaning", R.drawable.purple_bg),
-            CategoriesItem(R.drawable.ak, "Maid Services", R.drawable.yellow_bg),
-            CategoriesItem(R.drawable.ak, "Carpenter Services", R.drawable.blue_bg),  // Duplicate color
-            CategoriesItem(R.drawable.ak, "Mechanic Services", R.drawable.red_bg),    // Duplicate color
-            CategoriesItem(R.drawable.ak, "Gardening Services", R.drawable.green_bg), // Duplicate color
-            CategoriesItem(R.drawable.ak, "Painting Services", R.drawable.purple_bg)  // Duplicate color
+            CategoriesItem(R.drawable.ak, "Plumber", R.drawable.blue_bg),
+            CategoriesItem(R.drawable.ak, "Teacher", R.drawable.red_bg),
+            CategoriesItem(R.drawable.ak, "Driver", R.drawable.green_bg),
+            CategoriesItem(R.drawable.ak, "Electrician", R.drawable.purple_bg),
+            CategoriesItem(R.drawable.ak, "Mechanic", R.drawable.yellow_bg),
+            CategoriesItem(R.drawable.ak, "Gardener", R.drawable.blue_bg),
+            CategoriesItem(R.drawable.ak, "Painter", R.drawable.red_bg),
+            CategoriesItem(R.drawable.ak, "Chef", R.drawable.green_bg),
+            CategoriesItem(R.drawable.ak, "Maid", R.drawable.purple_bg),
+            CategoriesItem(R.drawable.ak, "Babysitter", R.drawable.yellow_bg)
         )
+
         binding.profileLayout.setOnClickListener {
             (requireActivity() as MainActivity).updateBottomNavSelection(R.id.nav_per)
         }
@@ -86,7 +87,8 @@ class HomeFragment : Fragment() {
         //   val layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false)
         val layoutManager = GridLayoutManager(requireContext(), 1, GridLayoutManager.HORIZONTAL, false)
         binding.recyclerViewCategories.layoutManager = layoutManager
-        binding.recyclerViewCategories.adapter = CategoriesAdapter(categoryList)
+        val adapter=CategoriesAdapter(categoryList)
+        binding.recyclerViewCategories.adapter = adapter
 
 
 
@@ -123,12 +125,12 @@ class HomeFragment : Fragment() {
                     val name = doc.getString("name") ?: "Unknown"
                     val service = doc.getString("service") ?: "Other"
                     val image = doc.getString("profileImage")
-
+                    val bg = R.drawable.blue_bg
                     // Add provider to respective category list
                     if (!providersMap.containsKey(service)) {
                         providersMap[service] = mutableListOf()
                     }
-                    providersMap[service]?.add(ProviderModelClass(name, service, image))
+                    providersMap[service]?.add(ProviderModelClass(name, service, image , bg))
                 }
 
                 displayProvidersByCategory() // Generate dynamic RecyclerViews safely
