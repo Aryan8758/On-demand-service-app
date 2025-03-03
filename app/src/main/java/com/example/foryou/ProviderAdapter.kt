@@ -12,9 +12,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 
-class ProviderAdapter(private val providers: List<ProviderModelClass>) :
+class ProviderAdapter(private var providers: List<ProviderModelClass>) :
     RecyclerView.Adapter<ProviderAdapter.ProviderViewHolder>() {
+
 
     class ProviderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameText: TextView = itemView.findViewById(R.id.nameTextView)
@@ -23,10 +25,16 @@ class ProviderAdapter(private val providers: List<ProviderModelClass>) :
        val linear_Layout: CardView = itemView.findViewById(R.id.linear)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProviderViewHolder {
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProviderViewHolder{
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_provider, parent, false)
         return ProviderViewHolder(view)
     }
+
+//    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+//        TODO("Not yet implemented")
+//    }
 
     override fun onBindViewHolder(holder: ProviderViewHolder, position: Int) {
         val provider = providers[position]

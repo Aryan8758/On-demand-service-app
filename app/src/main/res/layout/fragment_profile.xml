@@ -129,6 +129,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/userPhone"
         android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/holo_red_light"
         android:text="Edit Profile" />
 
     <!-- Logout Button -->

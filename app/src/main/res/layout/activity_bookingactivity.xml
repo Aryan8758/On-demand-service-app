@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:background="@android:color/white">
+
+    <!-- Header with Back Button and Title -->
+    <LinearLayout
+        android:id="@+id/backButtonTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back_arrow"
+            android:layout_margin="20dp" />
+
+        <TextView
+            android:id="@+id/ProviderTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Booking"
+            android:textColor="#190019"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Booking Card -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="16dp"
+        android:layout_below="@id/backButtonTitle"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="#fbe4d8">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center">
+
+            <!-- Booking Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Your Booking Slot"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:paddingBottom="10dp"/>
+
+            <!-- Name Input -->
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Your Name"
+                android:inputType="textPersonName"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/rounded_bg"
+                android:padding="10dp"/>
+
+            <!-- Phone Input -->
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Your Phone"
+                android:inputType="phone"
+                android:background="@drawable/rounded_bg"
+                android:padding="10dp"/>
+
+            <!-- Address Input with Save Button -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/etAddress"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="5dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Address"
+                    android:inputType="textPostalAddress"
+                    android:background="@drawable/rounded_bg"
+                    android:padding="10dp"
+                    android:layout_marginEnd="10dp"/>
+
+                <ImageButton
+                    android:id="@+id/btnSaveAddress"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/rounded_bg"
+                    android:src="@drawable/ic_save"
+                    android:contentDescription="Save Address"
+                    android:elevation="4dp"/>
+            </LinearLayout>
+
+            <!-- Date Selection -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Booking Date"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingTop="10dp"/>
+
+            <Button
+                android:id="@+id/btnSelectDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Choose Date"
+                android:backgroundTint="#190019"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/tvSelectedDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No Date Selected"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:textStyle="bold"/>
+
+            <!-- Time Slots -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Available Time Slots"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingTop="10dp"/>
+
+            <GridLayout
+                android:id="@+id/timeSlotGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:padding="8dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"/>
+
+            <!-- Payment Method -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Payment Method"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingTop="10dp"/>
+
+            <RadioGroup
+                android:id="@+id/rgPayment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="5dp">
+                <RadioButton
+                    android:id="@+id/rbCash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:background="@drawable/rounded_bg"
+                    android:layout_marginEnd="10dp"
+                    android:text="Cash"/>
+                <RadioButton
+                    android:id="@+id/rbOnline"
+                    android:background="@drawable/rounded_bg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Online Payment"/>
+            </RadioGroup>
+
+            <!-- Confirm & Cancel Buttons -->
+            <Button
+                android:id="@+id/btnConfirmBooking"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Confirm Booking"
+                app:backgroundTint="#190019"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

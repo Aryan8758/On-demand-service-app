@@ -2,6 +2,7 @@ package com.example.foryou
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -53,6 +54,8 @@ class ProviderList : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun fetchProvidersFromFirestore(servicetype: String) {
+
+        //start shimmer effect before fetching data
         db.collection("providers").whereEqualTo("service",servicetype)
             .get()
             .addOnSuccessListener { documents ->
@@ -66,6 +69,10 @@ class ProviderList : AppCompatActivity() {
                     val provider = ProviderModelClass(name, service, image,bg)
                     providerList.add(provider)
                 }
+                // 🟢 Stop Shimmer and Show RecyclerView
+               binding.shimmerLayout .stopShimmer()
+                binding.shimmerLayout.visibility = View.GONE
+               binding.recyclerViewCategories.visibility = View.VISIBLE
                 adapter.notifyDataSetChanged() // Refresh RecyclerView
             }
             .addOnFailureListener {

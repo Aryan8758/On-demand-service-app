@@ -7,16 +7,16 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Typeface
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
-import android.widget.GridLayout
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -25,12 +25,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.foryou.CategoriesAdapter
-import com.example.foryou.CategoriesItem
-import com.example.foryou.ProviderAdapter
-import com.example.foryou.ProviderModelClass
-import com.example.foryou.R
-import com.example.foryou.SharedPref
 import com.example.foryou.databinding.FragmentHomeBinding
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
@@ -61,6 +55,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: android.view.View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //swipe to refresh
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            fetchProviders()
+        }
+
+
+
+
+
 //categories adapter set manually
         val categoryList = listOf(
             CategoriesItem(R.drawable.ak, "Plumber", R.drawable.blue_bg),
@@ -111,9 +114,10 @@ class HomeFragment : Fragment() {
         }
         fetchProviders()
     }
-    // Step 1: Fetch Providers & Categorize Them
     private fun fetchProviders() {
         if (!isAdded || view == null) return // Prevents crash if fragment is not attached
+
+        binding?.categoryContainer?.removeAllViews()
 
         db.collection("providers").get()
             .addOnSuccessListener { documents ->
@@ -126,54 +130,73 @@ class HomeFragment : Fragment() {
                     val service = doc.getString("service") ?: "Other"
                     val image = doc.getString("profileImage")
                     val bg = R.drawable.blue_bg
-                    // Add provider to respective category list
+
                     if (!providersMap.containsKey(service)) {
                         providersMap[service] = mutableListOf()
                     }
-                    providersMap[service]?.add(ProviderModelClass(name, service, image , bg))
+                    providersMap[service]?.add(ProviderModelClass(name, service, image, bg))
                 }
 
-                displayProvidersByCategory() // Generate dynamic RecyclerViews safely
+                // 🟢 **Step 2: Show Categories with Shimmer**
+                displayProvidersByCategory()
+
             }
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Error getting providers", exception)
+                binding.swipeRefreshLayout.isRefreshing = false
+
             }
     }
 
     private fun displayProvidersByCategory() {
-        if (!isAdded || view == null) return // Prevent crash if fragment is not attached
+        if (!isAdded || view == null) return
 
-        binding?.categoryContainer?.removeAllViews() // Clear previous views
+        binding?.categoryContainer?.removeAllViews()
 
         for ((category, providerList) in providersMap) {
-            // Inflate category_item.xml dynamically
-            val categoryView = LayoutInflater.from(requireContext()).inflate(R.layout.category_item, binding?.categoryContainer, false)
+            val categoryView = LayoutInflater.from(requireContext()).inflate(
+                R.layout.provider_home_list_design, binding?.categoryContainer, false
+            )
 
-            // Find views inside the inflated layout
             val categoryTitle = categoryView.findViewById<TextView>(R.id.categoryTitle)
             val viewAllButton = categoryView.findViewById<Button>(R.id.viewAllButton)
             val recyclerView = categoryView.findViewById<RecyclerView>(R.id.providerRecyclerView)
 
-            // Set category title
             categoryTitle.text = category
-
-            // Setup RecyclerView inside category item
             recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            recyclerView.adapter = ProviderAdapter(providerList)
 
-            // Handle "View All" button click
+            // 🔥 **Shimmer View Dynamically Add Karein**
+            val shimmerView = LayoutInflater.from(requireContext()).inflate(
+                R.layout.shimmer_layout, binding?.categoryContainer, false
+            )
+
+            binding?.categoryContainer?.addView(shimmerView)
+
+            // 🔥 **Show Shimmer Before Data Loads**
+            shimmerView.visibility = View.VISIBLE
+            viewAllButton.visibility=View.GONE
+            recyclerView.visibility = View.GONE
+
+            // 🔥 **Load Data with Delay**
+            Handler(Looper.getMainLooper()).postDelayed({
+                shimmerView.visibility = View.GONE
+                viewAllButton.visibility=View.VISIBLE
+                recyclerView.visibility = View.VISIBLE
+                recyclerView.adapter = ProviderAdapter(providerList)
+                binding.swipeRefreshLayout.isRefreshing = false
+            }, 2000) // 2 seconds shimmer effect
+
             viewAllButton.setOnClickListener {
-                val intent =Intent(requireContext(),ProviderList::class.java)
-                intent.putExtra("categoryname",category)
+                val intent = Intent(requireContext(), ProviderList::class.java)
+                intent.putExtra("categoryname", category)
                 startActivity(intent)
-                Toast.makeText(requireContext(), "View All clicked for $category", Toast.LENGTH_SHORT).show()
-                // Navigate to a new screen or show full list of providers
             }
 
-            // Add the whole categoryView (Title + Button + RecyclerView) to the main container
             binding?.categoryContainer?.addView(categoryView)
         }
     }
+
+
 
     @SuppressLint("SetTextI18n")
     private fun loadSavedLocation() {
