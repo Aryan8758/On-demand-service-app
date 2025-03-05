@@ -47,6 +47,7 @@ class ProviderAdapter(private var providers: List<ProviderModelClass>) :
             intent.putExtra("providername",provider.name)
             intent.putExtra("servicename",provider.service)
             intent.putExtra("image",provider.image)
+            intent.putExtra("ProviderId",provider.providerId)
         //    intent.putExtra("providername",provider.name)
             context.startActivity(intent)
         }

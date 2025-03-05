@@ -61,12 +61,13 @@ class ProviderList : AppCompatActivity() {
             .addOnSuccessListener { documents ->
                 providerList.clear()
                 for (document in documents){
+                    val providerId=document.id
                     val name = document.getString("name") ?: "" // Null-safe getString
                     val service = document.getString("service") ?: ""
                     val image = document.getString("profileImage")
                     val bg = R.drawable.blue_bg
 
-                    val provider = ProviderModelClass(name, service, image,bg)
+                    val provider = ProviderModelClass(providerId,name, service, image,bg)
                     providerList.add(provider)
                 }
                 // 🟢 Stop Shimmer and Show RecyclerView

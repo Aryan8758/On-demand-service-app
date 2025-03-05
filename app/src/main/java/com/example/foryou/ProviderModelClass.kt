@@ -1,6 +1,7 @@
 package com.example.foryou
 
 data class ProviderModelClass(
+    val providerId:String,
     val name: String = "",
     val service: String = "",
     val image: String ?,

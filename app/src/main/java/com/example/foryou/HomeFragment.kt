@@ -126,6 +126,7 @@ class HomeFragment : Fragment() {
                 providersMap.clear() // Clear previous data to avoid duplication
 
                 for (doc in documents) {
+                    val providerId=doc.id
                     val name = doc.getString("name") ?: "Unknown"
                     val service = doc.getString("service") ?: "Other"
                     val image = doc.getString("profileImage")
@@ -134,7 +135,7 @@ class HomeFragment : Fragment() {
                     if (!providersMap.containsKey(service)) {
                         providersMap[service] = mutableListOf()
                     }
-                    providersMap[service]?.add(ProviderModelClass(name, service, image, bg))
+                    providersMap[service]?.add(ProviderModelClass(providerId,name, service, image, bg))
                 }
 
                 // 🟢 **Step 2: Show Categories with Shimmer**

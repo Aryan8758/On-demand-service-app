@@ -25,8 +25,8 @@
       android:layout_alignParentEnd="true"
       android:layout_marginTop="21dp"
       android:layout_marginEnd="18dp"
-      android:text="Cab Service"
-      android:textColor="@color/black"
+      android:text="Cab Driver"
+      android:textColor="#081F5C"
       android:textSize="22sp"
       android:textStyle="bold" />
 
@@ -40,7 +40,7 @@
       android:layout_marginTop="20dp"
       android:layout_marginEnd="195dp"
       android:text="Sukesh Sharma"
-      android:textColor="@color/black"
+      android:textColor="#081F5C"
       android:textSize="22sp"
       android:textStyle="bold" />
 
@@ -56,28 +56,32 @@
         android:id="@+id/serviceDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:text="Experienced and customer-focused Cab Driver with a strong knowledge of city routes and traffic regulations. Skilled in providing safe, efficient, and comfortable transportation while ensuring excellent customer service. "
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:background="@drawable/bg"
+        android:textColor="#081F5C"
         android:padding="12dp"/>
+
+
   </androidx.cardview.widget.CardView>
 
   <!-- Booking Button -->
   <Button
       android:id="@+id/bookServiceButton"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_width="378dp"
+      android:layout_height="62dp"
       android:layout_alignParentBottom="true"
       android:layout_marginStart="16dp"
       android:layout_marginLeft="16dp"
       android:layout_marginEnd="16dp"
       android:layout_marginRight="16dp"
       android:layout_marginBottom="16dp"
-      android:backgroundTint="#F57C00"
+      android:backgroundTint="#081F5C"
       android:text="Book This Service"
-      android:textColor="@color/black"
+      android:textColor="@color/white"
       android:textStyle="bold" />
+
+
 
 </RelativeLayout>

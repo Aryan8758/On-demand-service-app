@@ -19,6 +19,10 @@
         android:theme="@style/Theme.ForYou"
         tools:targetApi="31">
         <activity
+            android:name=".item_service"
+            android:exported="false"
+            android:theme="@style/Theme.ForYou" />
+        <activity
             android:name=".BookingActivity"
             android:exported="false" />
         <activity

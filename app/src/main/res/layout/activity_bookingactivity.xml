@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Booking"
-            android:textColor="#190019"
+            android:textColor="#081F5C"
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -41,7 +41,7 @@
         app:cardCornerRadius="16dp"
         android:layout_below="@id/backButtonTitle"
         app:cardElevation="8dp"
-        app:cardBackgroundColor="#fbe4d8">
+        app:cardBackgroundColor="#D0E3FF">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,9 +66,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Your Name"
+                android:textColor="#081F5C"
                 android:inputType="textPersonName"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/rounded_bg"
+                android:background="@drawable/bg"
                 android:padding="10dp"/>
 
             <!-- Phone Input -->
@@ -77,8 +78,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Your Phone"
+                android:textColor="#081F5C"
                 android:inputType="phone"
-                android:background="@drawable/rounded_bg"
+                android:background="@drawable/bg"
                 android:padding="10dp"/>
 
             <!-- Address Input with Save Button -->
@@ -96,8 +98,9 @@
                     android:layout_marginTop="5dp"
                     android:layout_height="wrap_content"
                     android:hint="Enter Address"
+                    android:textColor="#081F5C"
                     android:inputType="textPostalAddress"
-                    android:background="@drawable/rounded_bg"
+                    android:background="@drawable/bg"
                     android:padding="10dp"
                     android:layout_marginEnd="10dp"/>
 
@@ -106,7 +109,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/rounded_bg"
+                    android:background="@drawable/bg"
                     android:src="@drawable/ic_save"
                     android:contentDescription="Save Address"
                     android:elevation="4dp"/>
@@ -126,7 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Choose Date"
-                android:backgroundTint="#190019"
+                android:backgroundTint="#081F5C"
                 android:textColor="@android:color/white"
                 android:layout_marginTop="5dp"/>
 
@@ -176,16 +179,18 @@
                     android:id="@+id/rbCash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:background="@drawable/rounded_bg"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:background="@drawable/bg"
                     android:layout_marginEnd="10dp"
                     android:text="Cash"/>
                 <RadioButton
                     android:id="@+id/rbOnline"
-                    android:background="@drawable/rounded_bg"
+                    android:background="@drawable/bg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
                     android:text="Online Payment"/>
             </RadioGroup>
 
@@ -195,7 +200,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Confirm Booking"
-                app:backgroundTint="#190019"
+                app:backgroundTint="#081F5C"
                 android:textColor="@android:color/white"
                 android:layout_marginTop="10dp"/>
 

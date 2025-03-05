@@ -19,13 +19,17 @@ class Provider_Detail : AppCompatActivity() {
         setContentView(binding.root)
         val ProviderName = intent.getStringExtra("providername") ?: "Unknown"
         val ServiceName = intent.getStringExtra("servicename") ?: "Unknown"
+        val ProviderId = intent.getStringExtra("ProviderId") ?: "Unknown"
         val image = intent.getStringExtra("image")
         val Seviceimage= image?.let { decodeBase64ToBitmap(it) }
         binding.serviceImage.setImageBitmap(Seviceimage)
         binding.serviceName.text=ServiceName
         binding.ProviderName.text=ProviderName
         binding.bookServiceButton.setOnClickListener {
-            startActivity(Intent(this,BookingActivity::class.java))
+            val intent=Intent(this,BookingActivity::class.java)
+            intent.putExtra("ServiceName",ServiceName)
+            intent.putExtra("ProviderId",ProviderId)
+            startActivity(intent)
 //            val bottomSheet = BookingBottomSheet()
 //            bottomSheet.show(supportFragmentManager, "BookingBottomSheet")
 
