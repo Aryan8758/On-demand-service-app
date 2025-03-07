@@ -83,12 +83,12 @@ class LoginActivity : AppCompatActivity() {
         }
 
         // 🔹 Sign-up navigation
-        binding.signintxt.setOnClickListener {
+        binding.signUpText.setOnClickListener {
             startActivity(Intent(this, SignUp::class.java))
         }
 
         // 🔹 Forgot password logic (if needed)
-        binding.frgpass.setOnClickListener {
+        binding.forgotPasswordText.setOnClickListener {
             // TODO: Implement forgot password feature
         }
     }

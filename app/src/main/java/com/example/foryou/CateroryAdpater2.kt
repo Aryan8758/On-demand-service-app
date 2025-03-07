@@ -15,13 +15,13 @@ class CateroryAdpater2(private val categories: List<CategoriesItem>) : RecyclerV
     class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
        // val icon: ImageView = itemView.findViewById(R.id.categoryIcon)
         val card : CardView = itemView.findViewById(R.id.card)
-        val title: TextView = itemView.findViewById(R.id.categoryTitle)
-        val expandButton: ImageView = itemView.findViewById(R.id.expandButton)
-        val image :ImageView = itemView.findViewById(R.id.categoryIcon)
+        val title: TextView = itemView.findViewById(R.id.tv_service_name)
+       // val expandButton: ImageView = itemView.findViewById(R.id.expandButton)
+        val image :ImageView = itemView.findViewById(R.id.serviceImage)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.caterorydesign2, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.service, parent, false)
         return CategoryViewHolder(view)
     }
 
@@ -31,9 +31,9 @@ class CateroryAdpater2(private val categories: List<CategoriesItem>) : RecyclerV
         holder.title.text = category.title
         holder.image.setImageResource(category.imageResId)
         //holder.icon.setImageResource(category.icon)
-        holder.expandButton.setOnClickListener {
-            // Toggle expand/collapse logic
-        }
+//        holder.expandButton.setOnClickListener {
+//            // Toggle expand/collapse logic
+//        }
         holder.itemView.setOnClickListener {
             Toast.makeText(context, "Clicked: ${category.title}", Toast.LENGTH_SHORT).show()
             val intent = Intent(holder.itemView.context,ProviderList::class.java)
