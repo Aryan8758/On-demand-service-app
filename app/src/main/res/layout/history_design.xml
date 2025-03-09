@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_service_price"
@@ -74,6 +74,18 @@
                 android:text="$50.00"
                 android:textColor="#333333"
                 android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/service_status"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
+                android:text="Pending"
+                android:gravity="center"
+                android:textColor="#333333"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

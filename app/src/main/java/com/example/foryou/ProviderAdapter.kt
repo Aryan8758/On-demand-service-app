@@ -56,7 +56,7 @@ class ProviderAdapter(private var providers: List<ProviderModelClass>) :
             val img = decodeBase64ToBitmap(provider.image)
             holder.imageView.setImageBitmap(img)
         }else{
-            holder.imageView.setImageResource(R.drawable.man)
+            holder.imageView.setImageResource(R.drawable.tioger)
         }
     }
 

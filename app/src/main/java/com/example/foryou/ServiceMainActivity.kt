@@ -28,7 +28,7 @@ class ServiceMainActivity : AppCompatActivity() {
         // Set up BottomNavigationView
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_home -> loadFragment(HomeFragment())
+                R.id.nav_home -> loadFragment(ProviderSideNotification())
                 R.id.nav_his -> loadFragment(HistoryFragment())
                 R.id.nav_per -> loadFragment(ProfileFragment())
             }

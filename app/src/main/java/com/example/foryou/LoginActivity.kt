@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.foryou.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 
 class LoginActivity : AppCompatActivity() {
     private val binding: ActivityLoginBinding by lazy {
@@ -123,6 +124,8 @@ class LoginActivity : AppCompatActivity() {
                 binding.progressBar.visibility = View.GONE
 
                 if (document.exists()) {
+                    // 🔹 Login successful, ab FCM token update kar
+                    updateFCMToken(userId)
                     sharedPreferences.saveLoginState(true)
                     sharedPreferences.saveUserType("providers")
                     startActivity(Intent(this, ServiceMainActivity::class.java))
@@ -136,6 +139,29 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error loading user data. Please check your network.", Toast.LENGTH_LONG).show()
             }
     }
+
+    private fun updateFCMToken(userId: String) {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.e("LoginActivity", "❌ FCM token generation failed", task.exception)
+                    return@addOnCompleteListener
+                }
+
+                val fcmToken = task.result
+                Log.d("LoginActivity", "✅ FCM Token: $fcmToken")
+
+                val userRef = db.collection("providers").document(userId)
+                userRef.update("fcmToken", fcmToken)
+                    .addOnSuccessListener {
+                        Log.d("LoginActivity", "✅ FCM token updated in Firestore.")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("LoginActivity", "❌ Failed to update FCM token: ${e.message}")
+                    }
+            }
+    }
+
 
 
 }

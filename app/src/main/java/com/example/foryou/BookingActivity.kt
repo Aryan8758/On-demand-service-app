@@ -2,12 +2,16 @@ package com.example.foryou
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.example.foryou.databinding.ActivityBookingactivityBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import org.json.JSONObject
 import java.util.*
 
 class BookingActivity : AppCompatActivity() {
@@ -25,7 +29,6 @@ class BookingActivity : AppCompatActivity() {
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         val firestore = FirebaseFirestore.getInstance()
-        val database = FirebaseDatabase.getInstance().getReference("Bookings")
         val ServiceName = intent.getStringExtra("ServiceName") ?: "Unknown"
         val ProviderId = intent.getStringExtra("ProviderId") ?: "Unknown"
 
@@ -176,9 +179,67 @@ class BookingActivity : AppCompatActivity() {
             )
             databaseRef.child(currentUser.uid).child(bookingId).setValue(bookingData).addOnSuccessListener {
                 Toast.makeText(this, "Booking confirm", Toast.LENGTH_SHORT).show()
+                sendNotificationToProvider(serviceName,providerId)  // Send Notification
             }.addOnFailureListener { e->
                 Toast.makeText(this, "Booking fail:{$e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
+    private fun sendNotificationToProvider(serviceName: String, providerId: String) {
+        val firestore = FirebaseFirestore.getInstance()
+
+        // Fetch provider's FCM token from Firestore
+        firestore.collection("providers").document(providerId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val fcmToken = document.getString("fcmToken")
+                    if (!fcmToken.isNullOrEmpty()) {
+                        sendFCMNotification(fcmToken, serviceName)
+                    } else {
+                        Log.e("FCM", "Provider FCM Token is Empty")
+                    }
+                } else {
+                    Log.e("FCM", "Provider Not Found")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("FCM", "Failed to fetch provider data: ${e.message}")
+            }
+    }
+
+
+    private fun sendFCMNotification(providerToken: String, serviceName: String) {
+        val fcmUrl = "https://fcm.googleapis.com/fcm/send"
+        val serverKey = "YOUR_SERVER_KEY" // 🔥 Replace with your Firebase Server Key
+
+        val notificationData = JSONObject().apply {
+            put("title", "New Booking Request")
+            put("body", "You have a new booking for $serviceName")
+        }
+
+        val payload = JSONObject().apply {
+            put("to", providerToken) // Send notification to specific provider
+            put("notification", notificationData)
+        }
+
+        val request = object : JsonObjectRequest(Method.POST, fcmUrl, payload,
+            { response ->
+                Log.d("FCM", "Notification sent: $response")
+            },
+            { error ->
+                Log.e("FCM", "Error sending notification: ${error.message}")
+            }) {
+            override fun getHeaders(): MutableMap<String, String> {
+                return mutableMapOf(
+                    "Authorization" to "key=$serverKey",
+                    "Content-Type" to "application/json"
+                )
+            }
+        }
+
+        Volley.newRequestQueue(this).add(request)
+    }
+
+
 }
