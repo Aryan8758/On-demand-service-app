@@ -16,9 +16,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.foryou.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.Source
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -55,6 +57,7 @@ class ProfileFragment : Fragment() {
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+        val userid= auth.currentUser?.uid
 
         // Initialize SharedPref with activity context
         sharedPreferences = SharedPref(requireActivity().applicationContext)
@@ -72,6 +75,27 @@ class ProfileFragment : Fragment() {
         binding.logoutBtn.setOnClickListener {
             // Clear login state using SharedPreferences
             sharedPreferences.logoutUser()
+            FirebaseMessaging.getInstance().deleteToken()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("Logout", "✅ FCM Token deleted")
+                    } else {
+                        Log.e("Logout", "❌ Failed to delete FCM token")
+                    }
+                }
+
+// Firestore se bhi token remove karo:
+            userid?.let { it1 ->
+                FirebaseFirestore.getInstance().collection("providers").document(it1)
+                    .update("fcmToken", FieldValue.delete())
+                    .addOnSuccessListener {
+                        Log.d("Logout", "✅ FCM token removed from Firestore")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("Logout", "❌ Failed to remove FCM token from Firestore: ${e.message}")
+                    }
+            }
+
             // Redirect to login activity or perform other actions
             startActivity(Intent(requireContext(), LoginActivity::class.java))
             requireActivity().finish() // Close the current activity/fragment

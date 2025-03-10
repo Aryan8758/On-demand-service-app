@@ -2,14 +2,15 @@ package com.example.foryou
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import com.google.auth.oauth2.GoogleCredentials
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.example.foryou.databinding.ActivityBookingactivityBinding
+import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -17,13 +18,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.Call
-import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
 import java.util.*
@@ -111,6 +109,42 @@ class BookingActivity : AppCompatActivity() {
 
             datePicker.show()
         }
+//        val timeSlots = listOf(
+//            "10:00 AM", "11:00 AM", "12:00 PM",
+//            "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"
+//        )
+//
+//        val bookedSlots = setOf("12:00 PM", "4:00 PM") // Example booked slots
+//
+//        var selectedChip: Chip? = null  // To keep track of selected chip
+//
+//        for (slot in timeSlots) {
+//            val chip = Chip(this).apply {
+//                text = slot
+//                isCheckable = true
+//                isClickable = true
+//                chipBackgroundColor = getColorStateList(R.color.chip_selector)
+//
+//                // Agar booked hai toh disable kar do
+//                isEnabled = !bookedSlots.contains(slot)
+//
+//                setOnClickListener {
+//                    if (!isEnabled) return@setOnClickListener  // Disable booked slot click
+//
+//                    // Pehle wale chip ka selection hatao
+//                    selectedChip?.isChecked = false
+//                    selectedChip = this // New selected chip
+//
+//                    selectedTimeSlot = slot
+//                    showSnackbar("Selected: $slot")
+//                }
+//            }
+//            binding.timeSlotGrid.addView(chip)
+//        }
+
+
+
+
 
         // ⏰ Time Slot Selection
         val timeSlots = listOf("10:00 AM", "12:00 PM", "2:00 PM", "4:00 PM", "6:00 PM")
@@ -193,18 +227,23 @@ class BookingActivity : AppCompatActivity() {
             )
             databaseRef.child(currentUser.uid).child(bookingId).setValue(bookingData).addOnSuccessListener {
                 Toast.makeText(this, "Booking confirm", Toast.LENGTH_SHORT).show()
+             //   startActivity(Intent(this,HistoryFragment::class.java))
                 sendNotificationToProvider(serviceName,providerId)  // Send Notification
             }.addOnFailureListener { e->
                 Toast.makeText(this, "Booking fail:{$e.message}", Toast.LENGTH_SHORT).show()
             }
         }
+    } private fun showSnackbar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
 
     suspend fun getAccessToken(context: Context): String? {
         return withContext(Dispatchers.IO) {  // Run on background thread
             try {
+
                 val jsonStream = context.assets.open("service-account.json")
+                Log.d("FCM", "File successfully opened!$jsonStream")
                 val googleCredentials = GoogleCredentials.fromStream(jsonStream)
                     .createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
 

@@ -54,7 +54,6 @@ dependencies {
     implementation ("com.google.firebase:firebase-messaging:23.2.1")
     // Volley for API requests (for sending push notifications)
     implementation ("com.android.volley:volley:1.2.1")
-
     // Gson for JSON parsing
     implementation ("com.google.code.gson:gson:2.9.0")
     implementation(libs.androidx.core.ktx)
