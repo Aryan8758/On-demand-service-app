@@ -1,7 +1,9 @@
 package com.example.foryou
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
+import com.google.auth.oauth2.GoogleCredentials
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +13,19 @@ import com.example.foryou.databinding.ActivityBookingactivityBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import org.json.JSONObject
+import java.io.IOException
 import java.util.*
 
 class BookingActivity : AppCompatActivity() {
@@ -185,17 +199,36 @@ class BookingActivity : AppCompatActivity() {
             }
         }
     }
-    private fun sendNotificationToProvider(serviceName: String, providerId: String) {
+
+
+    suspend fun getAccessToken(context: Context): String? {
+        return withContext(Dispatchers.IO) {  // Run on background thread
+            try {
+                val jsonStream = context.assets.open("service-account.json")
+                val googleCredentials = GoogleCredentials.fromStream(jsonStream)
+                    .createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
+
+                googleCredentials.refreshIfExpired()
+                googleCredentials.accessToken?.tokenValue
+            } catch (e: IOException) {
+                Log.e("FCM", "Error getting access token: ${e.message}")
+                null
+            }
+        }
+    }
+
+    fun sendNotificationToProvider(serviceName: String, providerId: String) {
         val firestore = FirebaseFirestore.getInstance()
 
-        // Fetch provider's FCM token from Firestore
         firestore.collection("providers").document(providerId)
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     val fcmToken = document.getString("fcmToken")
                     if (!fcmToken.isNullOrEmpty()) {
-                        sendFCMNotification(fcmToken, serviceName)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            sendFCMNotification(this@BookingActivity, fcmToken, serviceName)
+                        }
                     } else {
                         Log.e("FCM", "Provider FCM Token is Empty")
                     }
@@ -208,38 +241,41 @@ class BookingActivity : AppCompatActivity() {
             }
     }
 
+    suspend fun sendFCMNotification(context: Context, providerToken: String, serviceName: String) {
+        val fcmUrl = "https://fcm.googleapis.com/v1/projects/foryou-fa1d3/messages:send"
 
-    private fun sendFCMNotification(providerToken: String, serviceName: String) {
-        val fcmUrl = "https://fcm.googleapis.com/fcm/send"
-        val serverKey = "YOUR_SERVER_KEY" // 🔥 Replace with your Firebase Server Key
-
-        val notificationData = JSONObject().apply {
-            put("title", "New Booking Request")
-            put("body", "You have a new booking for $serviceName")
+        val accessToken = getAccessToken(context) // Run on background thread
+        if (accessToken == null) {
+            Log.e("FCM", "Failed to generate access token")
+            return
         }
 
-        val payload = JSONObject().apply {
-            put("to", providerToken) // Send notification to specific provider
-            put("notification", notificationData)
+        val jsonObject = JSONObject().apply {
+            put("message", JSONObject().apply {
+                put("token", providerToken)  // The provider's FCM token
+                put("notification", JSONObject().apply {
+                    put("title", "New Booking Request")
+                    put("body", "You have a new booking for $serviceName")
+                })
+            })
         }
 
-        val request = object : JsonObjectRequest(Method.POST, fcmUrl, payload,
-            { response ->
-                Log.d("FCM", "Notification sent: $response")
-            },
-            { error ->
-                Log.e("FCM", "Error sending notification: ${error.message}")
-            }) {
-            override fun getHeaders(): MutableMap<String, String> {
-                return mutableMapOf(
-                    "Authorization" to "key=$serverKey",
-                    "Content-Type" to "application/json"
-                )
+        val requestBody = jsonObject.toString().toRequestBody("application/json".toMediaType())
+
+        val request = Request.Builder()
+            .url(fcmUrl)
+            .post(requestBody)
+            .addHeader("Authorization", "Bearer $accessToken")
+            .addHeader("Content-Type", "application/json")
+            .build()
+
+        withContext(Dispatchers.IO) {
+            try {
+                val response = OkHttpClient().newCall(request).execute()
+                Log.d("FCM", "Notification Response: ${response.body?.string()}")
+            } catch (e: IOException) {
+                Log.e("FCM", "Error sending notification: ${e.message}")
             }
         }
-
-        Volley.newRequestQueue(this).add(request)
     }
-
-
 }
