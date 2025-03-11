@@ -40,9 +40,17 @@
             android:id="@+id/tvServiceName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Service"
+            android:text="Service Name"
+            android:textSize="14sp"
+            android:textColor="@color/black" />
+        <TextView
+            android:id="@+id/txtBookingDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BookingDate"
             android:textSize="12sp"
             android:textColor="@color/black" />
+
     </LinearLayout>
 
     <!-- Accept & Ignore Buttons -->
@@ -61,10 +69,10 @@
             android:padding="6dp"/>
 
         <Button
-            android:id="@+id/btnIgnore"
+            android:id="@+id/btnReject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ignore"
+            android:text="Reject"
             android:backgroundTint="#081F5C"
             android:textColor="@android:color/white"
             android:padding="6dp"

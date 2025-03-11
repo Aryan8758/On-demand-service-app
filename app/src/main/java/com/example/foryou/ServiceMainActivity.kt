@@ -33,12 +33,12 @@ class ServiceMainActivity : AppCompatActivity() {
         }
 
         // Set the default fragment to HomeFragment
-        loadFragment(ProviderSideNotification())
+        loadFragment(ProviderBookingReciever())
 
         // Set up BottomNavigationView
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_home -> loadFragment(ProviderSideNotification())
+                R.id.nav_home -> loadFragment(ProviderBookingReciever())
                 R.id.nav_his -> loadFragment(HistoryFragment())
                 R.id.nav_per -> loadFragment(ProfileFragment())
             }

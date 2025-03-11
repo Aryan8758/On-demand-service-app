@@ -3,12 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProviderSideNotification">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ProviderBookingReciever">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#081F5C"
+        app:title="Booking Request"
+        app:titleTextColor="@android:color/white"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintTop_toTopOf="parent"/>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
+        android:layout_below="@+id/toolbar"
         android:layout_height="match_parent">
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">

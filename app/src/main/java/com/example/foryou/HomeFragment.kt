@@ -18,7 +18,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -66,16 +65,16 @@ class HomeFragment : Fragment() {
 
 //categories adapter set manually
         val categoryList = listOf(
-            CategoriesItem(R.drawable.ak, "Plumber", R.drawable.blue_bg),
-            CategoriesItem(R.drawable.ak, "Teacher", R.drawable.red_bg),
-            CategoriesItem(R.drawable.ak, "Driver", R.drawable.green_bg),
-            CategoriesItem(R.drawable.ak, "Electrician", R.drawable.purple_bg),
-            CategoriesItem(R.drawable.ak, "Mechanic", R.drawable.yellow_bg),
-            CategoriesItem(R.drawable.ak, "Gardener", R.drawable.blue_bg),
-            CategoriesItem(R.drawable.ak, "Painter", R.drawable.red_bg),
-            CategoriesItem(R.drawable.ak, "Chef", R.drawable.green_bg),
-            CategoriesItem(R.drawable.ak, "Maid", R.drawable.purple_bg),
-            CategoriesItem(R.drawable.ak, "Babysitter", R.drawable.yellow_bg)
+            CategoriesItemModel(R.drawable.ak, "Plumber", R.drawable.blue_bg),
+            CategoriesItemModel(R.drawable.ak, "Teacher", R.drawable.red_bg),
+            CategoriesItemModel(R.drawable.ak, "Driver", R.drawable.green_bg),
+            CategoriesItemModel(R.drawable.ak, "Electrician", R.drawable.purple_bg),
+            CategoriesItemModel(R.drawable.ak, "Mechanic", R.drawable.yellow_bg),
+            CategoriesItemModel(R.drawable.ak, "Gardener", R.drawable.blue_bg),
+            CategoriesItemModel(R.drawable.ak, "Painter", R.drawable.red_bg),
+            CategoriesItemModel(R.drawable.ak, "Chef", R.drawable.green_bg),
+            CategoriesItemModel(R.drawable.ak, "Maid", R.drawable.purple_bg),
+            CategoriesItemModel(R.drawable.ak, "Babysitter", R.drawable.yellow_bg)
         )
 
         binding.profileLayout.setOnClickListener {

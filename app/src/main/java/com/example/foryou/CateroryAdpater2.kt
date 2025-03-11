@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 
-class CateroryAdpater2(private val categories: List<CategoriesItem>) : RecyclerView.Adapter<CateroryAdpater2.CategoryViewHolder>() {
+class CateroryAdpater2(private val categories: List<CategoriesItemModel>) : RecyclerView.Adapter<CateroryAdpater2.CategoryViewHolder>() {
 
     class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
        // val icon: ImageView = itemView.findViewById(R.id.categoryIcon)

@@ -3,35 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/serviceName"
+        android:id="@+id/txtServiceName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Service Name"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/providerId"
+        android:id="@+id/txtCustomerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Provider ID"
-        android:textSize="14sp"/>
+        android:text="Customer Name: " />
 
     <TextView
-        android:id="@+id/bookingDate"
+        android:id="@+id/txtBookingDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Booking Date"
-        android:textSize="14sp"/>
+        android:text="Booking Date: " />
 
-    <TextView
-        android:id="@+id/status"
+    <Button
+        android:id="@+id/btnAccept"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Status"
-        android:textSize="14sp"
-        android:textColor="@android:color/holo_red_dark"/>
+        android:text="Accept"
+        android:backgroundTint="@color/green"/>
+
+    <Button
+        android:id="@+id/btnReject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reject"
+        android:backgroundTint="@color/red"/>
 </LinearLayout>

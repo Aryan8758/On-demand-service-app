@@ -1,8 +1,6 @@
 package com.example.foryou
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,7 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 
-class CategoriesAdapter(private val itemList:List<CategoriesItem>):RecyclerView.Adapter<CategoriesAdapter.ItemViewHolder>() {
+class CategoriesAdapter(private val itemList:List<CategoriesItemModel>):RecyclerView.Adapter<CategoriesAdapter.ItemViewHolder>() {
     class ItemViewHolder(view:View):RecyclerView.ViewHolder(view){
         val ServiceImage:ImageView=view.findViewById(R.id.serviceimage)
         val ServiceName:TextView=view.findViewById(R.id.servicename)
