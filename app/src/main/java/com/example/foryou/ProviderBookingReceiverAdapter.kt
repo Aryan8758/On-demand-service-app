@@ -1,5 +1,6 @@
 package com.example.foryou
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +15,8 @@ class ProviderBookingReceiverAdapter(
 ) : RecyclerView.Adapter<ProviderBookingReceiverAdapter.BookingViewHolder>() {
 
     class BookingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val txtServiceName: TextView = view.findViewById(R.id.txtServiceName)
-        val txtCustomerName: TextView = view.findViewById(R.id.txtCustomerName)
+        val txtServiceName: TextView = view.findViewById(R.id.tvServiceName)
+        val txtCustomerName: TextView = view.findViewById(R.id.tvUserName)
         val txtBookingDate: TextView = view.findViewById(R.id.txtBookingDate)
         val btnAccept: Button = view.findViewById(R.id.btnAccept)
         val btnReject: Button = view.findViewById(R.id.btnReject)
@@ -32,9 +33,15 @@ class ProviderBookingReceiverAdapter(
         holder.txtServiceName.text = booking.service
         holder.txtCustomerName.text = "Customer: ${booking.customerName}"
         holder.txtBookingDate.text = "Date: ${booking.bookingDate}"
+        holder.btnAccept.setOnClickListener {
+            Log.d("Adapter", "Accept clicked for ID: ${booking.bookingId}")  // Debugging ke liye
+            onAcceptClick(booking.bookingId)  // Accept button click hone par function call
+        }
 
-        holder.btnAccept.setOnClickListener { onAcceptClick(booking.bookingId) }
-        holder.btnReject.setOnClickListener { onRejectClick(booking.bookingId) }
+        holder.btnReject.setOnClickListener {
+            Log.d("Adapter", "Reject clicked for ID: ${booking.bookingId}")  // Debugging ke liye
+            onRejectClick(booking.bookingId)  // Reject button click hone par function call
+        }
     }
 
     override fun getItemCount() = bookings.size

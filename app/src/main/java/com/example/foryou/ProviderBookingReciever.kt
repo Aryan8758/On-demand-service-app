@@ -1,59 +1,183 @@
 package com.example.foryou
 
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
+import android.view.*
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.foryou.databinding.FragmentProviderBookingRecieveBinding
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ProviderBookingReciever.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProviderBookingReciever : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentProviderBookingRecieveBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var adapter: ProviderBookingReceiverAdapter
+    private var bookingList = mutableListOf<ProviderBookingReceiverModel>()
+    private var deletedBooking: ProviderBookingReceiverModel? = null // Undo ke liye
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_provider_booking_recieve, container, false)
+    ): View {
+        _binding = FragmentProviderBookingRecieveBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProviderSideNotification.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProviderBookingReciever().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.notificationRecycler.layoutManager = LinearLayoutManager(requireContext())
+
+        fetchBookings()
+        setupSwipeGestures()
+    }
+
+    private fun fetchBookings() {
+        val providerId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val databaseRef = FirebaseDatabase.getInstance().getReference("booking")
+
+        databaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                bookingList.clear()
+
+                for (customerSnapshot in snapshot.children) {
+                    for (bookingSnapshot in customerSnapshot.children) {
+                        val booking = bookingSnapshot.getValue(ProviderBookingReceiverModel::class.java)
+                        booking?.bookingId = bookingSnapshot.key ?: ""
+
+                        if (booking != null && booking.ProviderId == providerId && booking.status == "Pending") {
+                            bookingList.add(booking)
+                        }
+                    }
+                }
+
+                adapter = ProviderBookingReceiverAdapter(bookingList, ::acceptBooking, ::rejectBooking)
+                binding.notificationRecycler.adapter = adapter
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun acceptBooking(bookingId: String) {
+        Log.d("Fragment", "Accepting booking: $bookingId")
+        updateBookingStatus(bookingId, "Accepted")
+    }
+
+    private fun rejectBooking(bookingId: String) {
+        Log.d("Fragment", "Rejecting booking: $bookingId")
+        updateBookingStatus(bookingId, "Rejected")
+    }
+
+    private fun updateBookingStatus(bookingId: String, status: String) {
+        val databaseRef = FirebaseDatabase.getInstance().getReference("booking")
+
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (customerSnapshot in snapshot.children) {
+                    for (bookingSnapshot in customerSnapshot.children) {
+                        if (bookingSnapshot.key == bookingId) {
+                            bookingSnapshot.ref.child("status").setValue(status)
+                                .addOnSuccessListener {
+                                    Toast.makeText(requireContext(), "Booking $status", Toast.LENGTH_SHORT).show()
+                                    fetchBookings()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(requireContext(), "Failed to update status", Toast.LENGTH_SHORT).show()
+                                }
+                            return
+                        }
+                    }
                 }
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun setupSwipeGestures() {
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val booking = bookingList[position]
+
+                if (direction == ItemTouchHelper.RIGHT) {
+                    acceptBooking(booking.bookingId)
+                } else if (direction == ItemTouchHelper.LEFT) {
+                    deletedBooking = booking
+                    rejectBooking(booking.bookingId)
+
+                    // Snackbar with Undo Option
+                    Snackbar.make(binding.root, "Booking Rejected", Snackbar.LENGTH_LONG)
+                        .setAction("UNDO") {
+                            undoRejectBooking(booking)
+                        }
+                        .show()
+                }
+                adapter.notifyItemRemoved(position)
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder.itemView
+                val paint = Paint()
+
+                if (dX > 0) { // Right Swipe (Accept)
+                    paint.color = Color.GREEN
+                    c.drawRect(
+                        itemView.left.toFloat(), itemView.top.toFloat(),
+                        itemView.left.toFloat() + dX, itemView.bottom.toFloat(), paint
+                    )
+                } else if (dX < 0) { // Left Swipe (Reject)
+                    paint.color = Color.RED
+                    c.drawRect(
+                        itemView.right.toFloat() + dX, itemView.top.toFloat(),
+                        itemView.right.toFloat(), itemView.bottom.toFloat(), paint
+                    )
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+        }
+
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.notificationRecycler)
+    }
+
+    private fun undoRejectBooking(booking: ProviderBookingReceiverModel) {
+        updateBookingStatus(booking.bookingId, "Pending")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

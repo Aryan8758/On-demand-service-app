@@ -84,7 +84,6 @@
                 android:layout_marginEnd="8dp"
                 android:text="Pending"
                 android:gravity="center"
-                android:textColor="#333333"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 

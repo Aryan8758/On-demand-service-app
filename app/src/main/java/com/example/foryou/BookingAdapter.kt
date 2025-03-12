@@ -42,7 +42,7 @@ class BookingAdapter(private val bookingModelList: List<Booking_model>) :
         // Change status color dynamically
         when (booking.status) {
             "Pending" -> holder.serviceStatus.setTextColor(Color.parseColor("#FFA500"))
-            "Approved" -> holder.serviceStatus.setTextColor(Color.parseColor("#008000"))
+            "Accepted" -> holder.serviceStatus.setTextColor(Color.parseColor("#008000"))
             "Rejected" -> holder.serviceStatus.setTextColor(Color.parseColor("#FF0000"))
         }
         fetchProviderDetails(booking.ProviderId,holder)
