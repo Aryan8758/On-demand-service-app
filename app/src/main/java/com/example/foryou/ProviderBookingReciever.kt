@@ -45,6 +45,11 @@ class ProviderBookingReciever : Fragment() {
         val providerId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val databaseRef = FirebaseDatabase.getInstance().getReference("booking")
 
+        // Step 1: Show shimmer & hide everything else
+        binding.shimmerViewContainer.visibility = View.VISIBLE
+        binding.notificationRecycler.visibility = View.GONE
+        binding.noBookingText.visibility = View.GONE
+
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 bookingList.clear()
@@ -52,12 +57,28 @@ class ProviderBookingReciever : Fragment() {
                 for (customerSnapshot in snapshot.children) {
                     for (bookingSnapshot in customerSnapshot.children) {
                         val booking = bookingSnapshot.getValue(ProviderBookingReceiverModel::class.java)
-                        booking?.bookingId = bookingSnapshot.key ?: ""
 
-                        if (booking != null && booking.ProviderId == providerId && booking.status == "Pending") {
-                            bookingList.add(booking)
+                        if (booking != null) {
+                            booking.bookingId = bookingSnapshot.key ?: ""
+
+                            if (booking.ProviderId == providerId && booking.status == "Pending") {
+                                bookingList.add(booking)
+                            }
                         }
                     }
+                }
+
+                // Step 2: Hide shimmer layout
+                binding.shimmerViewContainer.stopShimmer()
+                binding.shimmerViewContainer.visibility = View.GONE
+
+                // Step 3: Show either RecyclerView or No Booking Message
+                if (bookingList.isEmpty()) {
+                    binding.noBookingText.visibility = View.VISIBLE
+                    binding.notificationRecycler.visibility = View.GONE
+                } else {
+                    binding.notificationRecycler.visibility = View.VISIBLE
+                    binding.noBookingText.visibility = View.GONE
                 }
 
                 adapter = ProviderBookingReceiverAdapter(bookingList, ::acceptBooking, ::rejectBooking)
@@ -70,6 +91,7 @@ class ProviderBookingReciever : Fragment() {
             }
         })
     }
+
 
     private fun acceptBooking(bookingId: String) {
         Log.d("Fragment", "Accepting booking: $bookingId")

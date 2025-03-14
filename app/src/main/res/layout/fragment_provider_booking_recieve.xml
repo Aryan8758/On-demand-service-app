@@ -6,18 +6,84 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ProviderBookingReciever">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#081F5C"
-        app:title="Booking Request"
-        app:titleTextColor="@android:color/white"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:id="@+id/requestlayout"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back_arrow"
+            android:layout_margin="20dp" />
+
+        <TextView
+            android:id="@+id/categoryTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Booking Request"
+            android:textColor="#081F5C"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <!-- Shimmer Layout (Visible while data loads) -->
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerViewContainer"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/requestlayout"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:shimmer_auto_start="true"
+        app:shimmer_duration="1000">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/shimmerEffect" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/shimmerEffect" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/shimmerEffect" />
+
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <!-- No Booking Text (Initially Hidden) -->
+    <TextView
+        android:id="@+id/noBookingText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@+id/requestlayout"
+        android:text="🎉 No new service requests at the moment. Stay tuned for more !"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:textColor="@android:color/darker_gray"
+        android:padding="16dp" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/requestlayout"
         android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="match_parent"

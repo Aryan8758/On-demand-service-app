@@ -33,14 +33,13 @@ class ProfileFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var sharedPreferences: SharedPref // Declare SharedPref
+    private lateinit var sharedPreferences: SharedPref
 
-    private var selectBitmap:Bitmap?=null
-    private val imagePickerLauncher=registerForActivityResult(ActivityResultContracts.GetContent()){uri ->
+    private var selectBitmap: Bitmap? = null
+    private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             binding.image.setImageURI(uri)
-            selectBitmap=BitmapFactory.decodeStream(requireContext().contentResolver.openInputStream(uri))
-
+            selectBitmap = BitmapFactory.decodeStream(requireContext().contentResolver.openInputStream(uri))
         }
     }
 
@@ -57,21 +56,19 @@ class ProfileFragment : Fragment() {
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        val userid= auth.currentUser?.uid
-
-        // Initialize SharedPref with activity context
+        val userId = auth.currentUser?.uid
         sharedPreferences = SharedPref(requireActivity().applicationContext)
 
-
-        // Enable Firestore offline caching
         db.firestoreSettings = FirebaseFirestoreSettings.Builder()
             .setPersistenceEnabled(true)
             .build()
 
         loadUser()
+
         binding.editProfileBtn.setOnClickListener {
             enableEditing(true)
         }
+
         binding.logoutBtn.setOnClickListener {
             // Clear login state using SharedPreferences
             sharedPreferences.logoutUser()
@@ -85,7 +82,7 @@ class ProfileFragment : Fragment() {
                 }
 
 // Firestore se bhi token remove karo:
-            userid?.let { it1 ->
+            userId?.let { it1 ->
                 FirebaseFirestore.getInstance().collection("providers").document(it1)
                     .update("fcmToken", FieldValue.delete())
                     .addOnSuccessListener {
@@ -100,18 +97,20 @@ class ProfileFragment : Fragment() {
             startActivity(Intent(requireContext(), LoginActivity::class.java))
             requireActivity().finish() // Close the current activity/fragment
         }
+
         binding.saveBtn.setOnClickListener {
             updateProfile()
         }
+
         binding.editimage.setOnClickListener {
             imagePickerLauncher.launch("image/*")
         }
-
     }
+
     private fun encodeImageToBase64(bitmap: Bitmap): String {
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, true) // Resize image
+        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, true)
         val byteArrayOutputStream = ByteArrayOutputStream()
-        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream) // Compress to 50%
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
@@ -123,32 +122,18 @@ class ProfileFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun loadUser() {
-        val userId = auth.currentUser?.uid
-        if (userId == null) {
-            Log.e("ProfileFragment", "User ID is null")
-            return
-        }
+        val userId = auth.currentUser?.uid ?: return
+        val userType = sharedPreferences.getUserType()
 
-        // Show default values while loading
-        binding.userName.setText("Loading...")
-        binding.userEmail.setText("Loading...")
-        binding.userPhone.setText("Loading...")
         binding.progressBar.visibility = View.VISIBLE
 
-        // Fetch from cache first, then from server
         lifecycleScope.launch(Dispatchers.IO) {
-            try { val collection = sharedPreferences.getUserType()
-//                val collection = if (userType == "providers") "providers" else "customers"
+            try {
+                val cacheDoc = db.collection(userType).document(userId).get(Source.CACHE).await()
+                withContext(Dispatchers.Main) { if (cacheDoc.exists()) updateUI(cacheDoc) }
 
-                val cacheDoc = db.collection(collection).document(userId).get(Source.CACHE).await()
-                withContext(Dispatchers.Main) {
-                    if (cacheDoc.exists()) updateUI(cacheDoc)
-                }
-
-                val serverDoc = db.collection(collection).document(userId).get(Source.SERVER).await()
-                withContext(Dispatchers.Main) {
-                    updateUI(serverDoc)
-                }
+                val serverDoc = db.collection(userType).document(userId).get(Source.SERVER).await()
+                withContext(Dispatchers.Main) { updateUI(serverDoc) }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Log.e("ProfileFragment", "Error fetching user data", e)
@@ -158,67 +143,103 @@ class ProfileFragment : Fragment() {
     }
 
     private fun updateUI(document: com.google.firebase.firestore.DocumentSnapshot) {
-        if (!document.exists()) {
-            Log.e("ProfileFragment", "User not found in Firestore")
-            return
-        }
+        if (!document.exists()) return
 
+        val userType = sharedPreferences.getUserType()
         val name = document.getString("name") ?: "No Name"
         val email = document.getString("email") ?: "No Email"
         val phone = document.getString("number") ?: "No Phone"
         val base64Image = document.getString("profileImage")
-        if (base64Image != null) {
-            binding.image.setImageBitmap(decodeBase64ToBitmap(base64Image))
-        }
-        else   {
-            binding.image.setImageResource(R.drawable.ak)
-        }
+        val isProfileComplete = document.getBoolean("profileComplete") ?: false
 
         binding.userName.setText(name)
         binding.userEmail.setText(email)
         binding.userPhone.setText(phone)
-        binding.progressBar.visibility = View.GONE
+        binding.image.setImageBitmap(base64Image?.let { decodeBase64ToBitmap(it) } ?: run { null })
 
+        if (userType == "providers") {
+            binding.userService.setText(document.getString("service") ?: "")
+            binding.userExperience.setText(document.getString("experience") ?: "")
+            binding.userCity.setText(document.getString("city") ?: "")
+            binding.aboutBio.setText(document.getString("aboutBio") ?: "")
+            binding.priceRate.setText(document.getString("priceRate") ?: "")
+
+            binding.providerFields.visibility = View.VISIBLE
+        } else {
+            binding.providerFields.visibility = View.GONE
+        }
+
+        binding.progressBar.visibility = View.GONE
     }
+
     private fun enableEditing(enable: Boolean) {
         binding.userName.isEnabled = enable
         binding.userPhone.isEnabled = enable
-        binding.editimage.visibility=if(enable) View.VISIBLE else View.GONE
+        binding.userService.isEnabled = enable
+        binding.userExperience.isEnabled = enable
+        binding.userCity.isEnabled = enable
+        binding.aboutBio.isEnabled = enable
+        binding.priceRate.isEnabled = enable
+        binding.editimage.visibility = if (enable) View.VISIBLE else View.GONE
         binding.saveBtn.visibility = if (enable) View.VISIBLE else View.GONE
         binding.logoutBtn.visibility = if (!enable) View.VISIBLE else View.GONE
         binding.editProfileBtn.visibility = if (!enable) View.VISIBLE else View.GONE
+
+        if (sharedPreferences.getUserType() == "providers") {
+            binding.providerFields.visibility = if (enable) View.VISIBLE else View.GONE
+        }
     }
 
-    private  fun updateProfile() {
+    private fun updateProfile() {
         val updatedName = binding.userName.text.toString().trim()
         val updatedPhone = binding.userPhone.text.toString().trim()
+
         if (updatedName.isEmpty() || updatedPhone.isEmpty()) {
-            Toast.makeText(requireContext(), "Name & Phone can't be empty!", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(requireContext(), "Name & Phone can't be empty!", Toast.LENGTH_SHORT).show()
             return
         }
+
+        val userType = sharedPreferences.getUserType()
         val user = mutableMapOf<String, Any>(
             "name" to updatedName,
             "number" to updatedPhone
         )
+
+        var isProfileComplete = true
+
+        if (userType == "providers") {
+            val updatedService = binding.userService.text.toString().trim()
+            val updatedExperience = binding.userExperience.text.toString().trim()
+            val updatedCity = binding.userCity.text.toString().trim()
+            val updatedAboutBio = binding.aboutBio.text.toString().trim()
+            val updatedPriceRate = binding.priceRate.text.toString().trim()
+
+            user["service"] = updatedService
+            user["experience"] = updatedExperience
+            user["city"] = updatedCity
+            user["aboutBio"] = updatedAboutBio
+            user["priceRate"] = updatedPriceRate
+
+            if (updatedService.isEmpty() || updatedExperience.isEmpty() || updatedCity.isEmpty() || updatedAboutBio.isEmpty() || updatedPriceRate.isEmpty()) {
+                isProfileComplete = false
+            }
+        }
+
         selectBitmap?.let {
-            val base64Image = encodeImageToBase64(it) // **Compressed Base64 Image**
+            val base64Image = encodeImageToBase64(it)
             user["profileImage"] = base64Image
         }
 
+        user["profileComplete"] = isProfileComplete
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val collection = sharedPreferences.getUserType()
-                //val collection = if (userType == "provider") "providers" else "customers"
-
-
-                db.collection(collection).document(auth.currentUser?.uid!!).update(user).await()
+                db.collection(userType).document(auth.currentUser?.uid!!).update(user).await()
                 withContext(Dispatchers.Main) {
                     Toast.makeText(requireContext(), "Profile Updated!", Toast.LENGTH_SHORT).show()
                     enableEditing(false)
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Log.e("ProfileFragment", "Error updating profile", e)
                     Toast.makeText(requireContext(), "Update failed!", Toast.LENGTH_SHORT).show()
@@ -226,8 +247,7 @@ class ProfileFragment : Fragment() {
             }
         }
     }
-
-    override fun onDestroyView() {
+override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }

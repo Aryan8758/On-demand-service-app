@@ -1,155 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ProfileFragment"
-    android:padding="20dp">
-
-
-    <!-- Profile Image -->
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="73dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/logoutBtn"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="140dp"
-        android:visibility="gone" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/image"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:src="@drawable/person"
-        android:layout_centerHorizontal="true"
-        android:elevation="4dp"
-        android:scaleType="centerCrop"
-        app:strokeColor="@android:color/darker_gray"
-        app:strokeWidth="2dp"
-        app:shapeAppearanceOverlay="@style/CircleImageView"/>
-
-    <!-- Edit Profile Image Button (Properly Positioned) -->
-    <ImageButton
-        android:id="@+id/editimage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/image"
-        android:layout_alignBottom="@id/image"
-        android:visibility="gone"
-        android:layout_marginEnd="-3dp"
-        android:layout_marginBottom="-4dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Edit Profile Picture"
-        android:scaleType="fitXY"
-        android:src="@drawable/baseline_photo_camera_24"
-        tools:ignore="TouchTargetSizeCheck" />
-
-    <!-- User Name -->
-    <EditText
-        android:id="@+id/userName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="User Name"
-        android:textSize="20sp"
-        android:enabled="false"
-        android:textStyle="bold" />
-
-    <!-- User Email -->
-    <EditText
-        android:id="@+id/userEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:layout_below="@id/userName"
-        android:layout_centerHorizontal="true"
-        android:text="email@example.com"
-        android:textSize="16sp"
-        android:textColor="@android:color/darker_gray" />
-
-    <!-- User Phone -->
-    <EditText
-        android:id="@+id/userPhone"
-        android:layout_width="wrap_content"
-        android:inputType="number"
-        android:maxLength="10"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/userEmail"
-        android:enabled="false"
-        android:layout_centerHorizontal="true"
-        android:text="1234567890"
-        android:textSize="16sp"
-        android:textColor="@android:color/darker_gray"
-        tools:ignore="TextFields" />
-
-    <!-- Provider Specific Details (Initially Hidden) -->
-<!--    <TextView-->
-<!--        android:id="@+id/userService"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/userPhone"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:visibility="gone"-->
-<!--        android:text="Service: Plumber"-->
-<!--        android:textSize="16sp"-->
-<!--        android:textColor="@android:color/darker_gray" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/userExperience"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/userService"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:visibility="gone"-->
-<!--        android:text="Experience: 3 years"-->
-<!--        android:textSize="16sp"-->
-<!--        android:textColor="@android:color/darker_gray" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/userCity"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/userExperience"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:visibility="gone"-->
-<!--        android:text="City: Bharuch"-->
-<!--        android:textSize="16sp"-->
-<!--        android:textColor="@android:color/darker_gray" />-->
-
-    <!-- Edit Profile Button -->
-    <Button
-        android:id="@+id/editProfileBtn"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="20dp"
+    android:background="@android:color/white">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/userPhone"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@android:color/holo_red_light"
-        android:text="Edit Profile" />
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-    <!-- Logout Button -->
-    <Button
-        android:id="@+id/logoutBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editProfileBtn"
-        android:layout_marginTop="10dp"
-        android:text="Logout"
-        android:backgroundTint="@android:color/holo_red_light"
-        android:textColor="@android:color/white" />
-    <Button
-        android:id="@+id/saveBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/logoutBtn"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:text="Save"
-        android:backgroundTint="#3F51B5"
-        android:textColor="@android:color/white" />
-</RelativeLayout>
+        <!-- Profile Image -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/person"
+            android:elevation="4dp"
+            android:scaleType="centerCrop"
+            app:strokeColor="@android:color/darker_gray"
+            app:strokeWidth="2dp"
+            app:shapeAppearanceOverlay="@style/CircleImageView"/>
+
+        <!-- Edit Profile Image Button -->
+        <ImageButton
+            android:id="@+id/editimage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="-35dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Edit Profile Picture"
+            android:src="@drawable/baseline_photo_camera_24"
+            android:visibility="gone"
+            tools:ignore="TouchTargetSizeCheck"/>
+
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:visibility="gone" />
+
+        <!-- User Details -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            app:boxStrokeColor="@color/black"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/userName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:hint="Full Name"
+                android:text="User Name"
+                android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxStrokeColor="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/userEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:hint="Email Address"
+                android:text="email@example.com"
+                android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxStrokeColor="@color/black"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/userPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:maxLength="10"
+                android:enabled="false"
+                android:hint="Phone Number"
+                android:text="1234567890"
+                android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Provider Specific Fields -->
+        <LinearLayout
+            android:id="@+id/providerFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:paddingTop="10dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxStrokeColor="@color/black"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/userService"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="Service (e.g., Plumber)"
+                    android:text="Plumber"
+                    android:textSize="16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxStrokeColor="@color/black"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/userExperience"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="Experience (Years)"
+                    android:text="3 years"
+                    android:textSize="16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                app:boxStrokeColor="@color/black"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/userCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="City"
+                    android:text="Bharuch"
+                    android:textSize="16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxStrokeColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/aboutBio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="About Me"
+                    android:text="About Me"
+                    android:textSize="16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                app:boxStrokeColor="@color/black"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/priceRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="About Me"
+                    android:text="About Me"
+                    android:textSize="16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Buttons -->
+        <Button
+            android:id="@+id/editProfileBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:text="Edit Profile"
+            android:textColor="@android:color/white"/>
+
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:text="Save"
+            android:textColor="@android:color/white"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/logoutBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:text="Logout"
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
