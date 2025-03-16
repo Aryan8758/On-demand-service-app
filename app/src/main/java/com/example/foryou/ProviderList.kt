@@ -56,7 +56,7 @@ class ProviderList : AppCompatActivity() {
     private fun fetchProvidersFromFirestore(servicetype: String) {
 
         //start shimmer effect before fetching data
-        db.collection("providers").whereEqualTo("service",servicetype)
+        db.collection("providers").whereEqualTo("service",servicetype).whereEqualTo("profileComplete", true)
             .get()
             .addOnSuccessListener { documents ->
                 providerList.clear()
@@ -67,7 +67,7 @@ class ProviderList : AppCompatActivity() {
                     val image = document.getString("profileImage")
                     val bg = R.drawable.blue_bg
 
-                    val provider = ProviderModelClass(providerId,name, service, image,bg)
+                    val provider = ProviderModelClass(providerId,name, service,"₹50", image,bg)
                     providerList.add(provider)
                 }
                 // 🟢 Stop Shimmer and Show RecyclerView

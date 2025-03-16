@@ -1,5 +1,6 @@
 package com.example.foryou
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -14,8 +15,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foryou.databinding.FragmentProviderBookingRecieveBinding
 import com.google.android.material.snackbar.Snackbar
+import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class ProviderBookingReciever : Fragment() {
     private var _binding: FragmentProviderBookingRecieveBinding? = null
@@ -111,10 +125,12 @@ class ProviderBookingReciever : Fragment() {
                 for (customerSnapshot in snapshot.children) {
                     for (bookingSnapshot in customerSnapshot.children) {
                         if (bookingSnapshot.key == bookingId) {
+                            val userId = customerSnapshot.key  // User ID extract karein
                             bookingSnapshot.ref.child("status").setValue(status)
                                 .addOnSuccessListener {
                                     Toast.makeText(requireContext(), "Booking $status", Toast.LENGTH_SHORT).show()
                                     fetchBookings()
+                                    userId?.let { fetchUserFCMToken(it, status) }  // FCM bhejne ke liye function call karein
                                 }
                                 .addOnFailureListener {
                                     Toast.makeText(requireContext(), "Failed to update status", Toast.LENGTH_SHORT).show()
@@ -129,6 +145,24 @@ class ProviderBookingReciever : Fragment() {
                 Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    suspend fun getAccessToken(context: Context): String? {
+        return withContext(Dispatchers.IO) {  // Run on background thread
+            try {
+
+                val jsonStream = context.assets.open("service-account.json")
+                Log.d("FCM", "File successfully opened!$jsonStream")
+                val googleCredentials = GoogleCredentials.fromStream(jsonStream)
+                    .createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
+
+                googleCredentials.refreshIfExpired()
+                googleCredentials.accessToken?.tokenValue
+            } catch (e: IOException) {
+                Log.e("FCM", "Error getting access token: ${e.message}")
+                null
+            }
+        }
     }
 
     private fun setupSwipeGestures() {
@@ -197,6 +231,64 @@ class ProviderBookingReciever : Fragment() {
     private fun undoRejectBooking(booking: ProviderBookingReceiverModel) {
         updateBookingStatus(booking.bookingId, "Pending")
     }
+    //notification code
+    private fun fetchUserFCMToken(userId: String, status: String) {
+         FirebaseFirestore.getInstance().collection("customers").document(userId).get().addOnSuccessListener {doc->
+            val fcmToken=doc.getString("fcmToken")?:"other"
+            if (!fcmToken.isNullOrEmpty()) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    sendFCMNotification(requireContext(), fcmToken, status)
+                }
+            } else {
+                Log.e("FCM", "User FCM Token is Empty")
+            }
+        }
+    }
+    suspend fun sendFCMNotification(context: Context, userToken: String, status: String) {
+        val fcmUrl = "https://fcm.googleapis.com/v1/projects/foryou-fa1d3/messages:send"
+
+        val accessToken = getAccessToken(context)  // Token fetch karein
+        if (accessToken == null) {
+            Log.e("FCM", "Failed to generate access token")
+            return
+        }
+
+        val messageBody = if (status == "Accepted") {
+            "Your booking request has been accepted!"
+        } else {
+            "Your booking request has been rejected."
+        }
+
+        val jsonObject = JSONObject().apply {
+            put("message", JSONObject().apply {
+                put("token", userToken)
+                put("notification", JSONObject().apply {
+                    put("title", "Booking Update")
+                    put("body", messageBody)
+                })
+            })
+        }
+
+        val requestBody = jsonObject.toString().toRequestBody("application/json".toMediaType())
+
+        val request = Request.Builder()
+            .url(fcmUrl)
+            .post(requestBody)
+            .addHeader("Authorization", "Bearer $accessToken")
+            .addHeader("Content-Type", "application/json")
+            .build()
+
+        withContext(Dispatchers.IO) {
+            try {
+                val response = OkHttpClient().newCall(request).execute()
+                Log.d("FCM", "Notification Response: ${response.body?.string()}")
+            } catch (e: IOException) {
+                Log.e("FCM", "Error sending notification: ${e.message}")
+            }
+        }
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

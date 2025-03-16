@@ -1,6 +1,5 @@
 package com.example.foryou
 
-
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -22,41 +21,55 @@ class ServiceMainActivity : AppCompatActivity() {
 
     private var doubleBackPressed = false  // Variable to track back press
 
+    // Fragments initialized once
+    private val homeFragment = ProviderBookingReciever()
+    private val historyFragment = HistoryFragment()
+    private val profileFragment = ProfileFragment()
+
+    private var activeFragment: Fragment = homeFragment  // Track active fragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
             }
         }
 
-        // Set the default fragment to HomeFragment
-        loadFragment(ProviderBookingReciever())
+        // Initialize fragments once and hide all except homeFragment
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fview, homeFragment, "Home")
+            .add(R.id.fview, historyFragment, "History").hide(historyFragment)
+            .add(R.id.fview, profileFragment, "Profile").hide(profileFragment)
+            .commit()
 
         // Set up BottomNavigationView
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_home -> loadFragment(ProviderBookingReciever())
-                R.id.nav_his -> loadFragment(HistoryFragment())
-                R.id.nav_per -> loadFragment(ProfileFragment())
+                R.id.nav_home -> showFragment(homeFragment)
+                R.id.nav_his -> showFragment(historyFragment)
+                R.id.nav_per -> showFragment(profileFragment)
             }
             true
         }
     }
 
-    // Function to load fragments
-    private fun loadFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fview, fragment)
-        transaction.commit()
+    // Optimized function for fragment switching
+    private fun showFragment(fragment: Fragment) {
+        if (fragment != activeFragment) {
+            supportFragmentManager.beginTransaction()
+                .hide(activeFragment)
+                .show(fragment)
+                .commit()
+            activeFragment = fragment
+        }
     }
 
     override fun onBackPressed() {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.fview)
-
-        if (currentFragment is HomeFragment) {
+        if (activeFragment == homeFragment) {
             if (doubleBackPressed) {
                 super.onBackPressed() // Exit app
             } else {

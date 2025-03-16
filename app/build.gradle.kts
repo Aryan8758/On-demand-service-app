@@ -71,6 +71,7 @@ dependencies {
     implementation ("com.google.auth:google-auth-library-oauth2-http:1.14.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("org.json:json:20210307")
+    implementation ("com.diogobernardino:williamchart:3.10.1")
 
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
@@ -82,6 +83,7 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.gridlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

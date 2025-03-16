@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:cardCornerRadius="16dp"
@@ -26,11 +27,13 @@
             android:src="@drawable/tioger" />
 
         <!-- Content Section -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            tools:ignore="HardcodedText"
             android:padding="10dp">
+
 
             <!-- Service Title -->
             <TextView
@@ -40,7 +43,8 @@
                 android:text="Service Title"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                 />
 
             <!-- Service Name -->
             <TextView
@@ -48,11 +52,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Service Name"
+                android:layout_below="@+id/nameTextView"
                 android:textSize="12sp"
                 android:textColor="#CCCCCC"
-                android:paddingTop="2dp" />
-
-        </LinearLayout>
+                android:paddingTop="2dp" /> <!-- Service Name -->
+            <!-- Price TextView (Right Aligned) -->
+            <TextView
+                android:id="@+id/priceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₹50"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:paddingStart="10dp"/>
+        </RelativeLayout>
 
     </LinearLayout>
 

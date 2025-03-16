@@ -4,6 +4,7 @@ data class ProviderModelClass(
     val providerId:String,
     val name: String = "",
     val service: String = "",
+    val price: String = "",
     val image: String ?,
     val bg: Int
 //    val experience: String = "",  // Firestore stores experience as a String

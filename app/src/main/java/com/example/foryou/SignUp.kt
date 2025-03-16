@@ -120,7 +120,7 @@ class SignUp : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val user = hashMapOf(
+                    val user = mutableMapOf<String, Any>(
                         "name" to name,
                         "email" to email,
                         "number" to number,
@@ -131,6 +131,8 @@ class SignUp : AppCompatActivity() {
                         selectedService?.let { user["service"] = it }
                         user["experience"] = experience
                         user["city"] = city
+                        user["status"] = "pending" // 👈 Provider approval pending
+
                     }
 
                     val userCollection = if (selectedRole == "Provider") "providers" else "customers"

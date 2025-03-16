@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:padding="16dp">
 
   <!-- Service Image -->
   <ImageView
@@ -14,74 +15,104 @@
       android:src="@drawable/driver"/>
 
   <!-- Service Name -->
-
-  <!-- Description Box -->
-
   <TextView
       android:id="@+id/serviceName"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_below="@id/serviceImage"
-      android:layout_alignParentEnd="true"
-      android:layout_marginTop="21dp"
-      android:layout_marginEnd="18dp"
+      android:layout_marginTop="16dp"
       android:text="Cab Driver"
       android:textColor="#081F5C"
       android:textSize="22sp"
+      android:textStyle="bold"/>
+  <!-- Price (Newly Added) -->
+  <TextView
+      android:id="@+id/servicePrice"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/serviceName"
+      android:layout_marginTop="10dp"
+
+      android:text="Price: ₹500"
+      android:textColor="#081F5C"
+      android:textSize="18sp"
       android:textStyle="bold" />
 
+  <!-- Provider Name -->
   <TextView
-      android:id="@+id/Provider_Name"
-      android:layout_width="212dp"
-      android:layout_height="39dp"
+      android:id="@+id/providerName"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_below="@id/serviceImage"
+      android:layout_marginTop="16dp"
       android:layout_alignParentEnd="true"
-      android:layout_marginStart="30dp"
-      android:layout_marginTop="20dp"
-      android:layout_marginEnd="195dp"
       android:text="Sukesh Sharma"
       android:textColor="#081F5C"
-      android:textSize="22sp"
-      android:textStyle="bold" />
+      android:textSize="20sp"
+      android:textStyle="bold"/>
 
+  <!-- Experience -->
+  <TextView
+      android:id="@+id/experience"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/servicePrice"
+      android:layout_marginTop="8dp"
+      android:text="5 Years Experience"
+      android:textColor="#555"
+      android:textSize="16sp"/>
+
+  <!-- Contact Number -->
+  <TextView
+      android:id="@+id/providerContact"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/experience"
+      android:layout_marginTop="8dp"
+      android:text="📞 +91 9876543210"
+      android:textColor="#555"
+      android:textSize="16sp"/>
+
+  <!-- Address -->
+  <TextView
+      android:id="@+id/providerAddress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/providerContact"
+      android:layout_marginTop="8dp"
+      android:text="📍 Ahmedabad, Gujarat"
+      android:textColor="#555"
+      android:textSize="16sp"/>
+
+  <!-- Description Card -->
   <androidx.cardview.widget.CardView
       android:id="@+id/serviceCard"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_below="@id/providerAddress"
+      android:layout_marginTop="16dp"
       app:cardCornerRadius="12dp"
-      android:layout_below="@id/Provider_Name"
-      android:layout_margin="16dp">
+      app:cardElevation="6dp">
 
     <TextView
         android:id="@+id/serviceDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Experienced and customer-focused Cab Driver with a strong knowledge of city routes and traffic regulations. Skilled in providing safe, efficient, and comfortable transportation while ensuring excellent customer service. "
+        android:text="Experienced and customer-focused Cab Driver with a strong knowledge of city routes and traffic regulations. Skilled in providing safe, efficient, and comfortable transportation while ensuring excellent customer service."
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:background="@drawable/bg"
         android:textColor="#081F5C"
         android:padding="12dp"/>
-
-
   </androidx.cardview.widget.CardView>
 
   <!-- Booking Button -->
   <Button
       android:id="@+id/bookServiceButton"
-      android:layout_width="378dp"
-      android:layout_height="62dp"
+      android:layout_width="match_parent"
+      android:layout_height="56dp"
       android:layout_alignParentBottom="true"
-      android:layout_marginStart="16dp"
-      android:layout_marginLeft="16dp"
-      android:layout_marginEnd="16dp"
-      android:layout_marginRight="16dp"
-      android:layout_marginBottom="16dp"
+      android:layout_marginTop="16dp"
       android:backgroundTint="#081F5C"
       android:text="Book This Service"
-      android:textColor="@color/white"
-      android:textStyle="bold" />
-
-
-
+      android:textColor="@android:color/white"
+      android:textStyle="bold"/>
 </RelativeLayout>

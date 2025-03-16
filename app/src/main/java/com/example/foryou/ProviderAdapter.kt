@@ -21,6 +21,7 @@ class ProviderAdapter(private var providers: List<ProviderModelClass>) :
     class ProviderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameText: TextView = itemView.findViewById(R.id.nameTextView)
         val serviceText: TextView = itemView.findViewById(R.id.serviceTextView)
+        val priceText: TextView = itemView.findViewById(R.id.priceTextView)
        val imageView: ImageView = itemView.findViewById(R.id.providerImage)
        val linear_Layout: CardView = itemView.findViewById(R.id.linear)
     }
@@ -41,6 +42,7 @@ class ProviderAdapter(private var providers: List<ProviderModelClass>) :
         val context=holder.itemView.context
         holder.nameText.text = provider.name
         holder.serviceText.text = provider.service
+        holder.priceText.text = provider.price
         holder.linear_Layout.setBackgroundResource(provider.bg)
         holder.itemView.setOnClickListener {
             val intent=Intent(context,Provider_Detail::class.java)

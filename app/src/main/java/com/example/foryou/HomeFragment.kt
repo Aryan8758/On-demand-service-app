@@ -118,7 +118,7 @@ class HomeFragment : Fragment() {
 
         binding?.categoryContainer?.removeAllViews()
 
-        db.collection("providers").get()
+        db.collection("providers").whereEqualTo("profileComplete",true).get()
             .addOnSuccessListener { documents ->
                 if (!isAdded || view == null) return@addOnSuccessListener // Ensures fragment is still active
 
@@ -127,6 +127,7 @@ class HomeFragment : Fragment() {
                 for (doc in documents) {
                     val providerId=doc.id
                     val name = doc.getString("name") ?: "Unknown"
+                    val price = doc.getString("priceRate") ?: "₹50"
                     val service = doc.getString("service") ?: "Other"
                     val image = doc.getString("profileImage")
                     val bg = R.drawable.blue_bg
@@ -134,7 +135,7 @@ class HomeFragment : Fragment() {
                     if (!providersMap.containsKey(service)) {
                         providersMap[service] = mutableListOf()
                     }
-                    providersMap[service]?.add(ProviderModelClass(providerId,name, service, image, bg))
+                    providersMap[service]?.add(ProviderModelClass(providerId,name, service,price,image, bg))
                 }
 
                 // 🟢 **Step 2: Show Categories with Shimmer**

@@ -194,8 +194,13 @@ class ProfileFragment : Fragment() {
         val updatedName = binding.userName.text.toString().trim()
         val updatedPhone = binding.userPhone.text.toString().trim()
 
-        if (updatedName.isEmpty() || updatedPhone.isEmpty()) {
-            Toast.makeText(requireContext(), "Name & Phone can't be empty!", Toast.LENGTH_SHORT).show()
+        if (updatedName.isEmpty()) {
+            binding.userName.error = "Name can't be empty"
+            return
+        }
+
+        if (updatedPhone.isEmpty()) {
+            binding.userPhone.error = "Phone can't be empty"
             return
         }
 
@@ -212,17 +217,40 @@ class ProfileFragment : Fragment() {
             val updatedExperience = binding.userExperience.text.toString().trim()
             val updatedCity = binding.userCity.text.toString().trim()
             val updatedAboutBio = binding.aboutBio.text.toString().trim()
-            val updatedPriceRate = binding.priceRate.text.toString().trim()
+            val updatedPriceRate = "₹" + binding.priceRate.text.toString().trim()
+
+            if (updatedService.isEmpty()) {
+                binding.userService.error = "Service can't be empty"
+                isProfileComplete = false
+            }
+            if (updatedExperience.isEmpty()) {
+                binding.userExperience.error = "Experience can't be empty"
+                isProfileComplete = false
+            }
+            if (updatedCity.isEmpty()) {
+                binding.userCity.error = "City can't be empty"
+                isProfileComplete = false
+            }
+            if (updatedAboutBio.isEmpty()) {
+                binding.aboutBio.error = "Bio can't be empty"
+                isProfileComplete = false
+            }
+            if (updatedPriceRate.isEmpty()) {
+                binding.priceRate.error = "Price Rate can't be empty"
+                isProfileComplete = false
+            }
 
             user["service"] = updatedService
             user["experience"] = updatedExperience
             user["city"] = updatedCity
             user["aboutBio"] = updatedAboutBio
             user["priceRate"] = updatedPriceRate
+        }
 
-            if (updatedService.isEmpty() || updatedExperience.isEmpty() || updatedCity.isEmpty() || updatedAboutBio.isEmpty() || updatedPriceRate.isEmpty()) {
-                isProfileComplete = false
-            }
+        // Agar profile complete nahi hai toh update nahi karega
+        if (!isProfileComplete) {
+            Toast.makeText(requireContext(), "Please fill all required fields!", Toast.LENGTH_SHORT).show()
+            return
         }
 
         selectBitmap?.let {
@@ -247,7 +275,8 @@ class ProfileFragment : Fragment() {
             }
         }
     }
-override fun onDestroyView() {
+
+    override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }

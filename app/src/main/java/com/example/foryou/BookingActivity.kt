@@ -227,8 +227,8 @@ class BookingActivity : AppCompatActivity() {
             )
             databaseRef.child(currentUser.uid).child(bookingId).setValue(bookingData).addOnSuccessListener {
                 Toast.makeText(this, "Booking confirm", Toast.LENGTH_SHORT).show()
-             //   startActivity(Intent(this,HistoryFragment::class.java))
-                sendNotificationToProvider(serviceName,providerId)  // Send Notification
+              // startActivity(Intent(this,HistoryFragment::class.java))
+                sendNotificationToProvider(name,providerId)  // Send Notification
             }.addOnFailureListener { e->
                 Toast.makeText(this, "Booking fail:{$e.message}", Toast.LENGTH_SHORT).show()
             }
