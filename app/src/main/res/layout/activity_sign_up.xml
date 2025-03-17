@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D0E3FF"
     tools:ignore="Autofill,TextFields,HardcodedText,TextContrastCheck"
     android:padding="20dp">
 
@@ -13,29 +12,30 @@
         android:layout_below="@id/Submit_btn"
         android:elevation="4dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg"
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
     <!-- Title -->
 
+    <!-- Logo -->
+
+    <!-- Email Input Field -->
+
+
     <ImageView
-        android:id="@+id/logoImageView"
-        android:layout_width="182dp"
-        android:layout_height="125dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="93dp"
-        android:layout_marginTop="20dp"
-        android:contentDescription="App logo"
+        android:id="@+id/logoImage"
+        android:layout_width="391dp"
+        android:layout_height="195dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="0dp"
         android:src="@drawable/logo" />
 
     <TextView
         android:id="@+id/signUpTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/logoImageView"
-        android:layout_marginTop="20dp"
+        android:layout_below="@id/logoImage"
         android:layout_alignParentStart="true"
         android:layout_marginStart="10dp"
         android:text="Sign Up"
@@ -54,7 +54,7 @@
         android:hint="E-mail"
         android:drawableStart="@drawable/baseline_email_24"
         android:drawablePadding="10dp"
-        android:background="@drawable/bg"
+        android:background="@drawable/ex"
         android:padding="10dp"
         />
 
@@ -66,7 +66,7 @@
         android:layout_height="50dp"
         android:layout_below="@id/emailEditText"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg"
+        android:background="@drawable/ex"
         android:drawableStart="@drawable/baseline_person_24"
         android:drawablePadding="10dp"
         android:hint="Username"
@@ -81,7 +81,7 @@
         android:elevation="4dp"
         android:layout_below="@id/username"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg"
+        android:background="@drawable/ex"
         android:drawableStart="@drawable/baseline_lock_24"
         android:drawablePadding="10dp"
         android:hint="Password"
@@ -96,7 +96,7 @@
         android:layout_height="50dp"
         android:layout_below="@id/password"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg"
+        android:background="@drawable/ex"
         android:drawableStart="@drawable/baseline_call_24"
         android:drawablePadding="10dp"
         android:hint="Number"
@@ -112,7 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/experienceEditText"
         android:elevation="4dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:backgroundTint="#081F5C"
         android:text="Sign up"
         android:textColor="#FFFFFF"
@@ -164,14 +164,14 @@
         <RadioButton
             android:id="@+id/customerRadio"
             android:layout_width="wrap_content"
-            android:background="@drawable/bg"
+            android:background="@drawable/ex"
             android:layout_height="wrap_content"
             android:text="Customer"
             tools:ignore="HardcodedText" />
 
         <RadioButton
             android:id="@+id/providerRadio"
-            android:background="@drawable/bg"
+            android:background="@drawable/ex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -182,7 +182,7 @@
     <Spinner
         android:id="@+id/serviceCategorySpinner"
         android:layout_width="match_parent"
-        android:background="@drawable/bg"
+        android:background="@drawable/ex"
         android:layout_height="wrap_content"
         android:elevation="4dp"
         android:layout_below="@id/roleGroup"
@@ -195,19 +195,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="City"
-        android:visibility="gone"
-        android:overScrollMode="always"
+        android:background="@drawable/ex"
+        android:visibility="visible"
         android:padding="10dp"
         android:drawableStart="@drawable/baseline_location_on_24"
-        android:background="@drawable/bg"
         android:inputType="text"
         android:layout_below="@id/serviceCategorySpinner"
         android:layout_marginTop="16dp"
         android:dropDownWidth="match_parent"
         android:dropDownHeight="wrap_content"
-        android:dropDownAnchor="@id/cityAutoComplete"
-        android:elevation="4dp"
-        tools:ignore="HardcodedText" />
+    android:elevation="4dp"
+    tools:ignore="HardcodedText"/>
+
+
 
     <!-- Experience Field -->
     <EditText
@@ -216,8 +216,8 @@
         android:elevation="4dp"
         android:layout_height="wrap_content"
         android:hint="Experience (Years)"
-        android:background="@drawable/bg"
         android:inputType="number"
+        android:background="@drawable/ex"
         android:layout_below="@id/cityAutoComplete"
         android:layout_marginTop="16dp"
         android:visibility="gone" />
@@ -226,10 +226,9 @@
     <TextView
         android:id="@+id/alreadyAccountText"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@id/dividerLayout"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
         android:text="Already have an account? Sign in"
         android:textColor="#081F5C"
         android:textSize="14sp"

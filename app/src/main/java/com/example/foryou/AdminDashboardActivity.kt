@@ -24,37 +24,50 @@ class AdminDashboardActivity : AppCompatActivity() {
         fetchCounts() // Fetch data from Firebase
 
         // Logout Button Click Listener
+        binding.cardPending.setOnClickListener {
+            startActivity(Intent(this,PendingRequestsActivity::class.java))
+        }
         binding.btnLogout.setOnClickListener {
             showLogoutDialog() // Show confirmation dialog before logout
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun fetchCounts() {
-        // Fetch total customers
-        db.collection("customers").get()
-            .addOnSuccessListener { documents ->
+        // ✅ Customers count real-time update
+        db.collection("customers").addSnapshotListener { documents, e ->
+            if (e == null && documents != null) {
                 binding.valueTotalCustomers.text = documents.size().toString()
+                println("✅ Customers Count Updated: ${documents.size()}")
             }
+        }
 
-        // Fetch total providers
-        db.collection("providers").get()
-            .addOnSuccessListener { documents ->
+        // ✅ Providers count real-time update
+        db.collection("providers").addSnapshotListener { documents, e ->
+            if (e == null && documents != null) {
                 binding.valueTotalProviders.text = documents.size().toString()
+                println("✅ Providers Count Updated: ${documents.size()}")
+            }
+        }
+
+        // ✅ Pending requests real-time update
+        db.collection("providers").whereEqualTo("status", "pending")
+            .addSnapshotListener { documents, e ->
+                if (e == null && documents != null) {
+                    binding.valuePendingRequests.text = documents.size().toString()
+                    println("✅ Pending Requests Updated: ${documents.size()}")
+                }
             }
 
-        // Fetch pending provider requests
-        db.collection("providers").whereEqualTo("status", "pending").get()
-            .addOnSuccessListener { documents ->
-                binding.valuePendingRequests.text = documents.size().toString()
-            }
-
-        // Fetch approved providers
-        db.collection("providers").whereEqualTo("status", "approved").get()
-            .addOnSuccessListener { documents ->
-                binding.valueApprovedProviders.text = documents.size().toString()
+        // ✅ Approved providers real-time update
+        db.collection("providers").whereEqualTo("status", "approved")
+            .addSnapshotListener { documents, e ->
+                if (e == null && documents != null) {
+                    binding.valueApprovedProviders.text = documents.size().toString()
+                    println("✅ Approved Providers Updated: ${documents.size()}")
+                }
             }
     }
+
 
     private fun showLogoutDialog() {
         val dialog = AlertDialog.Builder(this)

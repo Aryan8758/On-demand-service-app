@@ -7,7 +7,7 @@
     android:layout_marginEnd="5dp"
     android:orientation="horizontal"
     android:padding="12dp"
-    android:background="@drawable/bg"
+    android:background="@drawable/ex"
     android:gravity="center_vertical">
 
     <!-- Profile Image -->
@@ -17,7 +17,7 @@
         android:layout_height="50dp"
         android:src="@drawable/man"
         android:scaleType="centerCrop"
-        android:background="@drawable/bg"/>
+        android:background="@drawable/ex"/>
 
     <!-- User Info -->
     <LinearLayout

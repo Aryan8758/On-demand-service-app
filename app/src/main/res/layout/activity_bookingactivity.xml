@@ -69,7 +69,7 @@
                 android:textColor="#081F5C"
                 android:inputType="textPersonName"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/bg"
+                android:background="@drawable/ex"
                 android:padding="10dp"/>
 
             <!-- Phone Input -->
@@ -80,7 +80,7 @@
                 android:hint="Enter Your Phone"
                 android:textColor="#081F5C"
                 android:inputType="phone"
-                android:background="@drawable/bg"
+                android:background="@drawable/ex"
                 android:padding="10dp"/>
 
             <!-- Address Input with Save Button -->
@@ -100,7 +100,7 @@
                     android:hint="Enter Address"
                     android:textColor="#081F5C"
                     android:inputType="textPostalAddress"
-                    android:background="@drawable/bg"
+                    android:background="@drawable/ex"
                     android:padding="10dp"
                     android:layout_marginEnd="10dp"/>
 
@@ -109,7 +109,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/bg"
+                    android:background="@drawable/ex"
                     android:src="@drawable/ic_save"
                     android:contentDescription="Save Address"
                     android:elevation="4dp"/>
@@ -181,12 +181,12 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:background="@drawable/bg"
+                    android:background="@drawable/ex"
                     android:layout_marginEnd="10dp"
                     android:text="Cash"/>
                 <RadioButton
                     android:id="@+id/rbOnline"
-                    android:background="@drawable/bg"
+                    android:background="@drawable/ex"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="5dp"

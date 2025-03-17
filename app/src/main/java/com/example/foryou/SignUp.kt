@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.foryou.databinding.ActivitySignUpBinding
@@ -43,9 +44,30 @@ class SignUp : AppCompatActivity() {
             "Zadeshwar", "Bholav", "Maktampur", "GNFC Township", "Ankleshwar",
             "Sherpura", "GIDC Estate", "Shaktinath", "Jambusar", "Dahej"
         )
-        val cityAdapter =
-            ArrayAdapter(this, android.R.layout.select_dialog_item, bharuchPlaces)
+
+        val cityAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, bharuchPlaces)
         binding.cityAutoComplete.setAdapter(cityAdapter)
+
+// **Dropdown Position Adjust**
+        binding.cityAutoComplete.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.cityAutoComplete.post {
+                    try {
+                        val popup = AutoCompleteTextView::class.java.getDeclaredField("mPopup")
+                        popup.isAccessible = true
+                        val listPopup = popup.get(binding.cityAutoComplete) as android.widget.ListPopupWindow
+                        listPopup.height = 400  // Dropdown height fix karo
+                        listPopup.verticalOffset = -binding.cityAutoComplete.height - 50 // **Upar dikhane ke liye**
+                        listPopup.show()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+
+
+
 
         // Show/Hide additional fields based on role selection
         binding.roleGroup.setOnCheckedChangeListener { _, checkedId ->

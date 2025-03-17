@@ -38,7 +38,7 @@
                 android:id="@+id/value_total_customers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="120"
+                android:text="00"
                 android:textSize="26sp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"/>
@@ -75,7 +75,7 @@
                 android:id="@+id/value_total_providers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="50"
+                android:text="00"
                 android:textSize="26sp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"/>
@@ -112,7 +112,7 @@
                 android:id="@+id/value_pending_requests"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10"
+                android:text="00"
                 android:textSize="26sp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"/>
@@ -148,7 +148,7 @@
                 android:id="@+id/value_approved_providers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="40"
+                android:text="00"
                 android:textSize="26sp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"/>
