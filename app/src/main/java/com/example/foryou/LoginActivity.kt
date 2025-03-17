@@ -49,7 +49,8 @@ class LoginActivity : AppCompatActivity() {
             if (email == "admin@gmail.com" && password == "shreya_24") {
                 binding.progressBar.visibility = View.GONE
                 binding.loginbtn.isEnabled = true
-
+                sharedPreferences.saveLoginState(true) // Save login session
+                sharedPreferences.saveUserType("admin") // Set user type as admin
                 Toast.makeText(this, "Welcome Admin!", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, AdminDashboardActivity::class.java))
                 finish()

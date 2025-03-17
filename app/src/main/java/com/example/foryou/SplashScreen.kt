@@ -28,6 +28,10 @@ class SplashScreen : AppCompatActivity() {
                     "providers" -> {
                         startActivity(Intent(this, ServiceMainActivity::class.java)) // Redirect to Provider screen
                     }
+                    "admin"->{
+                        startActivity(Intent(this, AdminDashboardActivity::class.java)) // Redirect to admin screen
+
+                    }
                     else -> {
                         startActivity(Intent(this, LoginActivity::class.java)) // If userType is null, go to login
                     }
