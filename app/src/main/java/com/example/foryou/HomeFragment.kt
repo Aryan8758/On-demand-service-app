@@ -57,6 +57,7 @@ class HomeFragment : Fragment() {
         //swipe to refresh
         binding.swipeRefreshLayout.setOnRefreshListener {
             fetchProviders()
+            loadUser()
         }
 
 

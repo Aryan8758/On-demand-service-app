@@ -185,8 +185,13 @@ class ProfileFragment : Fragment() {
         binding.logoutBtn.visibility = if (!enable) View.VISIBLE else View.GONE
         binding.editProfileBtn.visibility = if (!enable) View.VISIBLE else View.GONE
 
+        // ✅ Ensure providerFields remains visible after saving
         if (sharedPreferences.getUserType() == "providers") {
-            binding.providerFields.visibility = if (enable) View.VISIBLE else View.GONE
+            if (enable) {
+                binding.providerFields.visibility = View.VISIBLE
+            } else {
+                binding.providerFields.visibility = View.VISIBLE // 🔥 Keep it visible after save
+            }
         }
     }
 

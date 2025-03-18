@@ -1,54 +1,86 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@android:color/white"
-    android:elevation="2dp"
-    android:layout_marginBottom="8dp">
-
-    <TextView
-        android:id="@+id/providerName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Provider Name"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/providerEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/providerService"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Service Type"
-        android:textSize="16sp"/>
+    android:layout_margin="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <Button
-            android:id="@+id/btnApprove"
+        <!-- Provider Name -->
+        <TextView
+            android:id="@+id/providerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Approve"
-            android:backgroundTint="#84FF84"/>
+            android:text="Provider Name"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:paddingBottom="6dp"/>
 
-        <Button
-            android:id="@+id/btnReject"
+        <!-- Provider Email -->
+        <TextView
+            android:id="@+id/providerEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reject"
-            android:backgroundTint="#E91E1E"
-            android:layout_marginStart="8dp"/>
+            android:text="Email"
+            android:textSize="16sp"
+            android:textColor="#757575"
+            android:paddingBottom="4dp"/>
+
+        <!-- Provider Service -->
+        <TextView
+            android:id="@+id/providerService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Service Type"
+            android:textSize="16sp"
+            android:textColor="#616161"
+            android:paddingBottom="12dp"/>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:paddingTop="8dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApprove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Approve"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#4CAF50"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="6dp"
+                app:cornerRadius="50dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reject"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#E91E1E"
+                android:layout_marginStart="12dp"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="6dp"
+                app:cornerRadius="50dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+        </LinearLayout>
+
     </LinearLayout>
-</LinearLayout>
+
+</androidx.cardview.widget.CardView>

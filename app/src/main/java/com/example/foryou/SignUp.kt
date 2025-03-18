@@ -2,6 +2,7 @@ package com.example.foryou
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.foryou.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 
 class SignUp : AppCompatActivity() {
     private val binding: ActivitySignUpBinding by lazy {
@@ -137,6 +139,16 @@ class SignUp : AppCompatActivity() {
 
         // Show progress bar
         binding.progressBar.visibility = View.VISIBLE
+        var fcmToken: String? =null
+        FirebaseMessaging.getInstance().token
+            .addOnSuccessListener { token ->
+                fcmToken = token  // Global variable me store karna
+                Log.d("FCM", "FCM Token: $fcmToken")
+            }
+            .addOnFailureListener {
+                Log.e("FCM", "Error fetching token: ${it.message}")
+            }
+
 
         // Create user in Firebase Authentication
         auth.createUserWithEmailAndPassword(email, password)
@@ -146,7 +158,9 @@ class SignUp : AppCompatActivity() {
                         "name" to name,
                         "email" to email,
                         "number" to number,
-                        "role" to selectedRole
+                        "role" to selectedRole,
+                        "fcmToken" to fcmToken!!
+
                     )
 
                     if (selectedRole == "Provider") {
