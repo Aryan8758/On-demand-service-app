@@ -24,7 +24,7 @@ class PendingRequestsActivity : AppCompatActivity() {
 
         // RecyclerView Setup
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = PendingRequestsAdapter(this,providerList)
+        adapter = PendingRequestsAdapter(providerList)
         binding.recyclerView.adapter = adapter
 
         fetchPendingRequests()

@@ -236,40 +236,20 @@ class BookingActivity : AppCompatActivity() {
     }
 
 
-    object TokenManager {
-        private var cachedToken: String? = null
-        private var tokenExpiryTime: Long = 0L
+    suspend fun getAccessToken(context: Context): String? {
+        return withContext(Dispatchers.IO) {  // Run on background thread
+            try {
 
-        suspend fun getAccessToken(context: Context): String? {
-            val currentTime = System.currentTimeMillis()
+                val jsonStream = context.assets.open("service-account.json")
+                Log.d("FCM", "File successfully opened!$jsonStream")
+                val googleCredentials = GoogleCredentials.fromStream(jsonStream)
+                    .createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
 
-            // ✅ Pehle se token hai aur expire nahi hua, to wahi return karo
-            if (cachedToken != null && currentTime < tokenExpiryTime) {
-                Log.d("FCM", "Using Cached Token: $cachedToken")
-                return cachedToken
-            }
-
-            return withContext(Dispatchers.IO) {
-                try {
-                    val jsonStream = context.assets.open("service-account.json")
-                    val googleCredentials = GoogleCredentials.fromStream(jsonStream)
-                        .createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
-
-                    googleCredentials.refreshIfExpired()
-                    val newToken = googleCredentials.accessToken?.tokenValue
-                    val expiresIn = googleCredentials.accessToken?.expirationTime?.time ?: 0L // ✅ Fixed
-
-                    if (newToken != null) {
-                        cachedToken = newToken
-                        tokenExpiryTime = expiresIn
-                    }
-
-                    Log.d("FCM", "Generated New Token: $newToken")
-                    newToken
-                } catch (e: IOException) {
-                    Log.e("FCM", "Error getting access token: ${e.message}")
-                    null
-                }
+                googleCredentials.refreshIfExpired()
+                googleCredentials.accessToken?.tokenValue
+            } catch (e: IOException) {
+                Log.e("FCM", "Error getting access token: ${e.message}")
+                null
             }
         }
     }
@@ -301,7 +281,7 @@ class BookingActivity : AppCompatActivity() {
     suspend fun sendFCMNotification(context: Context, providerToken: String, serviceName: String) {
         val fcmUrl = "https://fcm.googleapis.com/v1/projects/foryou-fa1d3/messages:send"
 
-        val accessToken = TokenManager.getAccessToken(context) // Run on background thread
+        val accessToken = getAccessToken(context) // Run on background thread
         if (accessToken == null) {
             Log.e("FCM", "Failed to generate access token")
             return
