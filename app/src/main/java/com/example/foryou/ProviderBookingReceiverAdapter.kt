@@ -1,5 +1,6 @@
 package com.example.foryou
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,6 +23,7 @@ class ProviderBookingReceiverAdapter(
 
     class BookingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtServiceName: TextView = view.findViewById(R.id.tvServiceName)
+        val design_layout: LinearLayout = view.findViewById(R.id.linerLayout)
         val txtCustomerName: TextView = view.findViewById(R.id.tvUserName)
         val txtBookingDate: TextView = view.findViewById(R.id.txtBookingDate)
         val imgProfile: ImageView = view.findViewById(R.id.imgProfile)
@@ -39,26 +42,38 @@ class ProviderBookingReceiverAdapter(
         holder.txtServiceName.text = booking.service
         holder.txtCustomerName.text = "Customer: ${booking.customerName}"
         holder.txtBookingDate.text = "Date: ${booking.bookingDate} | Time: ${booking.timeSlot}"
-        val Customerid =booking.CustomerId
-        val db=FirebaseFirestore.getInstance()
-        db.collection("customers").document(Customerid).addSnapshotListener { documentSnapshot, error ->
+
+        val customerId = booking.CustomerId
+        val db = FirebaseFirestore.getInstance()
+        var image=""
+        db.collection("customers").document(customerId).addSnapshotListener { documentSnapshot, error ->
             if (documentSnapshot != null) {
-                val image=documentSnapshot.getString("profileImage")
+                 image = documentSnapshot.getString("profileImage").toString()
                 holder.imgProfile.setImageBitmap(image?.let { decodeBase64ToBitmap(it) })
             }
-
         }
 
         holder.btnAccept.setOnClickListener {
-            Log.d("Adapter", "Accept clicked for ID: ${booking.bookingId}")  // Debugging ke liye
-            onAcceptClick(booking.bookingId)  // Accept button click hone par function call
+            Log.d("Adapter", "Accept clicked for ID: ${booking.bookingId}")
+            onAcceptClick(booking.bookingId)
         }
 
         holder.btnReject.setOnClickListener {
-            Log.d("Adapter", "Reject clicked for ID: ${booking.bookingId}")  // Debugging ke liye
-            onRejectClick(booking.bookingId)  // Reject button click hone par function call
+            Log.d("Adapter", "Reject clicked for ID: ${booking.bookingId}")
+            onRejectClick(booking.bookingId)
+        }
+
+        holder.design_layout.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, BookingDetailActivity::class.java).apply {
+                putExtra("CUSTOMER_ID", booking.CustomerId)
+                putExtra("BOOKING_ID", booking.bookingId)
+                putExtra("IMAGE",image)
+            }
+            context.startActivity(intent)
         }
     }
+
     private fun decodeBase64ToBitmap(base64String: String): Bitmap {
         val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)

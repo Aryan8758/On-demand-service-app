@@ -1,5 +1,6 @@
 package com.example.foryou
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -8,20 +9,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 
-class BookingAdapter(private val bookingModelList: List<Booking_model>) :
-    RecyclerView.Adapter<BookingAdapter.BookingViewHolder>() {
+class HistoryAdapter(private val bookingModelList: List<Booking_model>) :
+    RecyclerView.Adapter<HistoryAdapter.BookingViewHolder>() {
 
     class BookingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val serviceName: TextView = view.findViewById(R.id.tv_service_name)
-        val providerName: TextView = view.findViewById(R.id.tv_provider_name)
-        val bookingTime: TextView = view.findViewById(R.id.tv_booking_time)
-        val servicePrice: TextView = view.findViewById(R.id.tv_service_price)
-        val serviceStatus: TextView = view.findViewById(R.id.service_status)
+        val providerName: TextView = view.findViewById(R.id.tv_provider)
+        val bookingTime: TextView = view.findViewById(R.id.tv_date_time)
+        val servicePrice: TextView = view.findViewById(R.id.tv_price)
+        val serviceStatus: TextView = view.findViewById(R.id.tv_status)
         val serviceImage: ImageView = view.findViewById(R.id.iv_service_image)
+        val menu_options: ImageView = view.findViewById(R.id.menu_options)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookingViewHolder {
@@ -39,6 +44,7 @@ class BookingAdapter(private val bookingModelList: List<Booking_model>) :
         holder.servicePrice.text = "$50.00"  // You can change this dynamically if price exists
         holder.serviceStatus.text = booking.status
 
+
         // Change status color dynamically
         when (booking.status) {
             "Pending" -> holder.serviceStatus.setTextColor(Color.parseColor("#FFA500"))
@@ -46,6 +52,31 @@ class BookingAdapter(private val bookingModelList: List<Booking_model>) :
             "Rejected" -> holder.serviceStatus.setTextColor(Color.parseColor("#FF0000"))
         }
         fetchProviderDetails(booking.ProviderId,holder)
+        holder.menu_options.setOnClickListener { view ->
+            val popup = PopupMenu(view.context, holder.menu_options)
+            popup.menuInflater.inflate(R.menu.order_menu, popup.menu)
+
+            // **Menu item click listener**
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.cancel_order -> {
+                        cancelBooking(position,holder.itemView.context,booking.CustomerId,booking.bookingId)
+                        true
+                    }
+//                    R.id.menu_view_details -> {
+//                        viewBookingDetails(view.context, booking)
+//                        true
+//                    }
+//                    R.id.menu_report -> {
+//                        reportIssue(view.context, booking.bookingId)
+//                        true
+//                    }
+                    else -> false
+                }
+            }
+            popup.show()
+        }
+
 
         // Set service image dynamically (You can change this logic)
         //holder.serviceImage.setImageResource(R.drawable.man)
@@ -74,6 +105,32 @@ class BookingAdapter(private val bookingModelList: List<Booking_model>) :
             }
         }
     }
+    // **Cancel Booking function**
+    private fun cancelBooking(position:Int,context: Context,customerId: String, bookingId: String) {
+       FirebaseDatabase.getInstance().getReference("booking").child(customerId).child(bookingId).child("status").setValue("Order cancel").addOnSuccessListener {
+           Toast.makeText(context, "Booking Cancelled Successfully!", Toast.LENGTH_SHORT).show()
+           // ✅ **List me status change karo**
+          // bookingModelList[position].status = "Order Cancelled"
+
+           // ✅ **Adapter notify karo**
+           notifyDataSetChanged()
+       }
+    }
+
+    // **View Booking Details function**
+//    private fun viewBookingDetails(context: Context, booking: Booking_model) {
+//        val intent = Intent(context, BookingDetailActivity::class.java)
+//        intent.putExtra("bookingId", booking.bookingId)
+//        context.startActivity(intent)
+//    }
+//
+//    // **Report Issue function**
+//    private fun reportIssue(context: Context, bookingId: String) {
+//        val intent = Intent(context, ReportIssueActivity::class.java)
+//        intent.putExtra("bookingId", bookingId)
+//        context.startActivity(intent)
+//    }
+
     private fun decodeBase64ToBitmap(base64String: String): Bitmap {
         val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)

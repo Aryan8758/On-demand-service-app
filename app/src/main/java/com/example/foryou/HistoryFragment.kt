@@ -18,7 +18,7 @@ class HistoryFragment : Fragment() {
     private val binding get() = _binding!!  // Safe binding reference
 
     private lateinit var bookingList: MutableList<Booking_model>
-    private lateinit var adapter: BookingAdapter
+    private lateinit var adapter: HistoryAdapter
     private lateinit var databaseRef: DatabaseReference
 
     override fun onCreateView(
@@ -32,7 +32,7 @@ class HistoryFragment : Fragment() {
         binding.recyclerViewHistory.itemAnimator = DefaultItemAnimator()
 
         bookingList = mutableListOf()
-        adapter = BookingAdapter(bookingList)
+        adapter = HistoryAdapter(bookingList)
         binding.recyclerViewHistory.adapter = adapter
 
         fetchBookings()
@@ -48,6 +48,9 @@ class HistoryFragment : Fragment() {
                 bookingList.clear()
                 for (bookingSnapshot in snapshot.children) {
                     val booking = bookingSnapshot.getValue(Booking_model::class.java)
+                    if (booking != null) {
+                        booking.bookingId = bookingSnapshot.key ?: ""
+                    }
                     booking?.let { bookingList.add(it) }
                 }
                 adapter.notifyDataSetChanged()
@@ -58,6 +61,7 @@ class HistoryFragment : Fragment() {
             }
         })
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
