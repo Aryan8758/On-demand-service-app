@@ -41,7 +41,7 @@ class CateroryAdpater2(private val categories: List<CategoriesItemModel>) : Recy
             context.startActivity(intent)
         }
 
-    holder.card.setBackgroundResource(category.bgColor)
+//    holder.card.setBackgroundResource(category.bgColor)
 }
 
     override fun getItemCount(): Int {

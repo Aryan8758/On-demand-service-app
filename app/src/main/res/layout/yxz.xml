@@ -1,158 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@drawable/bg_gradient">
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="8dp">
 
-    <!-- Total Customers Box -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_customers"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/card_bg"
-        android:layout_centerHorizontal="true"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="8dp"
-        android:backgroundTint="#6200EE">
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@drawable/bg_gradient">
 
-        <LinearLayout
+        <!-- Background Gradient -->
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_height="100dp"
+            android:scaleType="fitXY" />
 
-            <TextView
-                android:id="@+id/txt_total_customers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Customers"
-                android:textSize="16sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
+        <!-- Text Section -->
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="It's time to do ' For You ' !"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:paddingStart="5dp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentStart="true"/>
 
-            <TextView
-                android:id="@+id/value_total_customers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="120"
-                android:textSize="26sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="We care for your home like you do.\nLet us #MakeItHappen!"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:paddingStart="5dp"
+            android:layout_below="@id/tv_title"
+            android:layout_marginTop="8dp"/>
 
-    <!-- Total Providers Box -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_providers"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_below="@id/card_customers"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="8dp"
-        android:backgroundTint="#03DAC5">
+        <!-- Image Section -->
+        <ImageView
+            android:id="@+id/img_worker"
+            android:layout_width="80dp"
+            android:layout_height="100dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/man"
+            android:scaleType="fitCenter"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_total_providers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Providers"
-                android:textSize="16sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/value_total_providers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="50"
-                android:textSize="26sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Pending Requests Box -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_pending"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_below="@id/card_providers"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="8dp"
-        android:backgroundTint="#FFA000">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_pending_requests"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pending Requests"
-                android:textSize="16sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/value_pending_requests"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10"
-                android:textSize="26sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Approved Providers Box -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_approved"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_below="@id/card_pending"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="8dp"
-        android:backgroundTint="#4CAF50">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_approved_providers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Approved Providers"
-                android:textSize="16sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/value_approved_providers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="40"
-                android:textSize="26sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-</RelativeLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

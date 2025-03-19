@@ -27,16 +27,16 @@ class CategoryFragment : Fragment() {
 
 
         val categoryList = listOf(
-            CategoriesItemModel(R.drawable.ak, "Plumber", R.drawable.blue_bg),
-            CategoriesItemModel(R.drawable.ak, "Teacher", R.drawable.red_bg),
-            CategoriesItemModel(R.drawable.ak, "Driver", R.drawable.green_bg),
-            CategoriesItemModel(R.drawable.ak, "Electrician", R.drawable.purple_bg),
-            CategoriesItemModel(R.drawable.ak, "Mechanic", R.drawable.yellow_bg),
-            CategoriesItemModel(R.drawable.ak, "Gardener", R.drawable.blue_bg),
-            CategoriesItemModel(R.drawable.ak, "Painter", R.drawable.red_bg),
-            CategoriesItemModel(R.drawable.ak, "Chef", R.drawable.green_bg),
-            CategoriesItemModel(R.drawable.ak, "Maid", R.drawable.purple_bg),
-            CategoriesItemModel(R.drawable.ak, "Babysitter", R.drawable.yellow_bg)
+            CategoriesItemModel(R.drawable.plumber1, "Plumber", R.drawable.ex),
+            CategoriesItemModel(R.drawable.teacher, "Teacher", R.drawable.ex),
+            CategoriesItemModel(R.drawable.driver1, "Driver", R.drawable.ex),
+            CategoriesItemModel(R.drawable.electrician, "Electrician", R.drawable.ex),
+            CategoriesItemModel(R.drawable.mechanic, "Mechanic", R.drawable.ex),
+            CategoriesItemModel(R.drawable.gardner, "Gardener", R.drawable.ex),
+            CategoriesItemModel(R.drawable.painter, "Painter", R.drawable.ex),
+            CategoriesItemModel(R.drawable.chef, "Chef", R.drawable.ex),
+            CategoriesItemModel(R.drawable.maid, "Maid", R.drawable.ex),
+            CategoriesItemModel(R.drawable.babysitter, "Babysitter", R.drawable.ex)
         )
 
         val adapter = CateroryAdpater2(categoryList)

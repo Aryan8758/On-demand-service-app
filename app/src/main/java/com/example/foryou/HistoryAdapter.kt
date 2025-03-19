@@ -60,7 +60,7 @@ class HistoryAdapter(private val bookingModelList: List<Booking_model>) :
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.cancel_order -> {
-                        cancelBooking(position,holder.itemView.context,booking.CustomerId,booking.bookingId)
+                        cancelBooking(holder.itemView.context,booking.CustomerId,booking.ProviderId,booking.bookingId,booking.bookingDate,booking.timeSlot)
                         true
                     }
 //                    R.id.menu_view_details -> {
@@ -106,16 +106,41 @@ class HistoryAdapter(private val bookingModelList: List<Booking_model>) :
         }
     }
     // **Cancel Booking function**
-    private fun cancelBooking(position:Int,context: Context,customerId: String, bookingId: String) {
-       FirebaseDatabase.getInstance().getReference("booking").child(customerId).child(bookingId).child("status").setValue("Order cancel").addOnSuccessListener {
-           Toast.makeText(context, "Booking Cancelled Successfully!", Toast.LENGTH_SHORT).show()
-           // ✅ **List me status change karo**
-          // bookingModelList[position].status = "Order Cancelled"
+    private fun cancelBooking(
+        context: Context,
+        customerId: String,
+        providerId: String,  // 🔥 Provider ID bhi chahiye slot update karne ke liye
+        bookingId: String,
+        selectedDate: String,
+        selectedTimeSlot: String // 🔥 Cancel hone wale slot ka time bhi chahiye
+    ) {
+        val db = FirebaseDatabase.getInstance().reference
 
-           // ✅ **Adapter notify karo**
-           notifyDataSetChanged()
-       }
+        // **🔥 1️⃣ Booking status "Order Cancel" karo**
+        db.child("booking").child(customerId).child(bookingId).child("status")
+            .setValue("Order Cancel")
+            .addOnSuccessListener {
+                // **🔥 2️⃣ Firestore me slot ko "available" karo**
+                val slotRef = FirebaseFirestore.getInstance()
+                    .collection("slots").document(providerId)
+                    .collection(selectedDate).document(selectedTimeSlot)
+
+                slotRef.update("status", "available")
+                    .addOnSuccessListener {
+                        Toast.makeText(context, "Booking Cancelled", Toast.LENGTH_SHORT).show()
+
+                        // ✅ **Adapter notify karo**
+                        notifyDataSetChanged()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(context, "Failed to update slot!", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Failed to cancel booking!", Toast.LENGTH_SHORT).show()
+            }
     }
+
 
     // **View Booking Details function**
 //    private fun viewBookingDetails(context: Context, booking: Booking_model) {

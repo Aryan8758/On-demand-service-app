@@ -2,9 +2,11 @@ package com.example.foryou
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import com.google.auth.oauth2.GoogleCredentials
 import android.util.Log
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.foryou.databinding.ActivityBookingactivityBinding
@@ -12,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -94,6 +97,8 @@ class BookingActivity : AppCompatActivity() {
         }
 
         // 📅 Date Picker
+        binding.timeSlotGrid.visibility = View.GONE // 🚀 Pehle hide rakho
+
         binding.btnSelectDate.setOnClickListener {
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
@@ -101,64 +106,37 @@ class BookingActivity : AppCompatActivity() {
             val day = calendar.get(Calendar.DAY_OF_MONTH)
 
             val datePicker = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-                selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                selectedDate = "$selectedDay-${selectedMonth + 1}-$selectedYear"
                 binding.tvSelectedDate.text = selectedDate
+
+                if (selectedDate.isNotEmpty()) {
+                    binding.timeSlotTv.visibility=View.VISIBLE
+                    binding.timeSlotGrid.visibility = View.VISIBLE // 🔥 Jab date select ho, tab slots dikhai do
+                    fetchAvailableSlots(ProviderId, selectedDate) // ⏰ Slots fetch karo
+                }
             }, year, month, day)
 
+            // 🔴 **Disable past dates**
+            datePicker.datePicker.minDate = System.currentTimeMillis() - 1000
             datePicker.show()
         }
-//        val timeSlots = listOf(
-//            "10:00 AM", "11:00 AM", "12:00 PM",
-//            "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"
-//        )
-//
-//        val bookedSlots = setOf("12:00 PM", "4:00 PM") // Example booked slots
-//
-//        var selectedChip: Chip? = null  // To keep track of selected chip
-//
-//        for (slot in timeSlots) {
-//            val chip = Chip(this).apply {
-//                text = slot
-//                isCheckable = true
-//                isClickable = true
-//                chipBackgroundColor = getColorStateList(R.color.chip_selector)
-//
-//                // Agar booked hai toh disable kar do
-//                isEnabled = !bookedSlots.contains(slot)
-//
+
+
+//        // ⏰ Time Slot Selection
+//        val timeSlots = listOf("10:00 AM", "12:00 PM", "2:00 PM", "4:00 PM", "6:00 PM")
+//        for (time in timeSlots) {
+//            val button = Button(this).apply {
+//                text = time
+//                textSize = 15f
+//                setPadding(10,10,10,10)
+//               // setBackgroundResource(R.drawable.rounded_bg)
 //                setOnClickListener {
-//                    if (!isEnabled) return@setOnClickListener  // Disable booked slot click
-//
-//                    // Pehle wale chip ka selection hatao
-//                    selectedChip?.isChecked = false
-//                    selectedChip = this // New selected chip
-//
-//                    selectedTimeSlot = slot
-//                    showSnackbar("Selected: $slot")
+//                    selectedTimeSlot = time
+//                    Toast.makeText(this@BookingActivity, "Selected: $time", Toast.LENGTH_SHORT).show()
 //                }
 //            }
-//            binding.timeSlotGrid.addView(chip)
+//            binding.timeSlotGrid.addView(button)
 //        }
-
-
-
-
-
-        // ⏰ Time Slot Selection
-        val timeSlots = listOf("10:00 AM", "12:00 PM", "2:00 PM", "4:00 PM", "6:00 PM")
-        for (time in timeSlots) {
-            val button = Button(this).apply {
-                text = time
-                textSize = 15f
-                setPadding(10,10,10,10)
-               // setBackgroundResource(R.drawable.rounded_bg)
-                setOnClickListener {
-                    selectedTimeSlot = time
-                    Toast.makeText(this@BookingActivity, "Selected: $time", Toast.LENGTH_SHORT).show()
-                }
-            }
-            binding.timeSlotGrid.addView(button)
-        }
 
         // 💳 Payment Method Selection
         binding.rgPayment.setOnCheckedChangeListener { _, checkedId ->
@@ -202,36 +180,123 @@ class BookingActivity : AppCompatActivity() {
             bookService(ServiceName,ProviderId,name,selectedDate,selectedTimeSlot,selectedPaymentMethod)
         }
     }
-    fun bookService(serviceName:String,providerId:String,name:String,selectedDate:String,selectTimeslot:String,selectPaymentMethod:String){
-        val currentUser=FirebaseAuth.getInstance().currentUser
+
+
+    fun bookService(serviceName: String, providerId: String, name: String, selectedDate: String, selectTimeslot: String, selectPaymentMethod: String) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
-            Toast.makeText(this, "userid not found ", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show()
             return
         }
-        val databaseRef=FirebaseDatabase.getInstance().getReference("booking")
-        val bookingId=databaseRef.push().key// generate Unique id and push it
-        if (bookingId!=null){
-            val bookingData= mapOf(
+
+        val databaseRef = FirebaseDatabase.getInstance().getReference("booking")
+        val bookingId = databaseRef.push().key // Generate Unique ID and push it
+
+        if (bookingId != null) {
+            val bookingData = mapOf(
                 "CustomerId" to currentUser.uid,
                 "ProviderId" to providerId,
                 "customerName" to name,
                 "service" to serviceName,
                 "bookingDate" to selectedDate,
-                "timeSlot" to selectedTimeSlot,
-                "paymentMethod" to selectedPaymentMethod,
+                "timeSlot" to selectTimeslot,
+                "paymentMethod" to selectPaymentMethod,
                 "status" to "Pending",
                 "timestamp" to System.currentTimeMillis()
-
             )
-            databaseRef.child(currentUser.uid).child(bookingId).setValue(bookingData).addOnSuccessListener {
-                Toast.makeText(this, "Booking confirm", Toast.LENGTH_SHORT).show()
-              // startActivity(Intent(this,HistoryFragment::class.java))
-                sendNotificationToProvider(name,providerId)  // Send Notification
-            }.addOnFailureListener { e->
-                Toast.makeText(this, "Booking fail:{$e.message}", Toast.LENGTH_SHORT).show()
+
+            // ✅ 1️⃣ Realtime Database me booking save karo
+            databaseRef.child(currentUser.uid).child(bookingId).setValue(bookingData)
+                .addOnSuccessListener {
+                    // ✅ 2️⃣ Firestore me Slot Status Update karo
+                    updateFirestoreSlot(providerId, selectedDate, selectTimeslot, currentUser.uid)
+
+                    // 🔥 Notification bhejo provider ko
+                    sendNotificationToProvider(name, providerId)
+                    showSnackbar("Booking confirmed")
+                //    Toast.makeText(this, "Booking confirmed", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    showSnackbar("Booking failed")
+                   // Toast.makeText(this, "Booking failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+    fun fetchAvailableSlots(providerId: String, selectedDate: String) {
+        val defaultTimeSlots = listOf("10:00 AM", "11:00 AM", "12:00 PM", "2:00 PM", "4:00 PM", "6:00 PM")
+        val db = FirebaseFirestore.getInstance()
+        val slotRef = db.collection("slots").document(providerId).collection(selectedDate)
+
+        slotRef.addSnapshotListener { snapshots, error ->
+            if (error != null) {
+                Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            binding.timeSlotGrid.removeAllViews() // 🗑 Purane slots clear karo
+
+            val bookedSlots = mutableSetOf<String>() // ❌ Booked slots track karne ke liye
+            snapshots?.forEach { document ->
+                if (document.getString("status") == "booked") {
+                    bookedSlots.add(document.id)
+                }
+            }
+
+            var selectedButton: Button? = null // 🔹 Track karo pehle select kiya hua button
+
+            for (time in defaultTimeSlots) {
+                val button = Button(this@BookingActivity).apply {
+                    text = time
+                    textSize = 15f
+                    setPadding(10, 10, 10, 10)
+
+                    if (bookedSlots.contains(time)) {
+                        setBackgroundColor(Color.RED) // ❌ Booked slot = RED
+                        setOnClickListener {
+                            Toast.makeText(this@BookingActivity, "Already booked!", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        setBackgroundColor(Color.GREEN) // ✅ Available slot = GREEN
+                        setOnClickListener {
+                            selectedTimeSlot = time
+
+                            // 🔹 Pehle wale selected button ko wapas GREEN karo
+                            selectedButton?.setBackgroundColor(Color.GREEN)
+
+                            // 🔹 Naya selected button BLUE karo
+                            setBackgroundColor(Color.BLUE)
+                            selectedButton = this // 🔥 Update selected button reference
+
+                            Toast.makeText(this@BookingActivity, "Selected: $time", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                binding.timeSlotGrid.addView(button)
             }
         }
-    } private fun showSnackbar(message: String) {
+    }
+
+    private fun updateFirestoreSlot(providerId: String, selectedDate: String, selectedTimeSlot: String, userId: String) {
+        val db = FirebaseFirestore.getInstance()
+        val slotRef = db.collection("slots")
+            .document(providerId)
+            .collection(selectedDate)
+            .document(selectedTimeSlot)
+
+        // Firestore slots path: slots/{ProviderId}/{selectedDate}/{selectedTimeSlot}
+        slotRef.set(
+            mapOf(
+                "bookedBy" to userId,
+                "status" to "booked"
+            ), SetOptions.merge()
+        ).addOnSuccessListener {
+            Log.d("Firestore", "Slot booked successfully")
+            fetchAvailableSlots(providerId, selectedDate) // 🔄 UI update
+        }.addOnFailureListener { e ->
+            Log.e("Firestore", "Error updating slot: ${e.message}")
+        }
+    }
+    private fun showSnackbar(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 

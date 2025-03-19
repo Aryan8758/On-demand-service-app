@@ -33,7 +33,7 @@ class CategoriesAdapter(private val itemList:List<CategoriesItemModel>):Recycler
         val context=holder.itemView.context
         holder.ServiceName.text = item.title
         holder.ServiceImage.setImageResource(item.imageResId)
-        holder.cardView.setBackgroundResource(item.bgColor)
+       // holder.cardView.setBackgroundResource(item.bgColor)
         holder.itemView.setOnClickListener {
             Toast.makeText(context, "Clicked: ${item.title}", Toast.LENGTH_SHORT).show()
             val intent = Intent(holder.itemView.context,ProviderList::class.java)
