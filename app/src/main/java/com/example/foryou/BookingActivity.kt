@@ -1,11 +1,16 @@
 package com.example.foryou
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import com.google.auth.oauth2.GoogleCredentials
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -44,6 +49,7 @@ class BookingActivity : AppCompatActivity() {
         val firestore = FirebaseFirestore.getInstance()
         val ServiceName = intent.getStringExtra("ServiceName") ?: "Unknown"
         val ProviderId = intent.getStringExtra("ProviderId") ?: "Unknown"
+        val pricerRate = intent.getStringExtra("PricerRate") ?: "Unknown"
 
         // 🔥 Firestore se user ka data fetch karo
         if (currentUser != null) {
@@ -177,12 +183,28 @@ class BookingActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please select a payment method", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            bookService(ServiceName,ProviderId,name,selectedDate,selectedTimeSlot,selectedPaymentMethod)
+            bookService(ServiceName,ProviderId,name,selectedDate,selectedTimeSlot,selectedPaymentMethod,pricerRate)
         }
+    }
+    private fun showSuccessDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_success, null)
+        val builder = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+
+        val alertDialog = builder.create()
+        alertDialog.show()
+
+        // Handler to dismiss after 2 seconds and navigate to home
+        Handler(Looper.getMainLooper()).postDelayed({
+            alertDialog.dismiss()
+            startActivity(Intent(this,MainActivity::class.java))
+            finish()
+        }, 2000)
     }
 
 
-    fun bookService(serviceName: String, providerId: String, name: String, selectedDate: String, selectTimeslot: String, selectPaymentMethod: String) {
+    fun bookService(serviceName: String, providerId: String, name: String, selectedDate: String, selectTimeslot: String, selectPaymentMethod: String,PricerRate:String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
             Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show()
@@ -197,6 +219,7 @@ class BookingActivity : AppCompatActivity() {
                 "CustomerId" to currentUser.uid,
                 "ProviderId" to providerId,
                 "customerName" to name,
+                "PricerRate" to PricerRate ,
                 "service" to serviceName,
                 "bookingDate" to selectedDate,
                 "timeSlot" to selectTimeslot,
@@ -213,6 +236,7 @@ class BookingActivity : AppCompatActivity() {
 
                     // 🔥 Notification bhejo provider ko
                     sendNotificationToProvider(name, providerId)
+                    showSuccessDialog()
                     showSnackbar("Booking confirmed")
                 //    Toast.makeText(this, "Booking confirmed", Toast.LENGTH_SHORT).show()
                 }

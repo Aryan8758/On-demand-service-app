@@ -222,7 +222,7 @@ class ProfileFragment : Fragment() {
             val updatedExperience = binding.userExperience.text.toString().trim()
             val updatedCity = binding.userCity.text.toString().trim()
             val updatedAboutBio = binding.aboutBio.text.toString().trim()
-            val updatedPriceRate = "₹" + binding.priceRate.text.toString().trim()
+            val updatedPriceRate =binding.priceRate.text.toString().trim()
 
             if (updatedService.isEmpty()) {
                 binding.userService.error = "Service can't be empty"

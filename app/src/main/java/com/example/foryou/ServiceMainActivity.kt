@@ -23,7 +23,7 @@ class ServiceMainActivity : AppCompatActivity() {
 
     // Fragments initialized once
     private val homeFragment = ProviderBookingReciever()
-    private val historyFragment = HistoryFragment()
+    private val providerStatus = ProviderStatus()
     private val profileFragment = ProfileFragment()
 
     private var activeFragment: Fragment = homeFragment  // Track active fragment
@@ -42,7 +42,7 @@ class ServiceMainActivity : AppCompatActivity() {
         // Initialize fragments once and hide all except homeFragment
         supportFragmentManager.beginTransaction()
             .add(R.id.fview, homeFragment, "Home")
-            .add(R.id.fview, historyFragment, "History").hide(historyFragment)
+            .add(R.id.fview, providerStatus, "Status").hide(providerStatus)
             .add(R.id.fview, profileFragment, "Profile").hide(profileFragment)
             .commit()
 
@@ -50,7 +50,7 @@ class ServiceMainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_home -> showFragment(homeFragment)
-                R.id.nav_his -> showFragment(historyFragment)
+                R.id.nav_his -> showFragment(providerStatus)
                 R.id.nav_per -> showFragment(profileFragment)
             }
             true

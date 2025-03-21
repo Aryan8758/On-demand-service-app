@@ -20,6 +20,7 @@ class Provider_Detail : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
         val ProviderId = intent.getStringExtra("ProviderId") ?: "Unknown"
+        var priceRate=""
         db.collection("providers").document(ProviderId).get()
             .addOnSuccessListener { document->
                 if (document.exists()){
@@ -29,7 +30,7 @@ class Provider_Detail : AppCompatActivity() {
                     val contact = document.getString("number") ?: "Not Available"
                     val address = document.getString("city") ?: "Not Available"
                     val description = document.getString("aboutBio") ?: "No description available."
-                    val priceRate = document.getString("priceRate") ?: "No description available."
+                     priceRate = document.getString("priceRate") ?: "No description available."
                     val image = document.getString("profileImage") ?: ""
                     binding.providerName.text=name
                     binding.serviceName.text=service
@@ -37,7 +38,7 @@ class Provider_Detail : AppCompatActivity() {
                     binding.providerContact.text="📞 $contact"
                     binding.providerAddress.text="📍 $address"
                     binding.serviceDescription.text=description
-                    binding.servicePrice.text="Price: ₹$priceRate"
+                    binding.servicePrice.text="Price:$priceRate"
                     binding.serviceImage.setImageBitmap(decodeBase64ToBitmap(image))
                 }
             }
@@ -49,6 +50,7 @@ class Provider_Detail : AppCompatActivity() {
             val intent=Intent(this,BookingActivity::class.java)
             intent.putExtra("ServiceName",ServiceName)
             intent.putExtra("ProviderId",ProviderId)
+            intent.putExtra("PricerRate",priceRate)
             startActivity(intent)
 
 

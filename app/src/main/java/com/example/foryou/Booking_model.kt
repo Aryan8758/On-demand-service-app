@@ -6,6 +6,7 @@ data class Booking_model (
     var bookingId: String = "",
     val bookingDate: String = "",
     val paymentMethod: String = "",
+    val PricerRate:String="",
     val service: String = "",
     var status: String = "",
     val timeSlot: String = "",

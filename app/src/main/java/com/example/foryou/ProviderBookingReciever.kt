@@ -31,7 +31,7 @@ import java.io.IOException
 
 class ProviderBookingReciever : Fragment() {
     private var _binding: FragmentProviderBookingRecieveBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
 
     private lateinit var adapter: ProviderBookingReceiverAdapter
     private var bookingList = mutableListOf<ProviderBookingReceiverModel>()
@@ -42,12 +42,12 @@ class ProviderBookingReciever : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProviderBookingRecieveBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.notificationRecycler.layoutManager = LinearLayoutManager(requireContext())
+        binding?.notificationRecycler?.layoutManager = LinearLayoutManager(requireContext())
 
         fetchBookings()
         setupSwipeGestures()
@@ -58,9 +58,9 @@ class ProviderBookingReciever : Fragment() {
         val databaseRef = FirebaseDatabase.getInstance().getReference("booking")
 
         // Step 1: Show shimmer & hide everything else
-        binding.shimmerViewContainer.visibility = View.VISIBLE
-        binding.notificationRecycler.visibility = View.GONE
-        binding.noBookingText.visibility = View.GONE
+        binding!!.shimmerViewContainer.visibility = View.VISIBLE
+        binding!!.notificationRecycler.visibility = View.GONE
+        binding!!.noBookingText.visibility = View.GONE
 
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -81,20 +81,20 @@ class ProviderBookingReciever : Fragment() {
                 }
 
                 // Step 2: Hide shimmer layout
-                binding.shimmerViewContainer.stopShimmer()
-                binding.shimmerViewContainer.visibility = View.GONE
+                binding?.shimmerViewContainer?.stopShimmer()
+                binding?.shimmerViewContainer?.visibility = View.GONE
 
                 // Step 3: Show either RecyclerView or No Booking Message
                 if (bookingList.isEmpty()) {
-                    binding.noBookingText.visibility = View.VISIBLE
-                    binding.notificationRecycler.visibility = View.GONE
+                    binding!!.noBookingText.visibility = View.VISIBLE
+                    binding!!.notificationRecycler.visibility = View.GONE
                 } else {
-                    binding.notificationRecycler.visibility = View.VISIBLE
-                    binding.noBookingText.visibility = View.GONE
+                    binding!!.notificationRecycler.visibility = View.VISIBLE
+                    binding!!.noBookingText.visibility = View.GONE
                 }
 
                 adapter = ProviderBookingReceiverAdapter(bookingList, ::acceptBooking, ::rejectBooking)
-                binding.notificationRecycler.adapter = adapter
+                binding!!.notificationRecycler.adapter = adapter
                 adapter.notifyDataSetChanged()
             }
 
@@ -123,12 +123,38 @@ class ProviderBookingReciever : Fragment() {
                 for (customerSnapshot in snapshot.children) {
                     for (bookingSnapshot in customerSnapshot.children) {
                         if (bookingSnapshot.key == bookingId) {
-                            val userId = customerSnapshot.key  // User ID extract karein
+                            val userId = customerSnapshot.key  // 🔹 User ID extract karein
+                            val providerId = bookingSnapshot.child("ProviderId").value.toString()
+                            val selectedDate = bookingSnapshot.child("bookingDate").value.toString()
+                            val selectedTimeSlot = bookingSnapshot.child("timeSlot").value.toString()
+                            Log.d("detail","$providerId,$selectedDate,$selectedTimeSlot")
+
+                            // 🔥 **1️⃣ Firebase me status update karo**
                             bookingSnapshot.ref.child("status").setValue(status)
                                 .addOnSuccessListener {
-                                    Toast.makeText(requireContext(), "Booking $status", Toast.LENGTH_SHORT).show()
+                                  //  Toast.makeText(requireContext(), "Booking $status", Toast.LENGTH_SHORT).show()
                                     fetchBookings()
-                                    userId?.let { fetchUserFCMToken(it, status) }  // FCM bhejne ke liye function call karein
+                                    userId?.let { fetchUserFCMToken(it, status) } // ✅ FCM notification bhejne ke liye
+
+                                    // 🔥 **2️⃣ Sirf cancel/reject hone pe slot available karo**
+                                    if (status == "Rejected") {
+                                        val slotRef = FirebaseFirestore.getInstance()
+                                            .collection("slots").document(providerId)
+                                            .collection(selectedDate).document(selectedTimeSlot)
+
+                                        val updates = mapOf(
+                                            "status" to "available",  // ✅ Slot available ho jaye
+                                            "bookedBy" to ""          // ✅ BookedBy field empty ho jaye
+                                        )
+
+                                        slotRef.update(updates)
+                                            .addOnSuccessListener {
+                                                Toast.makeText(requireContext(), "Booking $status", Toast.LENGTH_SHORT).show()
+                                            }
+                                            .addOnFailureListener {
+                                                Toast.makeText(requireContext(), "Failed to update slot!", Toast.LENGTH_SHORT).show()
+                                            }
+                                    }
                                 }
                                 .addOnFailureListener {
                                     Toast.makeText(requireContext(), "Failed to update status", Toast.LENGTH_SHORT).show()
@@ -205,11 +231,13 @@ class ProviderBookingReciever : Fragment() {
                     rejectBooking(booking.bookingId)
 
                     // Snackbar with Undo Option
-                    Snackbar.make(binding.root, "Booking Rejected", Snackbar.LENGTH_LONG)
-                        .setAction("UNDO") {
-                            undoRejectBooking(booking)
-                        }
-                        .show()
+                    binding?.let {
+                        Snackbar.make(it.root, "Booking Rejected", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO") {
+                                undoRejectBooking(booking)
+                            }
+                            .show()
+                    }
                 }
                 adapter.notifyItemRemoved(position)
             }
@@ -243,12 +271,53 @@ class ProviderBookingReciever : Fragment() {
             }
         }
 
-        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.notificationRecycler)
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding?.notificationRecycler)
     }
 
     private fun undoRejectBooking(booking: ProviderBookingReceiverModel) {
-        updateBookingStatus(booking.bookingId, "Pending")
+        updateBookingStatus(booking.bookingId,"Pending")
+        val databaseRef = FirebaseDatabase.getInstance().getReference("booking")
+        val slotRef = FirebaseFirestore.getInstance()
+            .collection("slots").document(booking.ProviderId)
+            .collection(booking.bookingDate).document(booking.timeSlot)
+
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (customerSnapshot in snapshot.children) {
+                    for (bookingSnapshot in customerSnapshot.children) {
+                        if (bookingSnapshot.key == booking.bookingId) {
+                            // 🔹 Booking Status "Pending" karo
+                            bookingSnapshot.ref.child("status").setValue("Pending")
+                                .addOnSuccessListener {
+
+                                    // 🔹 Slot Status "booked" karo
+                                    val slotUpdates = mapOf(
+                                        "status" to "booked",  // 🔄 Slot ko wapas booked karo
+                                        "bookedBy" to booking.CustomerId  // 🔄 User ID wapas set karo
+                                    )
+                                    slotRef.update(slotUpdates)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(requireContext(), "Booking Restored", Toast.LENGTH_SHORT).show()
+                                        }
+                                        .addOnFailureListener {
+                                            Toast.makeText(requireContext(), "Failed to restore slot!", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(requireContext(), "Failed to restore booking", Toast.LENGTH_SHORT).show()
+                                }
+                            return
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
+
     //notification code
     private fun fetchUserFCMToken(userId: String, status: String) {
          FirebaseFirestore.getInstance().collection("customers").document(userId).get().addOnSuccessListener {doc->

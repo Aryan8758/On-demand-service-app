@@ -187,8 +187,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:hint="About Me"
-                    android:text="About Me"
+                    android:hint="PriceRate"
+                    android:text="PriceRate"
                     android:textSize="16sp"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>

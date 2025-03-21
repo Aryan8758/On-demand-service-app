@@ -39,43 +39,54 @@ class HistoryAdapter(private val bookingModelList: List<Booking_model>) :
         val booking = bookingModelList[position]
 
         holder.serviceName.text = booking.service
-        holder.providerName.text = booking.ProviderId
         holder.bookingTime.text = "${booking.bookingDate}, ${booking.timeSlot}"
-        holder.servicePrice.text = "$50.00"  // You can change this dynamically if price exists
+        holder.servicePrice.text = booking.PricerRate // You can change this dynamically if price exists
         holder.serviceStatus.text = booking.status
 
 
         // Change status color dynamically
         when (booking.status) {
-            "Pending" -> holder.serviceStatus.setTextColor(Color.parseColor("#FFA500"))
-            "Accepted" -> holder.serviceStatus.setTextColor(Color.parseColor("#008000"))
-            "Rejected" -> holder.serviceStatus.setTextColor(Color.parseColor("#FF0000"))
+            "Pending" -> {
+                holder.serviceStatus.setTextColor(Color.parseColor("#FFA500"))
+                holder.menu_options.visibility = View.VISIBLE  // Show menu for Pending
+            }
+            "Accepted" -> {
+                holder.serviceStatus.setTextColor(Color.parseColor("#008000"))
+                holder.menu_options.visibility = View.VISIBLE  // Show menu for Accepted
+            }
+            "Rejected" -> {
+                holder.serviceStatus.setTextColor(Color.parseColor("#FF0000"))
+                holder.menu_options.visibility = View.GONE  // Hide menu for Rejected
+            }
+            "Order Cancel" ->{
+                holder.serviceStatus.setTextColor(Color.parseColor("#FF0000"))
+            }
         }
-        fetchProviderDetails(booking.ProviderId,holder)
+        fetchProviderDetails(booking.ProviderId, holder)
+
         holder.menu_options.setOnClickListener { view ->
             val popup = PopupMenu(view.context, holder.menu_options)
             popup.menuInflater.inflate(R.menu.order_menu, popup.menu)
 
-            // **Menu item click listener**
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.cancel_order -> {
-                        cancelBooking(holder.itemView.context,booking.CustomerId,booking.ProviderId,booking.bookingId,booking.bookingDate,booking.timeSlot)
+                        cancelBooking(
+                            holder.itemView.context,
+                            booking.CustomerId,
+                            booking.ProviderId,
+                            booking.bookingId,
+                            booking.bookingDate,
+                            booking.timeSlot
+                        )
                         true
                     }
-//                    R.id.menu_view_details -> {
-//                        viewBookingDetails(view.context, booking)
-//                        true
-//                    }
-//                    R.id.menu_report -> {
-//                        reportIssue(view.context, booking.bookingId)
-//                        true
-//                    }
                     else -> false
                 }
             }
             popup.show()
         }
+
 
 
         // Set service image dynamically (You can change this logic)
@@ -97,11 +108,6 @@ class HistoryAdapter(private val bookingModelList: List<Booking_model>) :
                 if (providerImage!=null){
                     holder.serviceImage.setImageBitmap(decodeBase64ToBitmap(providerImage))
                 }
-                else{
-                    holder.serviceImage.setImageResource(R.drawable.man)
-                }
-
-
             }
         }
     }
@@ -124,8 +130,12 @@ class HistoryAdapter(private val bookingModelList: List<Booking_model>) :
                 val slotRef = FirebaseFirestore.getInstance()
                     .collection("slots").document(providerId)
                     .collection(selectedDate).document(selectedTimeSlot)
+                val updates = mapOf(
+                    "status" to "available",   // ✅ Slot available ho gaya
+                    "bookedBy" to ""           // ✅ BookedBy field empty ho gaya
+                )
 
-                slotRef.update("status", "available")
+                slotRef.update(updates)
                     .addOnSuccessListener {
                         Toast.makeText(context, "Booking Cancelled", Toast.LENGTH_SHORT).show()
 

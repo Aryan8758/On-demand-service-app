@@ -1,5 +1,6 @@
 package com.example.foryou
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,17 +10,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foryou.databinding.FragmentHistoryBinding
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-
 class HistoryFragment : Fragment() {
 
     private var _binding: FragmentHistoryBinding? = null
-    private val binding get() = _binding!!  // Safe binding reference
-
-    private lateinit var bookingList: MutableList<Booking_model>
-    private lateinit var adapter: HistoryAdapter
-    private lateinit var databaseRef: DatabaseReference
+    private val binding get() = _binding!!
+    private lateinit var viewPagerAdapter: ViewPagerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,44 +26,33 @@ class HistoryFragment : Fragment() {
     ): View {
         _binding = FragmentHistoryBinding.inflate(inflater, container, false)
 
-        // Setup RecyclerView
-        binding.recyclerViewHistory.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewHistory.itemAnimator = DefaultItemAnimator()
+        setupViewPager()
 
-        bookingList = mutableListOf()
-        adapter = HistoryAdapter(bookingList)
-        binding.recyclerViewHistory.adapter = adapter
+        binding.backButton.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
 
-        fetchBookings()
         return binding.root
     }
 
-    private fun fetchBookings() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        databaseRef = FirebaseDatabase.getInstance().getReference("booking").child(userId)
+    private fun setupViewPager() {
+        viewPagerAdapter = ViewPagerAdapter(childFragmentManager, lifecycle)
 
-        databaseRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                bookingList.clear()
-                for (bookingSnapshot in snapshot.children) {
-                    val booking = bookingSnapshot.getValue(Booking_model::class.java)
-                    if (booking != null) {
-                        booking.bookingId = bookingSnapshot.key ?: ""
-                    }
-                    booking?.let { bookingList.add(it) }
-                }
-                adapter.notifyDataSetChanged()
-            }
+        binding.viewPager.adapter = viewPagerAdapter
 
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Failed to load bookings", Toast.LENGTH_SHORT).show()
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> "Pending"
+                1 -> "Accepted"
+                2 -> "Rejected"
+                3 -> "Cancel"
+                else -> "Pending"
             }
-        })
+        }.attach()
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // Avoid memory leaks
+        _binding = null
     }
 }
