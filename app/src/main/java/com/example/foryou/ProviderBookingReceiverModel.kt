@@ -9,5 +9,7 @@
         val service: String = "",
         val bookingDate: String = "",
         val status: String = "",
-        val paymentMethod:String=""
+        val paymentMethod:String="",
+        val timestamp: Long =System.currentTimeMillis()
+
     )

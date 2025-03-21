@@ -43,7 +43,7 @@ class ProviderAdapter(private var providers: List<ProviderModelClass>) :
         holder.nameText.text = provider.name
         holder.serviceText.text = provider.service
         holder.priceText.text = provider.price
-        holder.linear_Layout.setBackgroundResource(provider.bg)
+        //holder.linear_Layout.setBackgroundResource(provider.bg)
         holder.itemView.setOnClickListener {
             val intent=Intent(context,Provider_Detail::class.java)
             intent.putExtra("providername",provider.name)

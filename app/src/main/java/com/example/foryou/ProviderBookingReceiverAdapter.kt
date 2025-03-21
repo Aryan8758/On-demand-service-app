@@ -51,6 +51,9 @@ class ProviderBookingReceiverAdapter(
                  image = documentSnapshot.getString("profileImage").toString()
                 holder.imgProfile.setImageBitmap(image?.let { decodeBase64ToBitmap(it) })
             }
+            else{
+                holder.imgProfile.setImageResource(R.drawable.tioger)
+            }
         }
 
         holder.btnAccept.setOnClickListener {

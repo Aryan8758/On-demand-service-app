@@ -55,12 +55,12 @@ class HistoryTabFragment(private val status: String) : Fragment() {
                     }
                 }
                 if (bookingList.isEmpty()) {
-                    binding!!.recyclerView.visibility = View.GONE  // ❌ Hide list
-                    binding!!.noRequestText.visibility = View.VISIBLE  // ✅ Show message
-                    binding!!.noRequestText.text = "No $status Requests Found"
+                    binding?.recyclerView?.visibility = View.GONE  // ❌ Hide list
+                    binding?.noRequestText?.visibility = View.VISIBLE  // ✅ Show message
+                    binding?.noRequestText?.text = "No $status Requests Found"
                 } else {
                     binding?.recyclerView?.visibility = View.VISIBLE  // ✅ Show list
-                    binding!!.noRequestText.visibility = View.GONE  // ❌ Hide message
+                    binding?.noRequestText?.visibility = View.GONE  // ❌ Hide message
                 }
 
                 // ✅ Reverse list to show latest bookings first

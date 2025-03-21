@@ -131,12 +131,12 @@ class HomeFragment : Fragment() {
                     val price = doc.getString("priceRate") ?: "₹50"
                     val service = doc.getString("service") ?: "Other"
                     val image = doc.getString("profileImage")
-                    val bg = R.drawable.blue_bg
+                  //  val bg = R.drawable.blue_bg
 
                     if (!providersMap.containsKey(service)) {
                         providersMap[service] = mutableListOf()
                     }
-                    providersMap[service]?.add(ProviderModelClass(providerId,name, service,price,image, bg))
+                    providersMap[service]?.add(ProviderModelClass(providerId,name, service,price,image))
                 }
 
                 // 🟢 **Step 2: Show Categories with Shimmer**

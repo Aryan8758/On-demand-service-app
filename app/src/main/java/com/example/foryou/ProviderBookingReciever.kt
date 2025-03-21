@@ -68,7 +68,8 @@ class ProviderBookingReciever : Fragment() {
 
                 for (customerSnapshot in snapshot.children) {
                     for (bookingSnapshot in customerSnapshot.children) {
-                        val booking = bookingSnapshot.getValue(ProviderBookingReceiverModel::class.java)
+                        val booking =
+                            bookingSnapshot.getValue(ProviderBookingReceiverModel::class.java)
 
                         if (booking != null) {
                             booking.bookingId = bookingSnapshot.key ?: ""
@@ -80,11 +81,14 @@ class ProviderBookingReciever : Fragment() {
                     }
                 }
 
-                // Step 2: Hide shimmer layout
+                // **📌 Step 2: Sort bookings by booking timestamp (latest first)**
+                bookingList.sortByDescending { it.timestamp }
+
+                // Step 3: Hide shimmer layout
                 binding?.shimmerViewContainer?.stopShimmer()
                 binding?.shimmerViewContainer?.visibility = View.GONE
 
-                // Step 3: Show either RecyclerView or No Booking Message
+                // Step 4: Show either RecyclerView or No Booking Message
                 if (bookingList.isEmpty()) {
                     binding!!.noBookingText.visibility = View.VISIBLE
                     binding!!.notificationRecycler.visibility = View.GONE
@@ -93,13 +97,15 @@ class ProviderBookingReciever : Fragment() {
                     binding!!.noBookingText.visibility = View.GONE
                 }
 
-                adapter = ProviderBookingReceiverAdapter(bookingList, ::acceptBooking, ::rejectBooking)
+                adapter =
+                    ProviderBookingReceiverAdapter(bookingList, ::acceptBooking, ::rejectBooking)
                 binding!!.notificationRecycler.adapter = adapter
                 adapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT)
+                    .show()
             }
         })
     }
@@ -126,15 +132,27 @@ class ProviderBookingReciever : Fragment() {
                             val userId = customerSnapshot.key  // 🔹 User ID extract karein
                             val providerId = bookingSnapshot.child("ProviderId").value.toString()
                             val selectedDate = bookingSnapshot.child("bookingDate").value.toString()
-                            val selectedTimeSlot = bookingSnapshot.child("timeSlot").value.toString()
-                            Log.d("detail","$providerId,$selectedDate,$selectedTimeSlot")
+                            val selectedTimeSlot =
+                                bookingSnapshot.child("timeSlot").value.toString()
+                            Log.d("detail", "$providerId,$selectedDate,$selectedTimeSlot")
 
                             // 🔥 **1️⃣ Firebase me status update karo**
                             bookingSnapshot.ref.child("status").setValue(status)
                                 .addOnSuccessListener {
-                                  //  Toast.makeText(requireContext(), "Booking $status", Toast.LENGTH_SHORT).show()
+                                    if (status == "Accepted") {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Booking $status",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                     fetchBookings()
-                                    userId?.let { fetchUserFCMToken(it, status) } // ✅ FCM notification bhejne ke liye
+                                    userId?.let {
+                                        fetchUserFCMToken(
+                                            it,
+                                            status
+                                        )
+                                    } // ✅ FCM notification bhejne ke liye
 
                                     // 🔥 **2️⃣ Sirf cancel/reject hone pe slot available karo**
                                     if (status == "Rejected") {
@@ -149,15 +167,27 @@ class ProviderBookingReciever : Fragment() {
 
                                         slotRef.update(updates)
                                             .addOnSuccessListener {
-                                                Toast.makeText(requireContext(), "Booking $status", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(
+                                                    requireContext(),
+                                                    "Booking $status",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                             .addOnFailureListener {
-                                                Toast.makeText(requireContext(), "Failed to update slot!", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(
+                                                    requireContext(),
+                                                    "Failed to update slot!",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                     }
                                 }
                                 .addOnFailureListener {
-                                    Toast.makeText(requireContext(), "Failed to update status", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Failed to update status",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             return
                         }
@@ -166,7 +196,8 @@ class ProviderBookingReciever : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT)
+                    .show()
             }
         })
     }
@@ -192,7 +223,8 @@ class ProviderBookingReciever : Fragment() {
 
                     googleCredentials.refreshIfExpired()
                     val newToken = googleCredentials.accessToken?.tokenValue
-                    val expiresIn = googleCredentials.accessToken?.expirationTime?.time ?: 0L // ✅ Fixed
+                    val expiresIn =
+                        googleCredentials.accessToken?.expirationTime?.time ?: 0L // ✅ Fixed
 
                     if (newToken != null) {
                         cachedToken = newToken
@@ -210,7 +242,8 @@ class ProviderBookingReciever : Fragment() {
     }
 
     private fun setupSwipeGestures() {
-        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        val itemTouchHelperCallback = object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -267,7 +300,15 @@ class ProviderBookingReciever : Fragment() {
                         itemView.right.toFloat(), itemView.bottom.toFloat(), paint
                     )
                 }
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
             }
         }
 
@@ -275,7 +316,7 @@ class ProviderBookingReciever : Fragment() {
     }
 
     private fun undoRejectBooking(booking: ProviderBookingReceiverModel) {
-        updateBookingStatus(booking.bookingId,"Pending")
+        updateBookingStatus(booking.bookingId, "Pending")
         val databaseRef = FirebaseDatabase.getInstance().getReference("booking")
         val slotRef = FirebaseFirestore.getInstance()
             .collection("slots").document(booking.ProviderId)
@@ -297,14 +338,26 @@ class ProviderBookingReciever : Fragment() {
                                     )
                                     slotRef.update(slotUpdates)
                                         .addOnSuccessListener {
-                                            Toast.makeText(requireContext(), "Booking Restored", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Booking Restored",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                         .addOnFailureListener {
-                                            Toast.makeText(requireContext(), "Failed to restore slot!", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Failed to restore slot!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                 }
                                 .addOnFailureListener {
-                                    Toast.makeText(requireContext(), "Failed to restore booking", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Failed to restore booking",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             return
                         }
@@ -313,24 +366,27 @@ class ProviderBookingReciever : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT)
+                    .show()
             }
         })
     }
 
     //notification code
     private fun fetchUserFCMToken(userId: String, status: String) {
-         FirebaseFirestore.getInstance().collection("customers").document(userId).get().addOnSuccessListener {doc->
-            val fcmToken=doc.getString("fcmToken")?:"other"
-            if (!fcmToken.isNullOrEmpty()) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    sendFCMNotification(requireContext(), fcmToken, status)
+        FirebaseFirestore.getInstance().collection("customers").document(userId).get()
+            .addOnSuccessListener { doc ->
+                val fcmToken = doc.getString("fcmToken") ?: "other"
+                if (!fcmToken.isNullOrEmpty()) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        sendFCMNotification(requireContext(), fcmToken, status)
+                    }
+                } else {
+                    Log.e("FCM", "User FCM Token is Empty")
                 }
-            } else {
-                Log.e("FCM", "User FCM Token is Empty")
             }
-        }
     }
+
     suspend fun sendFCMNotification(context: Context, userToken: String, status: String) {
         val fcmUrl = "https://fcm.googleapis.com/v1/projects/foryou-fa1d3/messages:send"
 
@@ -374,7 +430,6 @@ class ProviderBookingReciever : Fragment() {
             }
         }
     }
-
 
 
     override fun onDestroyView() {

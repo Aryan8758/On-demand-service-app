@@ -24,8 +24,8 @@ class AdminDashboardActivity : AppCompatActivity() {
         fetchCounts() // Fetch data from Firebase
 
         // Logout Button Click Listener
-        binding.cardPending.setOnClickListener {
-            startActivity(Intent(this,PendingRequestsActivity::class.java))
+        binding.txtPendingRequests.setOnClickListener {
+            startActivity(Intent(this, PendingRequestsActivity::class.java))
         }
         binding.btnLogout.setOnClickListener {
             showLogoutDialog() // Show confirmation dialog before logout
@@ -85,12 +85,14 @@ class AdminDashboardActivity : AppCompatActivity() {
 
         dialog.setOnShowListener {
             // Set button colors
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.RED) // ✅ Correct usage
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                ?.setTextColor(Color.RED) // ✅ Correct usage
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK)// No button
         }
 
         dialog.show()
     }
+
     private var backPressedTime: Long = 0
 
     override fun onBackPressed() {

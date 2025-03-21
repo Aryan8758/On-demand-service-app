@@ -20,7 +20,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 class ProviderStatus : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var statusAdapter: StatusAdapter
-    private val firestore = FirebaseFirestore.getInstance()
     private val statusModelClassList = mutableListOf<StatusModelClass>()
 
     override fun onCreateView(
@@ -54,7 +53,7 @@ class ProviderStatus : Fragment() {
                         val statusModelClass = bookingSnapshot.getValue(StatusModelClass::class.java)
                         if (statusModelClass != null) {
                             statusModelClass.id = bookingSnapshot.key ?: "" // Set booking ID
-                            if (statusModelClass.status in listOf("Accepted", "Rejected", "Order Cancel")) {
+                            if (statusModelClass.status in listOf("Accepted", "Rejected", "Order Cancel","Completed")) {
                                 statusModelClassList.add(statusModelClass)
                             }
                         }
@@ -69,25 +68,41 @@ class ProviderStatus : Fragment() {
         })
     }
 
-
     private fun markWorkComplete(statusModelClass: StatusModelClass) {
-        val uid= FirebaseAuth.getInstance().currentUser?.uid
-        val databaseRef = FirebaseDatabase.getInstance().getReference("slots")
-            .child(uid!!)  // Provider ID
-            .child(statusModelClass.bookingDate) // Booking Date
-            .child(statusModelClass.timeSlot)    // Time Slot
+        val databaseRef = FirebaseDatabase.getInstance().getReference("booking")
+            .child(statusModelClass.CustomerId) // ✅ Customer ke andar booking store hai
+            .child(statusModelClass.id)  // ✅ Specific booking update karni hai
 
-        val updates = mapOf(
-            "status" to "completed",
-            "slot" to "available"
-        )
+        // Status ko "Completed" update karo
+        val updates = mapOf("status" to "Completed")
 
         databaseRef.updateChildren(updates)
             .addOnSuccessListener {
+                val db = FirebaseFirestore.getInstance()
+
+                val slotRef = db.collection("slots")
+                    .document(statusModelClass.ProviderId)  // ✅ Provider ID Document
+                    .collection(statusModelClass.bookingDate) // ✅ Booking Date Collection
+                    .document(statusModelClass.timeSlot) // ✅ Time Slot Document
+
+                val updates = mapOf(
+                    "status" to "available",  // ✅ Slot available ho jaye
+                    "bookedBy" to ""
+                )
+
+                slotRef.update(updates)
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Work marked as complete!", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { error ->
+                        Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
                 Toast.makeText(requireContext(), "Work marked as complete!", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { error ->
                 Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
+
 }

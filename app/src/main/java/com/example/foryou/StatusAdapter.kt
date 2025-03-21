@@ -48,11 +48,16 @@ class StatusAdapter(
                 holder.statusText.setBackgroundColor(Color.parseColor("#FF0000"))
                 holder.workCompleteBtn.visibility = View.GONE
             }
+            "Completed" -> {
+            holder.statusText.setBackgroundColor(Color.parseColor("#008000"))
+            holder.workCompleteBtn.visibility = View.GONE
+        }
             else -> {
                 holder.workCompleteBtn.visibility = View.GONE
             }
         }
     }
+
 
     override fun getItemCount(): Int = bookings.size
 }

@@ -1,57 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="8dp">
+    android:layout_height="match_parent"
+    tools:context=".OnboardingFragment">
 
-    <RelativeLayout
+    <View
+        android:id="@+id/headerBackground"
         android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="#D0E3FF"/>
+
+    <!-- Logo -->
+
+    <!-- Email Input Field -->
+
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/man"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.576"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="64dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:background="@drawable/bg_gradient">
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/subtitleText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="150dp">
 
-        <!-- Background Gradient -->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:scaleType="fitXY" />
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/dot_active"
+            android:layout_marginEnd="4dp"/>
 
-        <!-- Text Section -->
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="It's time to do ' For You ' !"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:paddingStart="5dp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_alignParentStart="true"/>
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/dot_inactive"
+            android:layout_marginEnd="4dp"/>
 
-        <TextView
-            android:id="@+id/tv_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="We care for your home like you do.\nLet us #MakeItHappen!"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:paddingStart="5dp"
-            android:layout_below="@id/tv_title"
-            android:layout_marginTop="8dp"/>
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/dot_inactive"/>
+    </LinearLayout>
 
-        <!-- Image Section -->
-        <ImageView
-            android:id="@+id/img_worker"
-            android:layout_width="80dp"
-            android:layout_height="100dp"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/man"
-            android:scaleType="fitCenter"/>
+    <Button
+        android:id="@+id/nextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Started "
+        android:backgroundTint="#091F5A"
+        android:drawableRight="@drawable/baseline_arrow_forward_24"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="24dp"/>
 
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/subtitleText"
+        android:layout_width="344dp"
+        android:layout_height="67dp"
+        android:text="Your super app for everyting your home needs"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="395dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
