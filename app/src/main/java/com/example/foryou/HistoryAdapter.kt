@@ -61,6 +61,9 @@ class HistoryAdapter(private val bookingModelList: List<Booking_model>) :
             "Order Cancel" ->{
                 holder.serviceStatus.setTextColor(Color.parseColor("#FF0000"))
             }
+            else ->{
+            holder.serviceStatus.setTextColor(Color.parseColor("#FF7518"))
+        }
         }
         fetchProviderDetails(booking.ProviderId, holder)
 

@@ -5,5 +5,5 @@ data class CustomerListModel(
     val name: String = "",
     val email: String = "",
     val phone: String = "",
-    val photoUrl: String = ""
+    val photoUrl: String ?
 )

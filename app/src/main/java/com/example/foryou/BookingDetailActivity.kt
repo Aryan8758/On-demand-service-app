@@ -111,7 +111,7 @@ class BookingDetailActivity : AppCompatActivity() {
                     binding.customerEmail.text = email
                     binding.customerPhone.text = phone
                     binding.customerAddress.text = "Address: $address"
-                    binding.customerImage.setImageBitmap(image?.let { decodeBase64ToBitmap(it) })
+                   // binding.customerImage.setImageBitmap(image?.let { decodeBase64ToBitmap(it) })
                     if(image!=null){
                         val img = decodeBase64ToBitmap(image)
                         binding.customerImage.setImageBitmap(img)

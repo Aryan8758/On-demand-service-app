@@ -5,13 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".OnboardingFragment">
 
     <View
         android:id="@+id/headerBackground"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:background="#D0E3FF"/>
+        android:background="@drawable/blue_bg"/>
 
     <!-- Logo -->
 

@@ -93,7 +93,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
         binding.signUpText.setOnClickListener {
-            startActivity(Intent(this,SignUp::class.java))
+            startActivity(Intent(this,EmailVerify::class.java))
         }
 
         // 🔹 Forgot password logic

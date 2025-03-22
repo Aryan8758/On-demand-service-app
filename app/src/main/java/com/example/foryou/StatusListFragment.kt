@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -20,6 +21,7 @@ class StatusListFragment(private val filterStatus: String) : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var statusAdapter: StatusAdapter
     private val statusModelClassList = mutableListOf<StatusModelClass>()
+    private val auth=FirebaseAuth.getInstance()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -36,25 +38,26 @@ class StatusListFragment(private val filterStatus: String) : Fragment() {
         }
         recyclerView.adapter = statusAdapter
 
-        loadBookings()
+        auth.currentUser?.let { loadBookings(it.uid) }
 
         return view
     }
 
-    private fun loadBookings() {
+    private fun loadBookings(providerId: String) {
         val databaseRef = FirebaseDatabase.getInstance().getReference("booking")
 
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 statusModelClassList.clear()
 
-                for (customerSnapshot in snapshot.children) {
-                    for (bookingSnapshot in customerSnapshot.children) {
-                        val statusModelClass =
-                            bookingSnapshot.getValue(StatusModelClass::class.java)
+                for (customerSnapshot in snapshot.children) { // Loop through customers
+                    for (bookingSnapshot in customerSnapshot.children) { // Loop through bookings
+                        val statusModelClass = bookingSnapshot.getValue(StatusModelClass::class.java)
                         if (statusModelClass != null) {
                             statusModelClass.id = bookingSnapshot.key ?: ""
-                            if (statusModelClass.status == filterStatus) {
+
+                            // ✅ Sirf wahi bookings add karo jisme providerId match kare
+                            if (statusModelClass.ProviderId == providerId && statusModelClass.status == filterStatus) {
                                 statusModelClassList.add(statusModelClass)
                             }
                         }
@@ -64,8 +67,7 @@ class StatusListFragment(private val filterStatus: String) : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }

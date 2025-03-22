@@ -50,8 +50,13 @@ class HistoryTabFragment(private val status: String) : Fragment() {
                     val booking = bookingSnapshot.getValue(Booking_model::class.java)
                     if (booking != null) {
                         booking.bookingId = bookingSnapshot.key ?: ""
-                        if (booking.status == status)  // ✅ Sirf selected status wali bookings add karo
+                        if (status == "Accepted" && (booking.status == "Accepted" || booking.status == "Completed")) {
                             bookingList.add(booking)
+                        }
+                        // ✅ Baaki cases me sirf selected status wali bookings dikhani hai
+                        else if (booking.status == status) {
+                            bookingList.add(booking)
+                        }
                     }
                 }
                 if (bookingList.isEmpty()) {

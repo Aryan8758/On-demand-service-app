@@ -45,17 +45,32 @@ class ProviderBookingReceiverAdapter(
 
         val customerId = booking.CustomerId
         val db = FirebaseFirestore.getInstance()
-        var image=""
-        db.collection("customers").document(customerId).addSnapshotListener { documentSnapshot, error ->
-            if (documentSnapshot != null) {
-                 image = documentSnapshot.getString("profileImage").toString()
-                holder.imgProfile.setImageBitmap(image?.let { decodeBase64ToBitmap(it) })
+
+        db.collection("customers").document(customerId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                val image = documentSnapshot.getString("profileImage") ?: ""
+
+                if (image.isNotEmpty()) {
+                    holder.imgProfile.setImageBitmap(decodeBase64ToBitmap(image))
+                } else {
+                    holder.imgProfile.setImageResource(R.drawable.tioger)
+                }
+
+                // ✅ Click listener ab image fetch hone ke baad set ho raha hai
+                holder.design_layout.setOnClickListener {
+                    val context = holder.itemView.context
+                    val intent = Intent(context, BookingDetailActivity::class.java).apply {
+                        putExtra("CUSTOMER_ID", booking.CustomerId)
+                        putExtra("BOOKING_ID", booking.bookingId)
+                        putExtra("IMAGE", image) // Firestore se fetched image
+                    }
+                    context.startActivity(intent)
+                }
             }
-            else{
+            .addOnFailureListener {
                 holder.imgProfile.setImageResource(R.drawable.tioger)
             }
-        }
-
         holder.btnAccept.setOnClickListener {
             Log.d("Adapter", "Accept clicked for ID: ${booking.bookingId}")
             onAcceptClick(booking.bookingId)
@@ -66,15 +81,6 @@ class ProviderBookingReceiverAdapter(
             onRejectClick(booking.bookingId)
         }
 
-        holder.design_layout.setOnClickListener {
-            val context = holder.itemView.context
-            val intent = Intent(context, BookingDetailActivity::class.java).apply {
-                putExtra("CUSTOMER_ID", booking.CustomerId)
-                putExtra("BOOKING_ID", booking.bookingId)
-                putExtra("IMAGE",image)
-            }
-            context.startActivity(intent)
-        }
     }
 
     private fun decodeBase64ToBitmap(base64String: String): Bitmap {

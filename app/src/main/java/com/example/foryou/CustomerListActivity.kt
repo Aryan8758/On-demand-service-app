@@ -34,7 +34,7 @@ class CustomerListActivity : AppCompatActivity() {
                     val name = document.getString("name") ?: "Unknown"
                     val email = document.getString("email") ?: "No Email"
                     val phone = document.getString("number") ?: "No Phone"
-                    val image = document.getString("profileImage") ?: "No Address"
+                    val image = document.getString("profileImage")
 
                     val customer = CustomerListModel(id, name, email, phone, image)
                     customerList.add(customer)
