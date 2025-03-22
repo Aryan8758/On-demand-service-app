@@ -27,8 +27,7 @@ class CustomerListAdapter(private var customerList: MutableList<CustomerListMode
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomerViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.list_customer, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_customer, parent, false)
         return CustomerViewHolder(view)
     }
 
@@ -38,39 +37,22 @@ class CustomerListAdapter(private var customerList: MutableList<CustomerListMode
         holder.customerName.text = customer.name
         holder.customerEmail.text = customer.email
         holder.customerPhone.text = customer.phone
-        if (customer.photoUrl != null) {
-            val img = decodeBase64ToBitmap(customer.photoUrl)
-            holder.customerImage.setImageBitmap(img)
-        } else {
-            holder.customerImage.setImageResource(R.drawable.tioger)
-        }
-        // Glide.with(holder.itemView.context).load(customer.photoUrl).into(holder.customerImage)
 
+        // ✅ Optimized image loading
+        if (!customer.photoUrl.isNullOrEmpty()) {
+            holder.customerImage.setImageBitmap(decodeBase64ToBitmap(customer.photoUrl))
+        } else {
+            holder.customerImage.setImageResource(R.drawable.tioger) // Default image
+        }
+
+        // Handling popup menu
         holder.optionsMenu.setOnClickListener { view ->
             val popup = PopupMenu(view.context, holder.optionsMenu)
             popup.menuInflater.inflate(R.menu.delete_menu, popup.menu)
+
             popup.setOnMenuItemClickListener { item ->
                 if (item.itemId == R.id.deleteCustomer) {
-                    val db = FirebaseFirestore.getInstance()
-                    val customerId = customerList[position].id  // Directly get ID from Model
-
-                    db.collection("customers").document(customerId)
-                        .delete()
-                        .addOnSuccessListener {
-                            FirebaseDatabase.getInstance().getReference("booking").child(customerId)
-                                .removeValue()
-                            Toast.makeText(view.context, "Customer deleted", Toast.LENGTH_SHORT)
-                                .show()
-                            customerList.removeAt(position)
-                            notifyItemRemoved(position)
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(
-                                view.context,
-                                "Failed to delete customer",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    deleteCustomer(view, position, customer.id)
                     true
                 } else {
                     false
@@ -81,6 +63,23 @@ class CustomerListAdapter(private var customerList: MutableList<CustomerListMode
     }
 
     override fun getItemCount(): Int = customerList.size
+
+    private fun deleteCustomer(view: View, position: Int, customerId: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("customers").document(customerId)
+            .delete()
+            .addOnSuccessListener {
+                FirebaseDatabase.getInstance().getReference("booking").child(customerId).removeValue()
+                Toast.makeText(view.context, "Customer deleted", Toast.LENGTH_SHORT).show()
+                customerList.removeAt(position)
+                notifyItemRemoved(position)
+            }
+            .addOnFailureListener {
+                Toast.makeText(view.context, "Failed to delete customer", Toast.LENGTH_SHORT).show()
+            }
+    }
+
     private fun decodeBase64ToBitmap(base64String: String): Bitmap {
         val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
