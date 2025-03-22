@@ -196,7 +196,7 @@
         android:layout_height="wrap_content"
         android:hint="City"
         android:background="@drawable/ex"
-        android:visibility="visible"
+        android:visibility="gone"
         android:padding="10dp"
         android:drawableStart="@drawable/baseline_location_on_24"
         android:inputType="text"

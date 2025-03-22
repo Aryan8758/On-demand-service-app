@@ -27,6 +27,9 @@ class AdminDashboardActivity : AppCompatActivity() {
         binding.txtPendingRequests.setOnClickListener {
             startActivity(Intent(this, PendingRequestsActivity::class.java))
         }
+        binding.totalCustomerLayout.setOnClickListener {
+            startActivity(Intent(this,CustomerListActivity::class.java))
+        }
         binding.btnLogout.setOnClickListener {
             showLogoutDialog() // Show confirmation dialog before logout
         }

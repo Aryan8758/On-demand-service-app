@@ -15,18 +15,21 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:paddingBottom="10dp"/>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@color/black"
-        app:tabSelectedTextColor="@android:color/holo_blue_dark"
-        app:tabTextColor="@android:color/black"
+        app:tabIndicatorColor="#D0E3FF"
+        app:tabMode="scrollable"
+        app:tabGravity="center"
+        app:tabSelectedTextColor="@android:color/black"
+        app:tabTextColor="@color/black"
         tools:ignore="SpeakableTextPresentCheck" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
 </LinearLayout>

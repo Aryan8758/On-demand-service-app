@@ -1,11 +1,14 @@
 package com.example.foryou
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.foryou.databinding.ActivityBookingDetailBinding
@@ -22,6 +25,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
+import androidx.activity.OnBackPressedCallback
 
 class BookingDetailActivity : AppCompatActivity() {
 
@@ -38,33 +42,34 @@ class BookingDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityBookingDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+            binding.backButton.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         customerId = intent.getStringExtra("CUSTOMER_ID")
         bookingId = intent.getStringExtra("BOOKING_ID")
+        val statusPageRequestIntent = intent.getIntExtra("statusFragment", 0)
+        if (statusPageRequestIntent == 1) {
+            binding.acceptBtn.visibility = View.GONE
+            binding.rejectBtn.visibility = View.GONE
+        }
 
         database = FirebaseDatabase.getInstance().reference.child("booking")
         firestore = FirebaseFirestore.getInstance()
 
         if (bookingId != null && customerId != null) {
+            binding.shimmerLayout.startShimmer() // Shimmer Start
             loadBookingDetails(customerId!!, bookingId!!)
         } else {
             Toast.makeText(this, "Booking ID not found", Toast.LENGTH_SHORT).show()
         }
 
-        // Accept Button Click
         binding.acceptBtn.setOnClickListener {
             updateBookingStatus("Accepted")
         }
 
-        // Reject Button Click
         binding.rejectBtn.setOnClickListener {
             updateBookingStatus("Rejected")
         }
-    }
-
-    private fun decodeBase64ToBitmap(base64String: String): Bitmap {
-        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
 
     private fun loadBookingDetails(customerId: String, bookingId: String) {
@@ -74,11 +79,11 @@ class BookingDetailActivity : AppCompatActivity() {
                     bookingDate = snapshot.child("bookingDate").value.toString()
                     timeSlot = snapshot.child("timeSlot").value.toString()
                     val paymentType = snapshot.child("paymentMethod").value.toString()
+                    val BookingStatus = snapshot.child("status").value.toString()
                     providerId = snapshot.child("ProviderId").value.toString()
-
                     binding.bookingDateTime.text = "Booking Date: $bookingDate | Time: $timeSlot"
                     binding.paymentType.text = "Payment Type: $paymentType"
-
+                    binding.BookingStatus.text = "Booking Status: $BookingStatus"
                     loadCustomerDetails(customerId)
                 } else {
                     Toast.makeText(this@BookingDetailActivity, "Booking not found", Toast.LENGTH_SHORT).show()
@@ -107,6 +112,25 @@ class BookingDetailActivity : AppCompatActivity() {
                     binding.customerPhone.text = phone
                     binding.customerAddress.text = "Address: $address"
                     binding.customerImage.setImageBitmap(image?.let { decodeBase64ToBitmap(it) })
+                    if(image!=null){
+                        val img = decodeBase64ToBitmap(image)
+                        binding.customerImage.setImageBitmap(img)
+                    }else{
+                        binding.customerImage.setImageResource(R.drawable.tioger)
+                    }
+                    binding.customerPhone.setOnClickListener {
+                        phone?.let { number ->
+                            val intent = Intent(Intent.ACTION_DIAL)
+                            intent.data = Uri.parse("tel:$number")
+                            startActivity(intent)
+                        }
+                    }
+                    binding.shimmerLayout.stopShimmer()
+                    binding.shimmerLayout.visibility = View.GONE
+                    binding.customerImage.visibility=View.VISIBLE
+                    binding.detailsContainer.visibility=View.VISIBLE
+                    binding.buttonContainer.visibility=View.VISIBLE
+
                 } else {
                     Toast.makeText(this@BookingDetailActivity, "Customer not found", Toast.LENGTH_SHORT).show()
                 }
@@ -115,6 +139,12 @@ class BookingDetailActivity : AppCompatActivity() {
                 Toast.makeText(this@BookingDetailActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
+    private fun decodeBase64ToBitmap(base64String: String): Bitmap {
+        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+    }
+
 
     private fun updateBookingStatus(status: String) {
         if (bookingId != null && customerId != null) {

@@ -1,3 +1,4 @@
+import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -5,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foryou.BookingDetailActivity
 import com.example.foryou.R
 import com.example.foryou.StatusModelClass
 
@@ -55,6 +57,13 @@ class StatusAdapter(
             else -> {
                 holder.workCompleteBtn.visibility = View.GONE
             }
+        }
+        holder.itemView.setOnClickListener {
+            val intent=Intent(holder.itemView.context,BookingDetailActivity::class.java)
+            intent.putExtra("statusFragment",1)
+           intent.putExtra("CUSTOMER_ID",booking.CustomerId)
+           intent.putExtra("BOOKING_ID",booking.id)
+            holder.itemView.context.startActivity(intent)
         }
     }
 
