@@ -20,10 +20,10 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="#D0E3FF"
+        app:tabIndicatorColor="@android:color/holo_blue_dark"
         app:tabMode="scrollable"
         app:tabGravity="center"
-        app:tabSelectedTextColor="@android:color/black"
+        app:tabSelectedTextColor="@android:color/holo_blue_dark"
         app:tabTextColor="@color/black"
         tools:ignore="SpeakableTextPresentCheck" />
 

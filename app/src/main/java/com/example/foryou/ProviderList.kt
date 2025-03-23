@@ -65,9 +65,10 @@ class ProviderList : AppCompatActivity() {
                     val name = document.getString("name") ?: "" // Null-safe getString
                     val service = document.getString("service") ?: ""
                     val image = document.getString("profileImage")
+                    val Price = document.getString("priceRate") ?:""
 //                    val bg = R.drawable.blue_bg
 
-                    val provider = ProviderModelClass(providerId,name, service,"₹50", image)
+                    val provider = ProviderModelClass(providerId,name, service,Price, image)
                     providerList.add(provider)
                 }
                 // 🟢 Stop Shimmer and Show RecyclerView

@@ -154,6 +154,12 @@ class SignUp : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    val userId = auth.currentUser?.uid
+                    if (userId == null) {
+                        Log.e("AuthError", "User ID is null after registration")
+                        return@addOnCompleteListener
+                    }
+
                     val user = mutableMapOf<String, Any>(
                         "name" to name,
                         "email" to email,
@@ -172,8 +178,9 @@ class SignUp : AppCompatActivity() {
                     }
 
                     val userCollection = if (selectedRole == "Provider") "providers" else "customers"
+                  //  val user = auth.currentUser
 
-                    db.collection(userCollection).document(auth.currentUser?.uid ?: "")
+                    db.collection(userCollection).document(userId)
                         .set(user)
                         .addOnSuccessListener {
                             binding.progressBar.visibility = View.GONE
