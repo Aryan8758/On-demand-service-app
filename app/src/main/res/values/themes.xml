@@ -1,21 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.ForYou" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Primary colors -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
 
-    <!-- Base application theme -->
-    <style name="Base.Theme.ForYou" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Secondary colors -->
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+
+        <item name="android:statusBarColor">@color/colorOnPrimary</item>
+        <item name="android:navigationBarColor">@color/colorOnPrimary</item>
     </style>
-
-    <!-- Custom Dialog Theme -->
-    <style name="MyDialogTheme" parent="Theme.Material3.DayNight.Dialog.Alert">
-        <item name="android:buttonBarPositiveButtonStyle">@style/MyDialogButton</item>
-        <item name="android:buttonBarNegativeButtonStyle">@style/MyDialogButton</item>
-        <item name="android:buttonBarNeutralButtonStyle">@style/MyDialogButton</item>
-    </style>
-
-    <!-- Custom Dialog Button Style -->
-    <style name="MyDialogButton" parent="Widget.Material3.Button.TextButton">
-        <item name="android:textColor">#03DAC5</item> <!-- Change button text color -->
-    </style>
-
 </resources>

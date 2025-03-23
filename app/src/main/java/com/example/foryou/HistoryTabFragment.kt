@@ -16,7 +16,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class HistoryTabFragment(private val status: String) : Fragment() {
+class HistoryTabFragment() : Fragment() {
+    // ✅ Default constructor added
+
+    private var status: String = "" // ✅ Variable declared
+
+    constructor(status: String) : this() { // ✅ Secondary constructor added
+        this.status = status
+    }
+
 
     private var _binding: FragmentHistoryTabBinding? = null
     private val binding get() = _binding

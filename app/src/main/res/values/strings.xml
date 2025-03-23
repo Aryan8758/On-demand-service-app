@@ -3,13 +3,13 @@
     <string name="login">Login</string>
 
     <!-- Correct Theme -->
-    <style name="Theme.ForYou" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryVariant">@color/white</item>//white kar do aha
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="android:statusBarColor">@color/white</item>
-        <item name="android:windowBackground">@color/white</item>
-    </style>
+<!--    <style name="Theme.ForYou" parent="Theme.MaterialComponents.Light.NoActionBar">-->
+<!--        <item name="colorPrimary">@color/white</item>-->
+<!--        <item name="colorPrimaryVariant">@color/white</item>//white kar do aha-->
+<!--        <item name="colorOnPrimary">@color/white</item>-->
+<!--        <item name="android:statusBarColor">@color/white</item>-->
+<!--        <item name="android:windowBackground">@color/white</item>-->
+<!--    </style>-->
 
     <style name="CircleImageView" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>

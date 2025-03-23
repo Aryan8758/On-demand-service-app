@@ -4,4 +4,11 @@
     <color name="white">#FFFFFFFF</color>
     <color name="shimmerEffect">#E0E0E0</color>
 
+    <!-- Primary Colors -->
+    <color name="colorPrimary">#5DAFDE</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <!-- Secondary Colors -->
+    <color name="colorSecondary">#5DAFDE</color>
+    <color name="colorOnSecondary">#000000</color>
 </resources>

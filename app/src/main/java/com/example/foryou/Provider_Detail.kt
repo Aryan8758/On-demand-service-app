@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.foryou.databinding.ActivityProviderDetailBinding
@@ -40,6 +41,10 @@ class Provider_Detail : AppCompatActivity() {
                     binding.serviceDescription.text=description
                     binding.servicePrice.text="Price:$priceRate"
                     binding.serviceImage.setImageBitmap(decodeBase64ToBitmap(image))
+                    // Data Fetch Successful, Hide Shimmer and Show Content
+                    binding.shimmerViewContainer.stopShimmer()
+                    binding.shimmerViewContainer.visibility = View.GONE
+                    binding.mainContent.visibility = View.VISIBLE
                 }
             }
         val ServiceName = intent.getStringExtra("servicename") ?: "Unknown"
