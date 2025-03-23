@@ -72,6 +72,7 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("org.json:json:20210307")
     implementation ("com.diogobernardino:williamchart:3.10.1")
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
 
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)

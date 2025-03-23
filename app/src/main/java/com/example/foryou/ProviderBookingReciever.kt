@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.example.foryou.databinding.FragmentProviderBookingRecieveBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.auth.oauth2.GoogleCredentials
@@ -28,6 +31,12 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class ProviderBookingReciever : Fragment() {
     private var _binding: FragmentProviderBookingRecieveBinding? = null
@@ -131,15 +140,24 @@ class ProviderBookingReciever : Fragment() {
                         if (bookingSnapshot.key == bookingId) {
                             val userId = customerSnapshot.key  // 🔹 User ID extract karein
                             val providerId = bookingSnapshot.child("ProviderId").value.toString()
+                            val customerId = bookingSnapshot.child("CustomerId").value.toString()
                             val selectedDate = bookingSnapshot.child("bookingDate").value.toString()
-                            val selectedTimeSlot =
-                                bookingSnapshot.child("timeSlot").value.toString()
+                            val selectedTimeSlot = bookingSnapshot.child("timeSlot").value.toString()
                             Log.d("detail", "$providerId,$selectedDate,$selectedTimeSlot")
 
                             // 🔥 **1️⃣ Firebase me status update karo**
                             bookingSnapshot.ref.child("status").setValue(status)
                                 .addOnSuccessListener {
                                     if (status == "Accepted") {
+                                        // Convert booking date and time to milliseconds
+                                        Log.d("DEBUG", "Booking Date: $selectedDate, Time Slot: $selectedTimeSlot")
+
+                                        val bookingTimeMillis = convertToMillis(selectedDate, selectedTimeSlot)
+                                        if (bookingTimeMillis != null) {
+                                            fetchFCMTokens(customerId, providerId, bookingTimeMillis)
+                                        } else {
+                                            Log.e("Booking", "Invalid Date/Time format")
+                                        }
                                         Toast.makeText(
                                             requireContext(),
                                             "Booking $status",
@@ -201,45 +219,77 @@ class ProviderBookingReciever : Fragment() {
             }
         })
     }
+//REMINDER NOTIFICATION KE LIYE HAI
+fun convertToMillis(date: String, time: String): Long? {
+    val formatter = SimpleDateFormat("dd-M-yy h:mm a", Locale.US) // Corrected format
+    return try {
+        formatter.parse("$date $time")?.time?.also {
+            Log.d("DEBUG", "Converted Booking Time (Millis): $it")
+        }
+    } catch (e: ParseException) {
+        Log.e("DateTime", "Error parsing date/time: ${e.message}")
+        null
+    }
+}
 
-    object TokenManager {
-        private var cachedToken: String? = null
-        private var tokenExpiryTime: Long = 0L
 
-        suspend fun getAccessToken(context: Context): String? {
-            val currentTime = System.currentTimeMillis()
+    //REMINDER NOTIFICATION KE LIYE HAI
+    private fun fetchFCMTokens(customerId: String, providerId: String, bookingTimeMillis: Long) {
+        val db = FirebaseFirestore.getInstance()
 
-            // ✅ Pehle se token hai aur expire nahi hua, to wahi return karo
-            if (cachedToken != null && currentTime < tokenExpiryTime) {
-                Log.d("FCM", "Using Cached Token: $cachedToken")
-                return cachedToken
-            }
+        db.collection("customers").document(customerId).get().addOnSuccessListener { customerDoc ->
+            val customerToken = customerDoc.getString("fcmToken") ?: ""
 
-            return withContext(Dispatchers.IO) {
-                try {
-                    val jsonStream = context.assets.open("service-account.json")
-                    val googleCredentials = GoogleCredentials.fromStream(jsonStream)
-                        .createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
+            db.collection("providers").document(providerId).get().addOnSuccessListener { providerDoc ->
+                val providerToken = providerDoc.getString("fcmToken") ?: ""
 
-                    googleCredentials.refreshIfExpired()
-                    val newToken = googleCredentials.accessToken?.tokenValue
-                    val expiresIn =
-                        googleCredentials.accessToken?.expirationTime?.time ?: 0L // ✅ Fixed
-
-                    if (newToken != null) {
-                        cachedToken = newToken
-                        tokenExpiryTime = expiresIn
-                    }
-
-                    Log.d("FCM", "Generated New Token: $newToken")
-                    newToken
-                } catch (e: IOException) {
-                    Log.e("FCM", "Error getting access token: ${e.message}")
-                    null
+                if (customerToken.isNotEmpty() && providerToken.isNotEmpty()) {
+                    scheduleReminderNotification(requireContext(), customerToken, providerToken, bookingTimeMillis)
+                } else {
+                    Log.e("FCM", "FCM Token Missing for Customer or Provider")
                 }
             }
         }
+    }//REMINDER NOTIFICATION KE LIYE HAI
+    fun scheduleReminderNotification(
+        context: Context,
+        customerToken: String,
+        providerToken: String,
+        bookingTimeMillis: Long
+    ) {
+
+        // 70 minutes before booking time
+        val reminderTimeMillis = bookingTimeMillis - 1800000
+        val currentTimeMillis = System.currentTimeMillis()
+        val delay = reminderTimeMillis - currentTimeMillis
+
+        Log.d("WorkManager", "Booking Time: $bookingTimeMillis")
+        Log.d("WorkManager", "Reminder Time: $reminderTimeMillis")
+        Log.d("WorkManager", "Current Time: $currentTimeMillis")
+        Log.d("WorkManager", "Delay (Millis): $delay")
+
+        if (delay <= 0) {
+            Log.e("WorkManager", "Invalid Delay, Reminder Not Scheduled")
+            return
+        }
+
+        val data = workDataOf(
+            "customerToken" to customerToken,
+            "providerToken" to providerToken
+        )
+
+        val reminderRequest = OneTimeWorkRequestBuilder<ReminderWorker>()
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+            .setInputData(data)
+            .build()
+
+        WorkManager.getInstance(context).enqueue(reminderRequest)
+        Log.d("WorkManager", "Reminder Scheduled in ${delay / 1000} seconds")
     }
+
+
+
+
 
     private fun setupSwipeGestures() {
         val itemTouchHelperCallback = object :
@@ -370,6 +420,44 @@ class ProviderBookingReciever : Fragment() {
                     .show()
             }
         })
+    }
+    object TokenManager {
+        private var cachedToken: String? = null
+        private var tokenExpiryTime: Long = 0L
+
+        suspend fun getAccessToken(context: Context): String? {
+            val currentTime = System.currentTimeMillis()
+
+            // ✅ Pehle se token hai aur expire nahi hua, to wahi return karo
+            if (cachedToken != null && currentTime < tokenExpiryTime) {
+                Log.d("FCM", "Using Cached Token: $cachedToken")
+                return cachedToken
+            }
+
+            return withContext(Dispatchers.IO) {
+                try {
+                    val jsonStream = context.assets.open("service-account.json")
+                    val googleCredentials = GoogleCredentials.fromStream(jsonStream)
+                        .createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
+
+                    googleCredentials.refreshIfExpired()
+                    val newToken = googleCredentials.accessToken?.tokenValue
+                    val expiresIn =
+                        googleCredentials.accessToken?.expirationTime?.time ?: 0L // ✅ Fixed
+
+                    if (newToken != null) {
+                        cachedToken = newToken
+                        tokenExpiryTime = expiresIn
+                    }
+
+                    Log.d("FCM", "Generated New Token: $newToken")
+                    newToken
+                } catch (e: IOException) {
+                    Log.e("FCM", "Error getting access token: ${e.message}")
+                    null
+                }
+            }
+        }
     }
 
     //notification code
