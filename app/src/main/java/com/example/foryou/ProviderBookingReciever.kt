@@ -259,7 +259,7 @@ fun convertToMillis(date: String, time: String): Long? {
     ) {
 
         // 70 minutes before booking time
-        val reminderTimeMillis = bookingTimeMillis - 1800000
+        val reminderTimeMillis = bookingTimeMillis - 180000
         val currentTimeMillis = System.currentTimeMillis()
         val delay = reminderTimeMillis - currentTimeMillis
 

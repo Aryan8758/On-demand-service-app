@@ -7,14 +7,30 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/requestlayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Booking History"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:paddingBottom="10dp"/>
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_back_arrow" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Booking Status"
+            android:textColor="#081F5C"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"

@@ -1,87 +1,200 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignStart="@id/customerImage"
+        android:layout_alignTop="@id/customerImage"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="31dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:elevation="6dp"
+        android:src="@drawable/ic_back_arrow"
+        app:tint="@color/black"
+        tools:ignore="NotSibling" />
 
-    tools:context=".OnboardingFragment">
-
-    <View
-        android:id="@+id/headerBackground"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerLayout"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:background="@drawable/blue_bg"/>
-
-    <!-- Logo -->
-
-    <!-- Email Input Field -->
-
-    <ImageView
-        android:id="@+id/logoImage"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/man"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.576"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="64dp" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/subtitleText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="150dp">
+        android:layout_height="match_parent"
+        android:layout_below="@id/backButton"
+        app:shimmer_auto_start="true"
+        app:shimmer_duration="1500"
+        android:background="@color/black">
 
         <View
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:background="@drawable/dot_active"
-            android:layout_marginEnd="4dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"/>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
-        <View
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:background="@drawable/dot_inactive"
-            android:layout_marginEnd="4dp"/>
+    <!-- Full Header with Image (for the background) -->
+    <RelativeLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:visibility="gone">
 
-        <View
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:background="@drawable/dot_inactive"/>
-    </LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="401dp"
+            android:layout_height="360dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="40dp"
+            app:cardElevation="4dp"
+            android:visibility="visible">
 
-    <Button
-        android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get Started "
-        android:backgroundTint="#091F5A"
-        android:drawableRight="@drawable/baseline_arrow_forward_24"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="24dp"/>
+            <ImageView
+                android:id="@+id/customerImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/plumber" />
+        </androidx.cardview.widget.CardView>
 
+    </RelativeLayout>
+    <!-- Customer Name -->
     <TextView
-        android:id="@+id/subtitleText"
-        android:layout_width="344dp"
-        android:layout_height="67dp"
-        android:text="Your super app for everyting your home needs"
-        android:textColor="@color/black"
+        android:id="@+id/customerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aryan Singh"
         android:textSize="22sp"
+        android:layout_alignBottom="@id/headerContainer"
+        android:layout_margin="25dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="395dp" />
+        android:visibility="gone"
+        android:backgroundTint="@drawable/name_overlay_bg"
+        android:textColor="@color/white"/>
+    <!-- Details Section (Card View) -->
+    <RelativeLayout
+        android:id="@+id/detailsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/headerContainer"
+        android:layout_above="@id/buttonContainer"
+        android:padding="20dp"
+        android:elevation="6dp"
+        android:visibility="gone">
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Customer Email -->
+        <TextView
+            android:id="@+id/customerEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/customerName"
+            android:text="aryan@gmail.com"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingTop="4dp"/>
+
+        <!-- Customer Phone -->
+        <TextView
+            android:id="@+id/customerPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/customerEmail"
+            android:text="+91 7041157998"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingTop="4dp"/>
+
+        <!-- Customer Address -->
+        <TextView
+            android:id="@+id/customerAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/customerPhone"
+            android:text="Address: 123, Street Name, Kosamba, Gujarat"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:paddingTop="8dp"/>
+
+        <!-- Booking Date & Time -->
+        <TextView
+            android:id="@+id/bookingDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/customerAddress"
+            android:text="Booking Date: 18 March 2025 | Time: 10:30 AM"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:paddingTop="8dp"/>
+
+        <!-- Payment Type -->
+        <TextView
+            android:id="@+id/paymentType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bookingDateTime"
+            android:text="Payment Type: Online (UPI)"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:paddingTop="8dp"/>
+
+        <TextView
+            android:id="@+id/BookingStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/paymentType"
+            android:text="BookingStatus"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:paddingTop="8dp"/>
+    </RelativeLayout>
+
+    <!-- Accept & Reject Buttons at Bottom -->
+    <RelativeLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="2dp"
+        android:elevation="8dp"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/acceptBtn"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_weight="1"
+            android:backgroundTint="#4CAF50"
+            android:elevation="4dp"
+            android:padding="14dp"
+            android:text="Accept"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/rejectBtn"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:backgroundTint="#F44336"
+            android:elevation="4dp"
+            android:padding="14dp"
+            android:text="Reject"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
+
+
+
+

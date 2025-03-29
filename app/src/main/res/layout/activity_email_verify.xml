@@ -53,25 +53,25 @@
 
     <EditText
         android:id="@+id/emailEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ex"
+        android:layout_width="391dp"
+        android:layout_height="40dp"
         android:layout_below="@id/t2"
         android:layout_marginStart="20dp"
         android:layout_marginTop="42dp"
         android:layout_marginEnd="20dp"
+        android:background="@drawable/ex"
         android:hint="Enter your email address"
         android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/otpEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="368dp"
+        android:layout_height="38dp"
         android:layout_below="@id/emailEditText"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/ex"
         android:layout_marginEnd="20dp"
+        android:background="@drawable/ex"
         android:hint="Enter 5-digit OTP"
         android:inputType="number" />
 

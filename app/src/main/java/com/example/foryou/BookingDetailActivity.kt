@@ -127,7 +127,8 @@ class BookingDetailActivity : AppCompatActivity() {
                     }
                     binding.shimmerLayout.stopShimmer()
                     binding.shimmerLayout.visibility = View.GONE
-                    binding.customerImage.visibility=View.VISIBLE
+                    binding.headerContainer.visibility=View.VISIBLE
+                    binding.customerName.visibility=View.VISIBLE
                     binding.detailsContainer.visibility=View.VISIBLE
                     binding.buttonContainer.visibility=View.VISIBLE
 

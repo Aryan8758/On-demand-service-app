@@ -2,13 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#16A7EA">
-
-    <!-- Back Button (Top Left) -->
-    <!-- Back Button (Top Left) - Now Over Image -->
-
-
-    <!-- Shimmer Effect -->
+    >
 
     <ImageButton
         android:id="@+id/backButton"
@@ -23,7 +17,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:elevation="6dp"
         android:src="@drawable/ic_back_arrow"
-        app:tint="@color/white" />
+        app:tint="@color/black" />
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmerLayout"
@@ -36,28 +30,47 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="@color/white"/>
     </com.facebook.shimmer.ShimmerFrameLayout>
 
-    <!-- Customer Image (Full Width) -->
-    <ImageView
-        android:id="@+id/customerImage"
+    <!-- Full Header with Image (for the background) -->
+    <RelativeLayout
+        android:id="@+id/headerContainer"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:elevation="4dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/tioger"
-        android:visibility="gone"/>
+        android:layout_height="320dp"
+        android:visibility="gone">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="401dp"
+            android:layout_height="360dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="40dp"
+            app:cardElevation="4dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/customerImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/plumber" />
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
 
     <!-- Details Container -->
     <RelativeLayout
         android:id="@+id/detailsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/customerImage"
+        android:layout_below="@id/headerContainer"
         android:layout_above="@id/buttonContainer"
         android:padding="20dp"
-        android:background="@drawable/card_bg"
         android:elevation="6dp"
         android:visibility="gone">
 
@@ -144,18 +157,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="2dp"
-        android:background="@drawable/card_bg"
         android:elevation="8dp"
         android:padding="16dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <Button
             android:id="@+id/acceptBtn"
-            android:layout_width="180dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_weight="1"
-            android:backgroundTint="#4CAF50"
+            android:background="#081F5C"
+            app:backgroundTint="#081F5C"
             android:elevation="4dp"
             android:padding="14dp"
             android:text="Accept"
@@ -163,12 +176,13 @@
 
         <Button
             android:id="@+id/rejectBtn"
-            android:layout_width="180dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_weight="1"
-            android:backgroundTint="#F44336"
+            android:background="#7DA0CA"
+            app:backgroundTint="#7DA0CA"
             android:elevation="4dp"
             android:padding="14dp"
             android:text="Reject"

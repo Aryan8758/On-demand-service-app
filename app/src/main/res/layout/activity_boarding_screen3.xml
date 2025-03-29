@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D0E3FF"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimation"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-10dp"
+        android:layout_marginTop="56dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/screen2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:layout_above="@id/dotsIndicator">
+    <TextView
+        android:id="@+id/subtitleText3"
+        android:layout_width="344dp"
+        android:layout_height="67dp"
+        android:layout_below="@id/lottieAnimation"
+        android:text="Get things done . It's time to do 'For You ! '"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="35dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dotsIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/nextButton3"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/dot_inactive"
+            android:layout_marginEnd="4dp"/>
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/dot_inactive"
+            android:layout_marginEnd="4dp"/>
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/dot_active"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/nextButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20sp"
+        android:layout_marginBottom="24dp"
+        android:text="Get Started "
+        android:background="#081F5C"
+        app:backgroundTint="#081F5C"
+        android:drawableRight="@drawable/baseline_arrow_forward_24"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

@@ -1,7 +1,11 @@
 package com.example.foryou
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,17 +15,24 @@ import com.google.firebase.firestore.FirebaseFirestore
 class CustomerListActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var backbutton: ImageView
+    private lateinit var title: TextView
     private lateinit var adapter: CustomerListAdapter
     private lateinit var BookingReportAdapter: BookingReportAdapter
     private var customerList = mutableListOf<CustomerListModel>()
     private var providerList = mutableListOf<CustomerListModel>() // Provider list
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_customer_list)
 
         recyclerView = findViewById(R.id.customerRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
+         backbutton  = findViewById(R.id.backButton)
+         title  = findViewById(R.id.title)
+
+
 
         val listType = intent.getIntExtra("CustomerList or ProviderList or Booking Report", 0)
 
@@ -33,6 +44,7 @@ class CustomerListActivity : AppCompatActivity() {
     }
 
     private fun loadCustomers() {
+        title.text="Customers"
         val db = FirebaseFirestore.getInstance()
         db.collection("customers")
             .get()
@@ -57,6 +69,8 @@ class CustomerListActivity : AppCompatActivity() {
     }
 
     private fun loadProviders() {
+        title.text="Providers"
+
         val db = FirebaseFirestore.getInstance()
         db.collection("providers") // Providers collection se data fetch kar raha hai
             .get()
@@ -81,6 +95,8 @@ class CustomerListActivity : AppCompatActivity() {
             }
     }
     private fun loadBookingReport() {
+        title.text="Bookings"
+
         val databaseRef = FirebaseDatabase.getInstance().getReference("booking")
 
         databaseRef.get().addOnSuccessListener { snapshot ->

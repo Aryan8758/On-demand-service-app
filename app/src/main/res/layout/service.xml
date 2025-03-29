@@ -51,15 +51,7 @@
                 android:textSize="14sp"
                 android:layout_marginTop="2dp"/>
 
-            <TextView
-                android:id="@+id/tv_service_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Starting from $15"
-                android:textColor="#081F5C"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp"/>
+
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -33,6 +33,7 @@ class AdminDashboardActivity : AppCompatActivity() {
         binding.totalCustomerLayout.setOnClickListener {
             val intent=Intent(this,CustomerListActivity::class.java)
             intent.putExtra("CustomerList or ProviderList or Booking Report",1)
+
             startActivity(intent)
         //    startActivity(Intent(this,CustomerListActivity::class.java))
         }

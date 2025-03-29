@@ -37,7 +37,7 @@ class SplashScreen : AppCompatActivity() {
                     }
                 }
             } else {
-                startActivity(Intent(this, LoginActivity::class.java)) // Redirect to login if not logged in
+                startActivity(Intent(this, boarding_screen_1::class.java)) // Redirect to login if not logged in
             }
             finish() // Close splash screen
         }, 2050)

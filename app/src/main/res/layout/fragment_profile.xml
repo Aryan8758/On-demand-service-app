@@ -199,7 +199,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:backgroundTint="@android:color/holo_red_light"
+            android:background="#7DA0CA"
+            app:backgroundTint="#7DA0CA"
             android:text="Edit Profile"
             android:textColor="@android:color/white"/>
 
@@ -208,7 +209,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:backgroundTint="@android:color/holo_blue_dark"
+            android:background="#081F5C"
+            app:backgroundTint="#081F5C"
             android:text="Save"
             android:textColor="@android:color/white"
             android:visibility="gone"/>
@@ -218,7 +220,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:backgroundTint="@android:color/holo_red_dark"
+            android:background="#081F5C"
+            app:backgroundTint="#081F5C"
             android:text="Logout"
             android:textColor="@android:color/white"/>
     </LinearLayout>
