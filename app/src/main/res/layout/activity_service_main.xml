@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/bottomNavigation"
         app:labelVisibilityMode="selected"
-        android:background="#CADEED"
+        android:background="#7DA0CA"
         android:layout_alignParentBottom="true"
         app:itemIconTint="@color/black"
         app:menu="@menu/service_nav_item" />

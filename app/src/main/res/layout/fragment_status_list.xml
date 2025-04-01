@@ -2,7 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="120dp"
+        android:id="@+id/notiani"
+        android:layout_height="120dp"
+        app:lottie_rawRes="@raw/notification"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_marginTop="150dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/noRequestText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You've all caught up"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        android:padding="16dp"/>
+    <TextView
+        android:id="@+id/noRequestText2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You're all set ! No pending tasks or requests at the moment . If you need a service , we're here for you !  "
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/black" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

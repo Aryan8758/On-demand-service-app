@@ -70,8 +70,10 @@ class HistoryTabFragment() : Fragment() {
                 if (bookingList.isEmpty()) {
                     binding?.recyclerView?.visibility = View.GONE  // ❌ Hide list
                     binding?.noRequestText?.visibility = View.VISIBLE  // ✅ Show message
+                    binding?.notiani?.visibility=View.VISIBLE  //Notification animation
                     binding?.noRequestText?.text = "No $status Requests Found"
                 } else {
+                    binding?.notiani?.visibility=View.GONE  //Notification animation
                     binding?.recyclerView?.visibility = View.VISIBLE  // ✅ Show list
                     binding?.noRequestText?.visibility = View.GONE  // ❌ Hide message
                 }

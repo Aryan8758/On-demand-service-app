@@ -7,9 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.Lottie
+import com.airbnb.lottie.LottieAnimationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -19,6 +22,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class StatusListFragment(private val filterStatus: String) : Fragment() {
     private lateinit var recyclerView: RecyclerView
+    private lateinit var noRequestText: TextView
+    private lateinit var noRequestText2: TextView
+    private lateinit var Notiani: LottieAnimationView
     private lateinit var statusAdapter: StatusAdapter
     private val statusModelClassList = mutableListOf<StatusModelClass>()
     private val auth=FirebaseAuth.getInstance()
@@ -31,6 +37,9 @@ class StatusListFragment(private val filterStatus: String) : Fragment() {
         val view = inflater.inflate(R.layout.fragment_status_list, container, false)
 
         recyclerView = view.findViewById(R.id.recyclerView)
+        noRequestText = view.findViewById(R.id.noRequestText)
+        noRequestText2 = view.findViewById(R.id.noRequestText2)
+        Notiani = view.findViewById(R.id.notiani)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         statusAdapter = StatusAdapter(statusModelClassList) { booking ->
@@ -63,6 +72,19 @@ class StatusListFragment(private val filterStatus: String) : Fragment() {
                         }
                     }
                 }
+                if (statusModelClassList.isEmpty()){
+                    recyclerView.visibility=View.GONE
+                    noRequestText.visibility=View.VISIBLE
+                    noRequestText2.visibility=View.VISIBLE
+                    Notiani.visibility=View.VISIBLE
+                }
+                else{
+                    recyclerView.visibility=View.VISIBLE
+                    noRequestText.visibility=View.GONE
+                    noRequestText2.visibility=View.GONE
+                    Notiani.visibility=View.GONE
+                }
+
                 statusAdapter.notifyDataSetChanged()
             }
 
