@@ -20,6 +20,7 @@ class ProviderList : AppCompatActivity() {
         ActivityProviderListBinding.inflate(layoutInflater)
     }
     private lateinit var adapter: ProviderAdapter
+    private var selectedArea: String? = null
     private val providerList = mutableListOf<ProviderModelClass>()
     private val db = FirebaseFirestore.getInstance() // Firestore instance
 
@@ -31,6 +32,7 @@ class ProviderList : AppCompatActivity() {
 
             // Get category name from Intent
             val category = intent.getStringExtra("categoryname") ?: "Unknown"
+             selectedArea = intent.getStringExtra("location")
 
             // Set category title
             binding.ProviderTitle.text = category
@@ -56,8 +58,13 @@ class ProviderList : AppCompatActivity() {
     private fun fetchProvidersFromFirestore(servicetype: String) {
 
         //start shimmer effect before fetching data
-        db.collection("providers").whereEqualTo("service",servicetype).whereEqualTo("profileComplete", true)
-            .get()
+      //db.collection("providers").whereEqualTo("service",servicetype).whereEqualTo("profileComplete", true)
+        var query =db.collection("providers").whereEqualTo("service",servicetype).whereEqualTo("profileComplete", true)
+
+        selectedArea?.let { area ->
+            query = query.whereEqualTo("city", area)
+        }
+            query.get()
             .addOnSuccessListener { documents ->
                 providerList.clear()
                 for (document in documents){

@@ -1,6 +1,7 @@
 package com.example.foryou
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 
 class CateroryAdpater2(private val categories: List<CategoriesItemModel>) : RecyclerView.Adapter<CateroryAdpater2.CategoryViewHolder>() {
-
+    private lateinit var sharedPreferences: SharedPref
     class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
        // val icon: ImageView = itemView.findViewById(R.id.categoryIcon)
         val card : CardView = itemView.findViewById(R.id.card)
@@ -26,7 +27,9 @@ class CateroryAdpater2(private val categories: List<CategoriesItemModel>) : Recy
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
+        var selectedArea: String? = null
         val context=holder.itemView.context
+        sharedPreferences = SharedPref(context)
         val category = categories[position]
         holder.title.text = category.title
         holder.image.setImageResource(category.imageResId)
@@ -34,10 +37,22 @@ class CateroryAdpater2(private val categories: List<CategoriesItemModel>) : Recy
 //        holder.expandButton.setOnClickListener {
 //            // Toggle expand/collapse logic
 //        }
+
         holder.itemView.setOnClickListener {
-            Toast.makeText(context, "Clicked: ${category.title}", Toast.LENGTH_SHORT).show()
+            val savedLocation = sharedPreferences.getLocation()
+
+            if (!savedLocation.isNullOrEmpty()) {
+                val area = savedLocation.split(",").firstOrNull()?.trim()
+                Log.d("Location", "Loaded saved location: $savedLocation,$area")
+                selectedArea=if (area!=null) area else null
+            } else {
+                Log.d("Location", "No saved location found")
+                selectedArea = null
+            }
+          //  Toast.makeText(context, "Clicked: $selectedArea", Toast.LENGTH_SHORT).show()
             val intent = Intent(holder.itemView.context,ProviderList::class.java)
             intent.putExtra("categoryname",category.title)
+            intent.putExtra("location",selectedArea)
             context.startActivity(intent)
         }
 

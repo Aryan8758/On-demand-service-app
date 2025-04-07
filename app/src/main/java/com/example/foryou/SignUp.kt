@@ -44,7 +44,7 @@ class SignUp : AppCompatActivity() {
         // Populate AutoCompleteTextView with places in Bharuch
         val bharuchPlaces = listOf(
             "Zadeshwar", "Bholav", "Maktampur", "GNFC Township", "Ankleshwar",
-            "Sherpura", "GIDC Estate", "Shaktinath", "Jambusar", "Dahej"
+            "Sherpura", "GIDC Estate", "Shaktinath", "Jambusar", "Dahej","Vadadla"
         )
 
         val cityAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, bharuchPlaces)

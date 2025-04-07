@@ -44,6 +44,7 @@ class HomeFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
+    private var selectedArea: String? = null
     private val providersMap = mutableMapOf<String, MutableList<ProviderModelClass>>() // Categorized providers
 
 
@@ -57,6 +58,7 @@ class HomeFragment : Fragment() {
         //swipe to refresh
         binding.swipeRefreshLayout.setOnRefreshListener {
             fetchProviders()
+            loadSavedLocation()
             loadUser()
         }
 
@@ -118,8 +120,14 @@ class HomeFragment : Fragment() {
         if (!isAdded || view == null) return // Prevents crash if fragment is not attached
 
         binding?.categoryContainer?.removeAllViews()
+        var query = db.collection("providers").whereEqualTo("profileComplete", true)
 
-        db.collection("providers").whereEqualTo("profileComplete",true).get()
+        selectedArea?.let { area ->
+            query = query.whereEqualTo("city", area)
+        }
+
+      //  db.collection("providers").whereEqualTo("profileComplete",true)
+        query.get()
             .addOnSuccessListener { documents ->
                 if (!isAdded || view == null) return@addOnSuccessListener // Ensures fragment is still active
 
@@ -191,6 +199,7 @@ class HomeFragment : Fragment() {
             viewAllButton.setOnClickListener {
                 val intent = Intent(requireContext(), ProviderList::class.java)
                 intent.putExtra("categoryname", category)
+                intent.putExtra("location", selectedArea)
                 startActivity(intent)
             }
 
@@ -206,10 +215,16 @@ class HomeFragment : Fragment() {
 
         if (!savedLocation.isNullOrEmpty()) {
             binding.txtLoc.text = savedLocation
-            Log.d("Location", "Loaded saved location: $savedLocation")
+
+            val area = savedLocation.split(",").firstOrNull()?.trim()
+            Log.d("Location", "Loaded saved location: $savedLocation,$area")
+            selectedArea=if (area!=null) area else null
+            fetchProviders() // 🔥 Fetch filtered or all based on selectedArea
         } else {
             binding.txtLoc.text = "Fetching Location..."
             Log.d("Location", "No saved location found")
+            selectedArea = null
+            fetchProviders() // 🔥 Show all if no location is saved
         }
     }
 
@@ -223,7 +238,6 @@ class HomeFragment : Fragment() {
 
         // Show default values while loading
         binding.txtUser.text = "Loading..."
-        binding.txtLoc.text = "Loading..."
 
         // Fetch from cache first, then from server
         lifecycleScope.launch(Dispatchers.IO) {
@@ -321,6 +335,7 @@ class HomeFragment : Fragment() {
                 }
 
                 val finalLocation = if (area != null) "$area, $city" else city
+                selectedArea=area
 
                 // Save to SharedPreferences
                 sharedPreferences.saveLocation(finalLocation)
@@ -328,6 +343,7 @@ class HomeFragment : Fragment() {
 
                 requireActivity().runOnUiThread {
                     binding.txtLoc.text = finalLocation
+                    fetchProviders()
                 }
             } else {
                 Log.e("Geocoder", "No location found")
