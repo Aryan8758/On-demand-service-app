@@ -187,14 +187,6 @@
                     android:background="@drawable/ex"
                     android:layout_marginEnd="10dp"
                     android:text="Cash"/>
-                <RadioButton
-                    android:id="@+id/rbOnline"
-                    android:background="@drawable/ex"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:text="Online Payment"/>
             </RadioGroup>
 
             <!-- Confirm & Cancel Buttons -->
