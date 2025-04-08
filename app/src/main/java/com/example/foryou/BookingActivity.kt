@@ -148,7 +148,7 @@ class BookingActivity : AppCompatActivity() {
         binding.rgPayment.setOnCheckedChangeListener { _, checkedId ->
             selectedPaymentMethod = when (checkedId) {
                 R.id.rbCash -> "Cash"
-                R.id.rbOnline -> "Online Payment"
+              //  R.id.rbOnline -> "Online Payment"
                 else -> ""
             }
         }
@@ -247,7 +247,7 @@ class BookingActivity : AppCompatActivity() {
         }
     }
     fun fetchAvailableSlots(providerId: String, selectedDate: String) {
-        val defaultTimeSlots = listOf("10:00 AM", "11:00 AM", "12:00 PM", "2:00 PM", "4:00 PM", "6:00 PM")
+        val defaultTimeSlots = listOf("10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM")
         val db = FirebaseFirestore.getInstance()
         val slotRef = db.collection("slots").document(providerId).collection(selectedDate)
 
