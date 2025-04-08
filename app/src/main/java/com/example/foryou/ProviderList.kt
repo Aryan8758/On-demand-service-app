@@ -42,7 +42,7 @@ class ProviderList : AppCompatActivity() {
             // Setup RecyclerView
         binding.recyclerViewCategories.layoutManager = GridLayoutManager(this, 2)
 
-        adapter = ProviderAdapter(providerList)
+        adapter = ProviderAdapter(providerList,false)
             binding.recyclerViewCategories.adapter = adapter
         // Fetch data from Firestore
         fetchProvidersFromFirestore(category)

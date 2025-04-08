@@ -192,7 +192,7 @@ class HomeFragment : Fragment() {
                 shimmerView.visibility = View.GONE
                 viewAllButton.visibility=View.VISIBLE
                 recyclerView.visibility = View.VISIBLE
-                recyclerView.adapter = ProviderAdapter(providerList)
+                recyclerView.adapter = ProviderAdapter(providerList,true)
                 binding.swipeRefreshLayout.isRefreshing = false
             }, 2000) // 2 seconds shimmer effect
 

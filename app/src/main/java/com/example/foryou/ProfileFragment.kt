@@ -70,32 +70,36 @@ class ProfileFragment : Fragment() {
         }
 
         binding.logoutBtn.setOnClickListener {
-            // Clear login state using SharedPreferences
-            sharedPreferences.logoutUser()
-            FirebaseMessaging.getInstance().deleteToken()
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.d("Logout", "✅ FCM Token deleted")
-                    } else {
-                        Log.e("Logout", "❌ Failed to delete FCM token")
+            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Confirm Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Logout") { _, _ ->
+                    sharedPreferences.logoutUser()
+                    FirebaseMessaging.getInstance().deleteToken()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d("Logout", "✅ FCM Token deleted")
+                            } else {
+                                Log.e("Logout", "❌ Failed to delete FCM token")
+                            }
+                        }
+
+                    auth.currentUser?.uid?.let { userId ->
+                        FirebaseFirestore.getInstance().collection("providers").document(userId)
+                            .update("fcmToken", FieldValue.delete())
+                            .addOnSuccessListener {
+                                Log.d("Logout", "✅ FCM token removed from Firestore")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("Logout", "❌ Failed to remove FCM token from Firestore: ${e.message}")
+                            }
                     }
+
+                    startActivity(Intent(requireContext(), LoginActivity::class.java))
+                    requireActivity().finish()
                 }
-
-// Firestore se bhi token remove karo:
-            userId?.let { it1 ->
-                FirebaseFirestore.getInstance().collection("providers").document(it1)
-                    .update("fcmToken", FieldValue.delete())
-                    .addOnSuccessListener {
-                        Log.d("Logout", "✅ FCM token removed from Firestore")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e("Logout", "❌ Failed to remove FCM token from Firestore: ${e.message}")
-                    }
-            }
-
-            // Redirect to login activity or perform other actions
-            startActivity(Intent(requireContext(), LoginActivity::class.java))
-            requireActivity().finish() // Close the current activity/fragment
+                .setNegativeButton("Cancel", null)
+                .show()
         }
 
         binding.saveBtn.setOnClickListener {

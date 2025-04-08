@@ -1,5 +1,6 @@
 package com.example.foryou
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -14,7 +15,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 
-class ProviderAdapter(private var providers: List<ProviderModelClass>) :
+class ProviderAdapter(private var providers: List<ProviderModelClass>, private val isHorizontal: Boolean = false):  // default = grid) :
     RecyclerView.Adapter<ProviderAdapter.ProviderViewHolder>() {
 
 
@@ -60,6 +61,14 @@ class ProviderAdapter(private var providers: List<ProviderModelClass>) :
         }else{
             holder.imageView.setImageResource(R.drawable.tioger)
         }
+        // ✅ Set layout width based on layout type
+        val layoutParams = holder.linear_Layout.layoutParams
+        if (isHorizontal) {
+            layoutParams.width = dpToPx(context, 200)
+        } else {
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+        holder.linear_Layout.layoutParams = layoutParams
     }
 
     override fun getItemCount(): Int = providers.size
@@ -67,4 +76,9 @@ class ProviderAdapter(private var providers: List<ProviderModelClass>) :
         val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
+    private fun dpToPx(context: Context, dp: Int): Int {
+        val density = context.resources.displayMetrics.density
+        return (dp * density).toInt()
+    }
+
 }
